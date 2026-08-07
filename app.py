@@ -55,11 +55,20 @@ sales_person_2 = st.sidebar.text_input("Sales Person 2", "Mr. Jeevan Sharma (982
 # Shutter Items Selection
 st.header("🧱 Shutter Specifications")
 
-if "items" not in st.session_state or not isinstance(st.session_state.items, list):
-    st.session_state.items = []
+if "shutter_items" not in st.session_state:
+    st.session_state["shutter_items"] = [{
+        "slat": SLAT_OPTIONS[0],
+        "perforation": PERFORATION_OPTIONS[0],
+        "guide": GUIDE_OPTIONS[0],
+        "actuator": ACTUATOR_OPTIONS[0],
+        "width": 5000,
+        "height": 6000,
+        "qty": 1,
+        "unit_rate": 150000
+    }]
 
 def add_shutter():
-    st.session_state.items.append({
+    st.session_state["shutter_items"].append({
         "slat": SLAT_OPTIONS[0],
         "perforation": PERFORATION_OPTIONS[0],
         "guide": GUIDE_OPTIONS[0],
@@ -70,18 +79,15 @@ def add_shutter():
         "unit_rate": 150000
     })
 
-if len(st.session_state.items) == 0:
-    add_shutter()
-
-for idx, item in enumerate(st.session_state.items):
+for idx, item in enumerate(st.session_state["shutter_items"]):
     with st.expander(f"Shutter #{idx + 1}", expanded=True):
         col1, col2, col3 = st.columns(3)
-        item["slat"] = col1.selectbox("Slat Type", SLAT_OPTIONS, index=SLAT_OPTIONS.index(item["slat"]) if item["slat"] in SLAT_OPTIONS else 0, key=f"slat_{idx}")
-        item["perforation"] = col2.selectbox("Perforation", PERFORATION_OPTIONS, index=PERFORATION_OPTIONS.index(item["perforation"]) if item["perforation"] in PERFORATION_OPTIONS else 0, key=f"perf_{idx}")
-        item["guide"] = col3.selectbox("Guide Specification", GUIDE_OPTIONS, index=GUIDE_OPTIONS.index(item["guide"]) if item["guide"] in GUIDE_OPTIONS else 0, key=f"guide_{idx}")
+        item["slat"] = col1.selectbox("Slat Type", SLAT_OPTIONS, index=0, key=f"slat_{idx}")
+        item["perforation"] = col2.selectbox("Perforation", PERFORATION_OPTIONS, index=0, key=f"perf_{idx}")
+        item["guide"] = col3.selectbox("Guide Specification", GUIDE_OPTIONS, index=0, key=f"guide_{idx}")
 
         col4, col5 = st.columns(2)
-        item["actuator"] = col4.selectbox("Actuator", ACTUATOR_OPTIONS, index=ACTUATOR_OPTIONS.index(item["actuator"]) if item["actuator"] in ACTUATOR_OPTIONS else 0, key=f"act_{idx}")
+        item["actuator"] = col4.selectbox("Actuator", ACTUATOR_OPTIONS, index=0, key=f"act_{idx}")
         
         c_w, c_h, c_q, c_r = st.columns(4)
         item["width"] = c_w.number_input("Width (mm)", value=int(item["width"]), step=100, key=f"w_{idx}")
@@ -141,7 +147,7 @@ def generate_pdf():
     material_total = 0
     total_qty = 0
 
-    for i, itm in enumerate(st.session_state.items):
+    for i, itm in enumerate(st.session_state["shutter_items"]):
         amt = itm["qty"] * itm["unit_rate"]
         material_total += amt
         total_qty += itm["qty"]
