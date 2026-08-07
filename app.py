@@ -55,7 +55,7 @@ sales_person_2 = st.sidebar.text_input("Sales Person 2", "Mr. Jeevan Sharma (982
 # Shutter Items Selection
 st.header("🧱 Shutter Specifications")
 
-if "items" not in st.session_state:
+if "items" not in st.session_state or not isinstance(st.session_state.items, list):
     st.session_state.items = []
 
 def add_shutter():
@@ -76,18 +76,18 @@ if len(st.session_state.items) == 0:
 for idx, item in enumerate(st.session_state.items):
     with st.expander(f"Shutter #{idx + 1}", expanded=True):
         col1, col2, col3 = st.columns(3)
-        item["slat"] = col1.selectbox("Slat Type", SLAT_OPTIONS, index=SLAT_OPTIONS.index(item["slat"]), key=f"slat_{idx}")
-        item["perforation"] = col2.selectbox("Perforation", PERFORATION_OPTIONS, index=PERFORATION_OPTIONS.index(item["perforation"]), key=f"perf_{idx}")
-        item["guide"] = col3.selectbox("Guide Specification", GUIDE_OPTIONS, index=GUIDE_OPTIONS.index(item["guide"]), key=f"guide_{idx}")
+        item["slat"] = col1.selectbox("Slat Type", SLAT_OPTIONS, index=SLAT_OPTIONS.index(item["slat"]) if item["slat"] in SLAT_OPTIONS else 0, key=f"slat_{idx}")
+        item["perforation"] = col2.selectbox("Perforation", PERFORATION_OPTIONS, index=PERFORATION_OPTIONS.index(item["perforation"]) if item["perforation"] in PERFORATION_OPTIONS else 0, key=f"perf_{idx}")
+        item["guide"] = col3.selectbox("Guide Specification", GUIDE_OPTIONS, index=GUIDE_OPTIONS.index(item["guide"]) if item["guide"] in GUIDE_OPTIONS else 0, key=f"guide_{idx}")
 
         col4, col5 = st.columns(2)
-        item["actuator"] = col4.selectbox("Actuator", ACTUATOR_OPTIONS, index=ACTUATOR_OPTIONS.index(item["actuator"]), key=f"act_{idx}")
+        item["actuator"] = col4.selectbox("Actuator", ACTUATOR_OPTIONS, index=ACTUATOR_OPTIONS.index(item["actuator"]) if item["actuator"] in ACTUATOR_OPTIONS else 0, key=f"act_{idx}")
         
         c_w, c_h, c_q, c_r = st.columns(4)
-        item["width"] = c_w.number_input("Width (mm)", value=item["width"], step=100, key=f"w_{idx}")
-        item["height"] = c_h.number_input("Height (mm)", value=item["height"], step=100, key=f"h_{idx}")
-        item["qty"] = c_q.number_input("Qty", value=item["qty"], min_value=1, step=1, key=f"q_{idx}")
-        item["unit_rate"] = c_r.number_input("Unit Rate (INR)", value=item["unit_rate"], step=1000, key=f"r_{idx}")
+        item["width"] = c_w.number_input("Width (mm)", value=int(item["width"]), step=100, key=f"w_{idx}")
+        item["height"] = c_h.number_input("Height (mm)", value=int(item["height"]), step=100, key=f"h_{idx}")
+        item["qty"] = c_q.number_input("Qty", value=int(item["qty"]), min_value=1, step=1, key=f"q_{idx}")
+        item["unit_rate"] = c_r.number_input("Unit Rate (INR)", value=int(item["unit_rate"]), step=1000, key=f"r_{idx}")
 
 st.button("➕ Add Another Shutter", on_click=add_shutter)
 
