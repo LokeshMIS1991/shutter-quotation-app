@@ -11,13 +11,13 @@ import os
 st.set_page_config(page_title="Sidharth Shutters - Advanced Quotation Builder", layout="wide")
 
 st.title("🛡️ Sidharth Shutters & Automation Pvt. Ltd.")
-st.subheader("Automated Quotation Builder (With Dual Pricing & Custom Specs)")
+st.subheader("Automated Quotation Builder")
 
 # --- MASTER DATA FILE MANAGEMENT ---
 MASTER_FILE = "master_specs.json"
 
 DEFAULT_MASTERS = {
-    "shutter_types": ["Motorized Rolling Shutter", "Manual Rolling Shutter", "Fire Rated Rolling Shutter"],
+    "shutter_types": ["Motorized Rolling Shutter", "Gear Rolling Shutter", "Manual Rolling Shutter"],
     "slat_options": [
         "90mm (H) x 1.2 mm thick Galvalume Plain slats in natural finish",
         "90mm (H) x 1.0 mm thick Galvalume Curved slat in natural finish",
@@ -38,12 +38,19 @@ DEFAULT_MASTERS = {
     "safety_lock_options": [
         "Wind Locks | Storm Anchors | External Safety Break",
         "Side Locks-2 Nos",
-        "Standard Center Lock"
+        "Standard Center Lock with 2 Keys"
     ],
-    "actuator_options": [
+    "actuator_motorized": [
         "CE Certified indirect Drive - Brand Strong Life",
-        "Direct Drive Heavy Duty Actuator",
-        "Manual Gear / Chain Pulley Mechanism"
+        "CE Certified Direct Drive - Brand Strong Life",
+        "Direct Drive Heavy Duty Actuator"
+    ],
+    "actuator_gear": [
+        "Manual Heavy Duty Gear Box with Handle",
+        "Bevel Gear Mechanism with Crank Handle"
+    ],
+    "actuator_manual": [
+        "Manual Operation (Pull-Push Spring System)"
     ]
 }
 
@@ -55,10 +62,6 @@ def load_masters():
         except:
             return DEFAULT_MASTERS
     return DEFAULT_MASTERS
-
-def save_masters(data):
-    with open(MASTER_FILE, "w") as f:
-        json.dump(data, f, indent=4)
 
 master_data = load_masters()
 
@@ -79,17 +82,17 @@ st.sidebar.markdown("---")
 sales_person_1 = st.sidebar.text_input("Sales Person 1", "Mr. Nishant (90010 42914)")
 sales_person_2 = st.sidebar.text_input("Sales Person 2", "Mr. Jeevan Sharma (9828771899)")
 
-# --- SHUTTER ITEMS INGREDIENTS ---
+# --- SHUTTER ITEMS MANAGEMENT ---
 st.header("🧱 Shutter Specifications & Pricing")
 
 if "shutter_items" not in st.session_state:
     st.session_state["shutter_items"] = [{
-        "type": master_data["shutter_types"][0],
+        "type": "Motorized Rolling Shutter",
         "slat": master_data["slat_options"][0],
         "guide": master_data["guide_options"][0],
         "bottom_hood": master_data["bottom_hood_options"][0],
         "safety_lock": master_data["safety_lock_options"][0],
-        "actuator": master_data["actuator_options"][0],
+        "actuator": master_data["actuator_motorized"][0],
         "custom_note": "",
         "hsn": "73083000",
         "width": 4650,
@@ -101,12 +104,12 @@ if "shutter_items" not in st.session_state:
 
 def add_shutter():
     st.session_state["shutter_items"].append({
-        "type": master_data["shutter_types"][0],
+        "type": "Motorized Rolling Shutter",
         "slat": master_data["slat_options"][0],
         "guide": master_data["guide_options"][0],
         "bottom_hood": master_data["bottom_hood_options"][0],
         "safety_lock": master_data["safety_lock_options"][0],
-        "actuator": master_data["actuator_options"][0],
+        "actuator": master_data["actuator_motorized"][0],
         "custom_note": "",
         "hsn": "73083000",
         "width": 4000,
@@ -116,23 +119,47 @@ def add_shutter():
         "inst_rate": 6000
     })
 
+def remove_shutter(index):
+    if len(st.session_state["shutter_items"]) > 1:
+        st.session_state["shutter_items"].pop(index)
+
 for idx, item in enumerate(st.session_state["shutter_items"]):
-    with st.expander(f"Shutter #{idx + 1} ({item['type']})", expanded=True):
+    with st.expander(f"Shutter Item #{idx + 1}: {item['type']}", expanded=True):
+        
+        col_title, col_del = st.columns([5, 1])
+        with col_title:
+            item["type"] = st.selectbox(
+                f"Shutter Category #{idx + 1}", 
+                master_data["shutter_types"], 
+                index=master_data["shutter_types"].index(item["type"]) if item["type"] in master_data["shutter_types"] else 0,
+                key=f"type_{idx}"
+            )
+        with col_del:
+            st.markdown("<br>", unsafe_allow_html=True)
+            if len(st.session_state["shutter_items"]) > 1:
+                st.button("❌ Remove", key=f"del_{idx}", on_click=remove_shutter, args=(idx,))
+
+        # Actuator options change based on selected Shutter Category
+        if item["type"] == "Motorized Rolling Shutter":
+            act_options = master_data["actuator_motorized"]
+        elif item["type"] == "Gear Rolling Shutter":
+            act_options = master_data["actuator_gear"]
+        else:
+            act_options = master_data["actuator_manual"]
+
         c1, c2, c3 = st.columns(3)
-        item["type"] = c1.selectbox("Shutter Category", master_data["shutter_types"], index=0, key=f"type_{idx}")
-        item["hsn"] = c2.text_input("HSN Code", value=item["hsn"], key=f"hsn_{idx}")
-        item["slat"] = c3.selectbox("Slat Type", master_data["slat_options"], index=0, key=f"slat_{idx}")
+        item["hsn"] = c1.text_input("HSN Code", value=item["hsn"], key=f"hsn_{idx}")
+        item["slat"] = c2.selectbox("Slat Type", master_data["slat_options"], index=0, key=f"slat_{idx}")
+        item["guide"] = c3.selectbox("Guide Specification", master_data["guide_options"], index=0, key=f"guide_{idx}")
 
         c4, c5, c6 = st.columns(3)
-        item["guide"] = c4.selectbox("Guide Specification", master_data["guide_options"], index=0, key=f"guide_{idx}")
-        item["bottom_hood"] = c5.selectbox("Bottom Sheet / Hood Cover", master_data["bottom_hood_options"], index=0, key=f"hood_{idx}")
-        item["safety_lock"] = c6.selectbox("Locks & Safety Features", master_data["safety_lock_options"], index=0, key=f"lock_{idx}")
+        item["bottom_hood"] = c4.selectbox("Bottom Sheet / Hood Cover", master_data["bottom_hood_options"], index=0, key=f"hood_{idx}")
+        item["safety_lock"] = c5.selectbox("Locks & Safety Features", master_data["safety_lock_options"], index=0, key=f"lock_{idx}")
+        item["actuator"] = c6.selectbox("Actuator / Drive Mechanism", act_options, index=0, key=f"act_{idx}")
 
-        c7, c8 = st.columns(2)
-        item["actuator"] = c7.selectbox("Actuator / Drive", master_data["actuator_options"], index=0, key=f"act_{idx}")
-        item["custom_note"] = c8.text_input("➕ Custom Note / Free-Text Spec (Optional)", value=item["custom_note"], key=f"custom_{idx}")
+        item["custom_note"] = st.text_input("➕ Custom Specification / Additional Free-Text Note (Optional)", value=item["custom_note"], key=f"custom_{idx}")
 
-        st.markdown("**Sizes & Dual Rates (Material vs Installation):**")
+        st.markdown("**Sizes & Dual Rates (Material Supply vs Installation):**")
         cw, ch, cq, cmr, cir = st.columns(5)
         item["width"] = cw.number_input("Width (mm)", value=int(item["width"]), step=50, key=f"w_{idx}")
         item["height"] = ch.number_input("Height (mm)", value=int(item["height"]), step=50, key=f"h_{idx}")
@@ -148,7 +175,7 @@ col_p, col_f = st.columns(2)
 packing_charges = col_p.number_input("Packing & Loading Charges (INR)", value=5000)
 freight_charges = col_f.number_input("Freight Charges (INR)", value=15000)
 
-# --- PDF GENERATOR (EXACT IMAGE FORMAT MATCHING) ---
+# --- PDF GENERATOR ---
 def generate_pdf():
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=15, leftMargin=15, topMargin=15, bottomMargin=15)
@@ -209,7 +236,7 @@ def generate_pdf():
                f"- {itm['guide']}<br/>" \
                f"- {itm['bottom_hood']}<br/>" \
                f"- {itm['safety_lock']}<br/>" \
-               f"<b>Actuator / Drive:</b><br/>" \
+               f"<b>Drive / Mechanism:</b><br/>" \
                f"- {itm['actuator']}"
         
         if itm["custom_note"]:
