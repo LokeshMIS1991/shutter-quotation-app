@@ -8,12 +8,16 @@ import io
 import json
 import os
 
+# OpenPyXL styles for formatted Excel output
+import openpyxl
+from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
+
 st.set_page_config(page_title="Sidharth Shutters - Advanced Quotation Builder", layout="wide")
 
 st.title("🛡️ Sidharth Shutters & Automation Pvt. Ltd.")
 st.subheader("Automated Quotation Builder")
 
-# --- PERMANENT SPECIFICATIONS FILE MANAGEMENT (Change 1) ---
+# --- PERMANENT SPECIFICATIONS FILE MANAGEMENT ---
 SPEC_FILE = "specifications_master.json"
 
 DEFAULT_SPECS = {
@@ -29,7 +33,6 @@ def load_specifications():
         try:
             with open(SPEC_FILE, "r", encoding="utf-8") as f:
                 data = json.load(f)
-                # Ensure all required keys exist
                 for k, v in DEFAULT_SPECS.items():
                     if k not in data:
                         data[k] = v
@@ -49,7 +52,6 @@ def save_specifications():
     with open(SPEC_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
-# Initialize Session State Specs from file
 specs = load_specifications()
 for key, value in specs.items():
     if key not in st.session_state:
@@ -88,7 +90,6 @@ qtn_date = c_date.date_input("Quotation Date")
 qtn_ref_no = c_ref.text_input("Qtn Ref No", "SSAPL/2026-27/319R2")
 
 st.sidebar.markdown("---")
-# Change 2: Sales Reference
 sales_reference_1 = st.sidebar.text_input("Sales Reference 1", "Mr. Nishant (90010 42914)")
 sales_reference_2 = st.sidebar.text_input("Sales Reference 2", "Mr. Jeevan Sharma (9828771899)")
 
@@ -154,7 +155,6 @@ for idx, item in enumerate(st.session_state["shutter_items"]):
 
         item["hsn"] = st.text_input("HSN Code", value=item.get("hsn", "73083000"), key=f"hsn_{idx}")
 
-        # --- SLAT TYPES ---
         st.markdown("##### 📐 Slat Specifications")
         col_sn, col_sp = st.columns(2)
         
@@ -178,7 +178,6 @@ for idx, item in enumerate(st.session_state["shutter_items"]):
                     save_specifications()
                     st.rerun()
 
-        # --- GUIDE & BOTTOM & HOOD COVER ---
         st.markdown("##### 🛠️ Guide, Bottom Sheet & Hood Cover")
         cg, cb, ch_col = st.columns(3)
 
@@ -212,20 +211,18 @@ for idx, item in enumerate(st.session_state["shutter_items"]):
                     save_specifications()
                     st.rerun()
 
-        # --- LOCKS & SAFETY ---
         st.markdown("##### 🔒 Locks & Safety Features")
         item["safety_locks"] = st.multiselect(
-            "Select Locks & Safety Features (Tick / Multi-select)",
+            "Select Locks & Safety Features",
             SAFETY_LOCK_OPTIONS,
             default=item.get("safety_locks", []),
             key=f"lock_{idx}"
         )
 
-        # --- OPERATOR FOR ROLLING SHUTTER ---
         st.markdown("##### ⚙️ Operator For Rolling Shutter")
         if item["type"] == "Motorized Rolling Shutter":
             item["operator"] = st.multiselect(
-                "Operator For Rolling Shutter (Select Option)",
+                "Operator Option",
                 OPERATOR_OPTIONS,
                 default=item.get("operator", []),
                 key=f"op_{idx}"
@@ -235,7 +232,7 @@ for idx, item in enumerate(st.session_state["shutter_items"]):
             item["operator"] = []
 
         st.markdown("---")
-        st.markdown("**Sizes & Dual Rates (Material Supply vs Installation):**")
+        st.markdown("**Sizes & Dual Rates:**")
         cw, ch, cq, cmr, cir = st.columns(5)
         item["width"] = cw.number_input("Width (mm)", value=int(item.get("width", 4000)), step=50, key=f"w_{idx}")
         item["height"] = ch.number_input("Height (mm)", value=int(item.get("height", 5000)), step=50, key=f"h_{idx}")
@@ -245,7 +242,7 @@ for idx, item in enumerate(st.session_state["shutter_items"]):
 
 st.button("➕ Add Another Shutter Item", on_click=add_shutter)
 
-# --- CHARGES & TAXES (Change 3: Added New Charges) ---
+# --- CHARGES & TAXES ---
 st.header("🚚 Extra Charges")
 c1, c2, c3, c4, c5 = st.columns(5)
 packing_charges = c1.number_input("Packing & Loading (INR)", value=5000)
@@ -381,81 +378,200 @@ def generate_pdf():
     buffer.seek(0)
     return buffer
 
-# --- EXCEL GENERATOR (Change 4: Excel Download) ---
+# --- FORMATTED EXCEL GENERATOR (SAME AS PDF QUOTATION FORMAT) ---
 def generate_excel():
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        # Header Info Sheet
-        header_df = pd.DataFrame([
-            ["Company Name", client_name, "Qtn Date", str(qtn_date)],
-            ["Contact Details", contact_details, "Sales Reference 1", sales_reference_1],
-            ["Shipping Address", shipping_address, "Sales Reference 2", sales_reference_2],
-            ["Billing Address", billing_address, "Qtn Ref No", qtn_ref_no],
-            ["GSTIN", gstin, "", ""]
-        ], columns=["Field", "Value", "Field", "Value"])
-        header_df.to_excel(writer, sheet_name="Client Info", index=False)
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Quotation"
 
-        # Items Sheet
-        items_rows = []
-        mat_grand_total = 0
-        inst_grand_total = 0
+    # Styles Definition
+    font_company = Font(name="Calibri", size=14, bold=True, color="1A365D")
+    font_address = Font(name="Calibri", size=9, italic=True)
+    font_header_bold = Font(name="Calibri", size=10, bold=True)
+    font_regular = Font(name="Calibri", size=9)
+    font_bold = Font(name="Calibri", size=9, bold=True)
+    
+    fill_table_header = PatternFill(start_color="E2E8F0", end_color="E2E8F0", fill_type="solid")
+    fill_total_row = PatternFill(start_color="F1F5F9", end_color="F1F5F9", fill_type="solid")
 
-        for i, itm in enumerate(st.session_state["shutter_items"]):
-            m_amt = itm.get("qty", 1) * itm.get("mat_rate", 0)
-            i_amt = itm.get("qty", 1) * itm.get("inst_rate", 0)
-            mat_grand_total += m_amt
-            inst_grand_total += i_amt
+    thin_border = Border(
+        left=Side(style='thin', color='D3D3D3'),
+        right=Side(style='thin', color='D3D3D3'),
+        top=Side(style='thin', color='D3D3D3'),
+        bottom=Side(style='thin', color='D3D3D3')
+    )
+    
+    align_center = Alignment(horizontal="center", vertical="top", wrap_text=True)
+    align_left = Alignment(horizontal="left", vertical="top", wrap_text=True)
+    align_right = Alignment(horizontal="right", vertical="top", wrap_text=True)
 
-            specs_combined = ", ".join(
-                itm.get("slat_nat", []) + 
-                itm.get("slat_pow", []) + 
-                itm.get("guide", []) + 
-                itm.get("bottom", []) + 
-                itm.get("hood", []) + 
-                itm.get("safety_locks", []) + 
-                itm.get("operator", [])
-            )
+    # 1. Company Header
+    ws.merge_cells("A1:J1")
+    ws["A1"] = "SIDHARTH SHUTTER & AUTOMATION PRIVATE LIMITED"
+    ws["A1"].font = font_company
+    ws["A1"].alignment = Alignment(horizontal="center")
 
-            items_rows.append({
-                "Sr. No.": i + 1,
-                "Category": itm.get("type", ""),
-                "Specifications": specs_combined,
-                "HSN Code": itm.get("hsn", ""),
-                "Width (mm)": itm.get("width", 0),
-                "Height (mm)": itm.get("height", 0),
-                "Qty": itm.get("qty", 1),
-                "Material Rate (INR)": itm.get("mat_rate", 0),
-                "Material Amount (INR)": m_amt,
-                "Installation Rate (INR)": itm.get("inst_rate", 0),
-                "Installation Amount (INR)": i_amt
-            })
+    ws.merge_cells("A2:J2")
+    ws["A2"] = "G-1-66, Industrial Area, Prahaladpura, Sanganer, Jaipur, Rajasthan, 303903"
+    ws["A2"].font = font_address
+    ws["A2"].alignment = Alignment(horizontal="center")
 
-        items_df = pd.DataFrame(items_rows)
-        items_df.to_excel(writer, sheet_name="Quotation Items", index=False)
+    ws.row_dimensions[1].height = 25
+    ws.row_dimensions[2].height = 18
 
-        # Summary Sheet
-        subtotal_extras = packing_charges + freight_charges + unloading_charges + crane_charges + scaffolding_charges
-        subtotal_mat = mat_grand_total + subtotal_extras
-        gst_mat = round(subtotal_mat * 0.18)
-        gst_inst = round(inst_grand_total * 0.18)
+    # 2. Client & Qtn Details Block
+    client_info = [
+        [("Company Name:", font_header_bold), (client_name, font_regular), ("Qtn Date:", font_header_bold), (str(qtn_date), font_regular)],
+        [("Contact Details:", font_header_bold), (contact_details, font_regular), ("Sales Reference:", font_header_bold), (f"{sales_reference_1} / {sales_reference_2}", font_regular)],
+        [("Shipping Address:", font_header_bold), (shipping_address, font_regular), ("Qtn Ref No:", font_header_bold), (qtn_ref_no, font_header_bold)],
+        [("Billing Address:", font_header_bold), (billing_address, font_regular), ("", font_regular), ("", font_regular)],
+        [("Client GSTIN:", font_header_bold), (gstin, font_regular), ("", font_regular), ("", font_regular)]
+    ]
+
+    curr_row = 4
+    for row in client_info:
+        ws.cell(row=curr_row, column=1, value=row[0][0]).font = row[0][1]
         
-        summary_df = pd.DataFrame([
-            ["Material Total", mat_grand_total],
-            ["Packing & Loading Charges", packing_charges],
-            ["Freight Charges", freight_charges],
-            ["Unloading Charges", unloading_charges],
-            ["Crane Charges", crane_charges],
-            ["Scaffolding Charges", scaffolding_charges],
-            ["Subtotal Material (Excl. GST)", subtotal_mat],
-            ["Installation Total (Excl. GST)", inst_grand_total],
-            ["18% GST on Material", gst_mat],
-            ["18% GST on Installation", gst_inst],
-            ["Total Material with GST", subtotal_mat + gst_mat],
-            ["Total Installation with GST", inst_grand_total + gst_inst],
-            ["GRAND TOTAL WITH GST", subtotal_mat + gst_mat + inst_grand_total + gst_inst]
-        ], columns=["Description", "Amount (INR)"])
-        summary_df.to_excel(writer, sheet_name="Cost Summary", index=False)
+        ws.merge_cells(start_row=curr_row, start_column=2, end_row=curr_row, end_column=5)
+        ws.cell(row=curr_row, column=2, value=row[1][0]).font = row[1][1]
+        ws.cell(row=curr_row, column=2).alignment = align_left
 
+        ws.cell(row=curr_row, column=6, value=row[2][0]).font = row[2][1]
+        
+        ws.merge_cells(start_row=curr_row, start_column=7, end_row=curr_row, end_column=10)
+        ws.cell(row=curr_row, column=7, value=row[3][0]).font = row[3][1]
+        ws.cell(row=curr_row, column=7).alignment = align_left
+        
+        # Borders for Header Block
+        for c in range(1, 11):
+            ws.cell(row=curr_row, column=c).border = thin_border
+        
+        curr_row += 1
+
+    curr_row += 1 # Empty row spacing
+
+    # 3. Main Items Table Headers
+    headers = ["Sr. No.", "Description", "HSN Code", "Width (mm)", "Height (mm)", "Qty", "Mat. Rate (INR)", "Mat. Amount (INR)", "Inst. Rate (INR)", "Inst. Amount (INR)"]
+    for col_num, h_text in enumerate(headers, 1):
+        cell = ws.cell(row=curr_row, column=col_num, value=h_text)
+        cell.font = font_header_bold
+        cell.fill = fill_table_header
+        cell.alignment = align_center
+        cell.border = thin_border
+    
+    ws.row_dimensions[curr_row].height = 25
+    curr_row += 1
+
+    # 4. Populating Items Data
+    mat_grand_total = 0
+    inst_grand_total = 0
+    total_qty = 0
+
+    for i, itm in enumerate(st.session_state["shutter_items"]):
+        m_amt = itm.get("qty", 1) * itm.get("mat_rate", 0)
+        i_amt = itm.get("qty", 1) * itm.get("inst_rate", 0)
+        mat_grand_total += m_amt
+        inst_grand_total += i_amt
+        total_qty += itm.get("qty", 1)
+
+        desc_lines = [itm.get('type', 'Motorized Rolling Shutter')]
+        for s in itm.get("slat_nat", []): desc_lines.append(f"• {s}")
+        for s in itm.get("slat_pow", []): desc_lines.append(f"• {s}")
+        for g in itm.get("guide", []): desc_lines.append(f"• {g}")
+        for b in itm.get("bottom", []): desc_lines.append(f"• {b}")
+        for h in itm.get("hood", []): desc_lines.append(f"• {h}")
+        for l in itm.get("safety_locks", []): desc_lines.append(f"• {l}")
+        
+        if itm.get("type") == "Motorized Rolling Shutter" and itm.get("operator"):
+            desc_lines.append("Operator For Rolling Shutter:")
+            for op in itm.get("operator", []):
+                desc_lines.append(f"• {op}")
+
+        desc_str = "\n".join(desc_lines)
+
+        row_data = [
+            i + 1,
+            desc_str,
+            itm.get("hsn", "-"),
+            itm.get("width", "-"),
+            itm.get("height", "-"),
+            itm.get("qty", "-"),
+            itm.get("mat_rate", 0),
+            m_amt,
+            itm.get("inst_rate", 0),
+            i_amt
+        ]
+
+        for col_num, val in enumerate(row_data, 1):
+            cell = ws.cell(row=curr_row, column=col_num, value=val)
+            cell.font = font_regular
+            cell.border = thin_border
+            
+            if col_num in [1, 3, 4, 5, 6]:
+                cell.alignment = align_center
+            elif col_num in [7, 8, 9, 10]:
+                cell.alignment = align_right
+                cell.number_format = '#,##0'
+            else:
+                cell.alignment = align_left
+
+        curr_row += 1
+
+    # 5. Totals & Extra Charges Block
+    subtotal_extras = packing_charges + freight_charges + unloading_charges + crane_charges + scaffolding_charges
+    subtotal_mat = mat_grand_total + subtotal_extras
+    gst_mat = round(subtotal_mat * 0.18)
+    gst_inst = round(inst_grand_total * 0.18)
+    
+    total_mat_with_gst = subtotal_mat + gst_mat
+    total_inst_with_gst = inst_grand_total + gst_inst
+    final_grand_total = total_mat_with_gst + total_inst_with_gst
+
+    def add_summary_row(label, mat_val, inst_val, is_bold=False, is_fill=False):
+        nonlocal curr_row
+        ws.cell(row=curr_row, column=2, value=label).font = font_bold if is_bold else font_regular
+        ws.cell(row=curr_row, column=2).alignment = align_left
+        
+        if label == "Item Total":
+            ws.cell(row=curr_row, column=6, value=total_qty).font = font_bold
+            ws.cell(row=curr_row, column=6).alignment = align_center
+
+        cell_mat = ws.cell(row=curr_row, column=8, value=mat_val if isinstance(mat_val, (int, float)) else mat_val)
+        cell_mat.font = font_bold if is_bold else font_regular
+        cell_mat.alignment = align_right
+        if isinstance(mat_val, (int, float)): cell_mat.number_format = '#,##0'
+
+        cell_inst = ws.cell(row=curr_row, column=10, value=inst_val if isinstance(inst_val, (int, float)) else inst_val)
+        cell_inst.font = font_bold if is_bold else font_regular
+        cell_inst.alignment = align_right
+        if isinstance(inst_val, (int, float)): cell_inst.number_format = '#,##0'
+
+        for c in range(1, 11):
+            cell = ws.cell(row=curr_row, column=c)
+            cell.border = thin_border
+            if is_fill:
+                cell.fill = fill_total_row
+        curr_row += 1
+
+    add_summary_row("Item Total", mat_grand_total, inst_grand_total, is_bold=True)
+    add_summary_row("Packing Charges", packing_charges, "-")
+    add_summary_row("Freight Charges", freight_charges, "-")
+    if unloading_charges > 0: add_summary_row("Unloading Charges", unloading_charges, "-")
+    if crane_charges > 0: add_summary_row("Crane Charges", crane_charges, "-")
+    if scaffolding_charges > 0: add_summary_row("Scaffolding Charges", scaffolding_charges, "-")
+
+    add_summary_row("Supply & Installation Amount Excluding GST", subtotal_mat, inst_grand_total, is_bold=True, is_fill=True)
+    add_summary_row("GST on supply & installation @18%", gst_mat, gst_inst)
+    add_summary_row("Total supply & installation with GST", total_mat_with_gst, total_inst_with_gst, is_bold=True, is_fill=True)
+    add_summary_row("Grand total with GST", "", final_grand_total, is_bold=True, is_fill=True)
+
+    # Set Column Widths for clean viewing
+    col_widths = {1: 8, 2: 45, 3: 12, 4: 12, 5: 12, 6: 8, 7: 15, 8: 18, 9: 15, 10: 18}
+    for col_idx, width in col_widths.items():
+        ws.column_dimensions[openpyxl.utils.get_column_letter(col_idx)].width = width
+
+    output = io.BytesIO()
+    wb.save(output)
     output.seek(0)
     return output
 
