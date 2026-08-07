@@ -11,7 +11,7 @@ st.set_page_config(page_title="Sidharth Shutters - Advanced Quotation Builder", 
 st.title("🛡️ Sidharth Shutters & Automation Pvt. Ltd.")
 st.subheader("Automated Quotation Builder")
 
-# --- MASTER DROPDOWN LISTS (SESSION STATE FOR DYNAMIC ADDITION) ---
+# --- MASTER DROPDOWN LISTS ---
 if "slat_nat_list" not in st.session_state:
     st.session_state["slat_nat_list"] = ["90mm (H) x 1.2 mm thick Galvalume Plain slats in natural finish"]
 if "slat_pow_list" not in st.session_state:
@@ -103,14 +103,15 @@ def remove_shutter(index):
         st.session_state["shutter_items"].pop(index)
 
 for idx, item in enumerate(st.session_state["shutter_items"]):
-    with st.expander(f"Shutter Item #{idx + 1}: {item['type']}", expanded=True):
+    with st.expander(f"Shutter Item #{idx + 1}: {item.get('type', 'Motorized Rolling Shutter')}", expanded=True):
         
         col_title, col_del = st.columns([5, 1])
         with col_title:
+            current_type = item.get("type", "Motorized Rolling Shutter")
             item["type"] = st.selectbox(
                 f"Shutter Category #{idx + 1}", 
                 SHUTTER_CATEGORIES, 
-                index=SHUTTER_CATEGORIES.index(item["type"]) if item["type"] in SHUTTER_CATEGORIES else 0,
+                index=SHUTTER_CATEGORIES.index(current_type) if current_type in SHUTTER_CATEGORIES else 0,
                 key=f"type_{idx}"
             )
         with col_del:
@@ -118,21 +119,21 @@ for idx, item in enumerate(st.session_state["shutter_items"]):
             if len(st.session_state["shutter_items"]) > 1:
                 st.button("❌ Remove", key=f"del_{idx}", on_click=remove_shutter, args=(idx,))
 
-        item["hsn"] = st.text_input("HSN Code", value=item["hsn"], key=f"hsn_{idx}")
+        item["hsn"] = st.text_input("HSN Code", value=item.get("hsn", "73083000"), key=f"hsn_{idx}")
 
         # --- SLAT TYPES ---
         st.markdown("##### 📐 Slat Specifications")
         col_sn, col_sp = st.columns(2)
         
         with col_sn:
-            item["slat_nat"] = st.multiselect("Slat Type - Natural Finish", st.session_state["slat_nat_list"], default=item["slat_nat"], key=f"sn_{idx}")
+            item["slat_nat"] = st.multiselect("Slat Type - Natural Finish", st.session_state["slat_nat_list"], default=item.get("slat_nat", []), key=f"sn_{idx}")
             new_sn = st.text_input("➕ Add new 'Natural Finish Slat' option", key=f"add_sn_{idx}")
             if new_sn and new_sn not in st.session_state["slat_nat_list"]:
                 st.session_state["slat_nat_list"].append(new_sn)
                 st.rerun()
 
         with col_sp:
-            item["slat_pow"] = st.multiselect("Slat Type - Powder Coating", st.session_state["slat_pow_list"], default=item["slat_pow"], key=f"sp_{idx}")
+            item["slat_pow"] = st.multiselect("Slat Type - Powder Coating", st.session_state["slat_pow_list"], default=item.get("slat_pow", []), key=f"sp_{idx}")
             new_sp = st.text_input("➕ Add new 'Powder Coating Slat' option", key=f"add_sp_{idx}")
             if new_sp and new_sp not in st.session_state["slat_pow_list"]:
                 st.session_state["slat_pow_list"].append(new_sp)
@@ -143,21 +144,21 @@ for idx, item in enumerate(st.session_state["shutter_items"]):
         cg, cb, ch_col = st.columns(3)
 
         with cg:
-            item["guide"] = st.multiselect("Guide Specification", st.session_state["guide_list"], default=item["guide"], key=f"gd_{idx}")
+            item["guide"] = st.multiselect("Guide Specification", st.session_state["guide_list"], default=item.get("guide", []), key=f"gd_{idx}")
             new_gd = st.text_input("➕ Add new Guide option", key=f"add_gd_{idx}")
             if new_gd and new_gd not in st.session_state["guide_list"]:
                 st.session_state["guide_list"].append(new_gd)
                 st.rerun()
 
         with cb:
-            item["bottom"] = st.multiselect("Bottom Sheet Specification", st.session_state["bottom_list"], default=item["bottom"], key=f"bt_{idx}")
+            item["bottom"] = st.multiselect("Bottom Sheet Specification", st.session_state["bottom_list"], default=item.get("bottom", []), key=f"bt_{idx}")
             new_bt = st.text_input("➕ Add new Bottom Sheet option", key=f"add_bt_{idx}")
             if new_bt and new_bt not in st.session_state["bottom_list"]:
                 st.session_state["bottom_list"].append(new_bt)
                 st.rerun()
 
         with ch_col:
-            item["hood"] = st.multiselect("Hood Cover Specification", st.session_state["hood_list"], default=item["hood"], key=f"hd_{idx}")
+            item["hood"] = st.multiselect("Hood Cover Specification", st.session_state["hood_list"], default=item.get("hood", []), key=f"hd_{idx}")
             new_hd = st.text_input("➕ Add new Hood Cover option", key=f"add_hd_{idx}")
             if new_hd and new_hd not in st.session_state["hood_list"]:
                 st.session_state["hood_list"].append(new_hd)
@@ -168,17 +169,17 @@ for idx, item in enumerate(st.session_state["shutter_items"]):
         item["safety_locks"] = st.multiselect(
             "Select Locks & Safety Features (Tick / Multi-select)",
             SAFETY_LOCK_OPTIONS,
-            default=item["safety_locks"],
+            default=item.get("safety_locks", []),
             key=f"lock_{idx}"
         )
 
-        # --- OPERATOR FOR ROLLING SHUTTER (ONLY FOR MOTORIZED) ---
+        # --- OPERATOR FOR ROLLING SHUTTER ---
         st.markdown("##### ⚙️ Operator For Rolling Shutter")
         if item["type"] == "Motorized Rolling Shutter":
             item["operator"] = st.multiselect(
                 "Operator For Rolling Shutter (Select Option)",
                 OPERATOR_OPTIONS,
-                default=item["operator"],
+                default=item.get("operator", []),
                 key=f"op_{idx}"
             )
         else:
@@ -188,11 +189,11 @@ for idx, item in enumerate(st.session_state["shutter_items"]):
         st.markdown("---")
         st.markdown("**Sizes & Dual Rates (Material Supply vs Installation):**")
         cw, ch, cq, cmr, cir = st.columns(5)
-        item["width"] = cw.number_input("Width (mm)", value=int(item["width"]), step=50, key=f"w_{idx}")
-        item["height"] = ch.number_input("Height (mm)", value=int(item["height"]), step=50, key=f"h_{idx}")
-        item["qty"] = cq.number_input("Qty", value=int(item["qty"]), min_value=1, step=1, key=f"q_{idx}")
-        item["mat_rate"] = cmr.number_input("Material Unit Rate", value=int(item["mat_rate"]), step=500, key=f"mr_{idx}")
-        item["inst_rate"] = cir.number_input("Installation Unit Rate", value=int(item["inst_rate"]), step=100, key=f"ir_{idx}")
+        item["width"] = cw.number_input("Width (mm)", value=int(item.get("width", 4000)), step=50, key=f"w_{idx}")
+        item["height"] = ch.number_input("Height (mm)", value=int(item.get("height", 5000)), step=50, key=f"h_{idx}")
+        item["qty"] = cq.number_input("Qty", value=int(item.get("qty", 1)), min_value=1, step=1, key=f"q_{idx}")
+        item["mat_rate"] = cmr.number_input("Material Unit Rate", value=int(item.get("mat_rate", 50000)), step=500, key=f"mr_{idx}")
+        item["inst_rate"] = cir.number_input("Installation Unit Rate", value=int(item.get("inst_rate", 5000)), step=100, key=f"ir_{idx}")
 
 st.button("➕ Add Another Shutter Item", on_click=add_shutter)
 
@@ -233,7 +234,6 @@ def generate_pdf():
     story.append(t_header)
     story.append(Spacer(1, 8))
 
-    # Dual Rate Table Header
     items_data = [[
         Paragraph("<b>Sr. No.</b>", small_bold),
         Paragraph("<b>Description</b>", small_bold),
@@ -252,30 +252,30 @@ def generate_pdf():
     total_qty = 0
 
     for i, itm in enumerate(st.session_state["shutter_items"]):
-        m_amt = itm["qty"] * itm["mat_rate"]
-        i_amt = itm["qty"] * itm["inst_rate"]
+        m_amt = itm.get("qty", 1) * itm.get("mat_rate", 0)
+        i_amt = itm.get("qty", 1) * itm.get("inst_rate", 0)
         mat_grand_total += m_amt
         inst_grand_total += i_amt
-        total_qty += itm["qty"]
+        total_qty += itm.get("qty", 1)
 
-        desc_lines = [f"<b>{itm['type']}</b>"]
+        desc_lines = [f"<b>{itm.get('type', 'Motorized Rolling Shutter')}</b>"]
         
-        for s in itm["slat_nat"]:
+        for s in itm.get("slat_nat", []):
             desc_lines.append(f"- {s}")
-        for s in itm["slat_pow"]:
+        for s in itm.get("slat_pow", []):
             desc_lines.append(f"- {s}")
-        for g in itm["guide"]:
+        for g in itm.get("guide", []):
             desc_lines.append(f"- {g}")
-        for b in itm["bottom"]:
+        for b in itm.get("bottom", []):
             desc_lines.append(f"- {b}")
-        for h in itm["hood"]:
+        for h in itm.get("hood", []):
             desc_lines.append(f"- {h}")
-        for l in itm["safety_locks"]:
+        for l in itm.get("safety_locks", []):
             desc_lines.append(f"- {l}")
             
-        if itm["type"] == "Motorized Rolling Shutter" and itm["operator"]:
+        if itm.get("type") == "Motorized Rolling Shutter" and itm.get("operator"):
             desc_lines.append("<b>Operator For Rolling Shutter:</b>")
-            for op in itm["operator"]:
+            for op in itm.get("operator", []):
                 desc_lines.append(f"- {op}")
 
         desc = "<br/>".join(desc_lines)
@@ -283,13 +283,13 @@ def generate_pdf():
         items_data.append([
             Paragraph(str(i+1), small_text),
             Paragraph(desc, small_text),
-            Paragraph(itm["hsn"], small_text),
-            Paragraph(str(itm["width"]), small_text),
-            Paragraph(str(itm["height"]), small_text),
-            Paragraph(str(itm["qty"]), small_text),
-            Paragraph(f"{itm['mat_rate']:,}", small_text),
+            Paragraph(itm.get("hsn", "-"), small_text),
+            Paragraph(str(itm.get("width", "-")), small_text),
+            Paragraph(str(itm.get("height", "-")), small_text),
+            Paragraph(str(itm.get("qty", "-")), small_text),
+            Paragraph(f"{itm.get('mat_rate', 0):,}", small_text),
             Paragraph(f"{m_amt:,}", small_text),
-            Paragraph(f"{itm['inst_rate']:,}", small_text),
+            Paragraph(f"{itm.get('inst_rate', 0):,}", small_text),
             Paragraph(f"{i_amt:,}", small_text)
         ])
 
