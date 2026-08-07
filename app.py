@@ -5,65 +5,42 @@ from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import io
-import json
-import os
 
 st.set_page_config(page_title="Sidharth Shutters - Advanced Quotation Builder", layout="wide")
 
 st.title("🛡️ Sidharth Shutters & Automation Pvt. Ltd.")
 st.subheader("Automated Quotation Builder")
 
-# --- MASTER DATA FILE MANAGEMENT ---
-MASTER_FILE = "master_specs.json"
+# --- MASTER DROPDOWN LISTS (SESSION STATE FOR DYNAMIC ADDITION) ---
+if "slat_nat_list" not in st.session_state:
+    st.session_state["slat_nat_list"] = ["90mm (H) x 1.2 mm thick Galvalume Plain slats in natural finish"]
+if "slat_pow_list" not in st.session_state:
+    st.session_state["slat_pow_list"] = ["90mm (H) x 1.2 mm thick Galvalume Powder Coated slats"]
+if "guide_list" not in st.session_state:
+    st.session_state["guide_list"] = ["TG Guide with rubber seal with grey epoxy"]
+if "bottom_list" not in st.session_state:
+    st.session_state["bottom_list"] = ["Super bottom with rubber seal with grey epoxy"]
+if "hood_list" not in st.session_state:
+    st.session_state["hood_list"] = [".80mm thick Galvalume Hood & Motor cover in natural finish"]
 
-DEFAULT_MASTERS = {
-    "shutter_types": ["Motorized Rolling Shutter", "Gear Rolling Shutter", "Manual Rolling Shutter"],
-    "slat_options": [
-        "90mm (H) x 1.2 mm thick Galvalume Plain slats in natural finish",
-        "90mm (H) x 1.0 mm thick Galvalume Curved slat in natural finish",
-        "Perforation- 7 Strip(Square)",
-        "Perforation- 4 Strip(Square)",
-        "78 mm (H) x 0.8 mm thick GI Slat in natural finish"
-    ],
-    "guide_options": [
-        "TG Guide with rubber seal with grey epoxy",
-        "150x150x2mmTG Guide with rubber seal with grey epoxy",
-        "2mmTG Guide with rubber seal with grey epoxy"
-    ],
-    "bottom_hood_options": [
-        "Super bottom with rubber seal with grey epoxy",
-        ".80mm thick Galvalume Hood & Motor cover in natural finish",
-        ".80mm thick Galvalume Hood cover in natural finish"
-    ],
-    "safety_lock_options": [
-        "Wind Locks | Storm Anchors | External Safety Break",
-        "Side Locks-2 Nos",
-        "Standard Center Lock with 2 Keys"
-    ],
-    "actuator_motorized": [
-        "CE Certified indirect Drive - Brand Strong Life",
-        "CE Certified Direct Drive - Brand Strong Life",
-        "Direct Drive Heavy Duty Actuator"
-    ],
-    "actuator_gear": [
-        "Manual Heavy Duty Gear Box with Handle",
-        "Bevel Gear Mechanism with Crank Handle"
-    ],
-    "actuator_manual": [
-        "Manual Operation (Pull-Push Spring System)"
-    ]
-}
+SAFETY_LOCK_OPTIONS = [
+    "Wind Locks",
+    "Storm Anchors",
+    "External Safety Break",
+    "Side Locks-2 Nos",
+    "Standard Center Lock with 2 Keys"
+]
 
-def load_masters():
-    if os.path.exists(MASTER_FILE):
-        try:
-            with open(MASTER_FILE, "r") as f:
-                return json.load(f)
-        except:
-            return DEFAULT_MASTERS
-    return DEFAULT_MASTERS
+OPERATOR_OPTIONS = [
+    "CE Certified Indirect Drive Brand Strong Life Sidharth Make",
+    "Three Station Push Button"
+]
 
-master_data = load_masters()
+SHUTTER_CATEGORIES = [
+    "Motorized Rolling Shutter",
+    "Gear Rolling Shutter",
+    "Manual Rolling Shutter"
+]
 
 # --- CLIENT & HEADER DETAILS ---
 st.sidebar.header("📋 Client & Proposal Details")
@@ -88,12 +65,13 @@ st.header("🧱 Shutter Specifications & Pricing")
 if "shutter_items" not in st.session_state:
     st.session_state["shutter_items"] = [{
         "type": "Motorized Rolling Shutter",
-        "slat": master_data["slat_options"][0],
-        "guide": master_data["guide_options"][0],
-        "bottom_hood": master_data["bottom_hood_options"][0],
-        "safety_lock": master_data["safety_lock_options"][0],
-        "actuator": master_data["actuator_motorized"][0],
-        "custom_note": "",
+        "slat_nat": [],
+        "slat_pow": [],
+        "guide": [],
+        "bottom": [],
+        "hood": [],
+        "safety_locks": ["Wind Locks", "Storm Anchors", "External Safety Break"],
+        "operator": ["CE Certified Indirect Drive Brand Strong Life Sidharth Make"],
         "hsn": "73083000",
         "width": 4650,
         "height": 7000,
@@ -105,12 +83,13 @@ if "shutter_items" not in st.session_state:
 def add_shutter():
     st.session_state["shutter_items"].append({
         "type": "Motorized Rolling Shutter",
-        "slat": master_data["slat_options"][0],
-        "guide": master_data["guide_options"][0],
-        "bottom_hood": master_data["bottom_hood_options"][0],
-        "safety_lock": master_data["safety_lock_options"][0],
-        "actuator": master_data["actuator_motorized"][0],
-        "custom_note": "",
+        "slat_nat": [],
+        "slat_pow": [],
+        "guide": [],
+        "bottom": [],
+        "hood": [],
+        "safety_locks": [],
+        "operator": [],
         "hsn": "73083000",
         "width": 4000,
         "height": 5000,
@@ -130,8 +109,8 @@ for idx, item in enumerate(st.session_state["shutter_items"]):
         with col_title:
             item["type"] = st.selectbox(
                 f"Shutter Category #{idx + 1}", 
-                master_data["shutter_types"], 
-                index=master_data["shutter_types"].index(item["type"]) if item["type"] in master_data["shutter_types"] else 0,
+                SHUTTER_CATEGORIES, 
+                index=SHUTTER_CATEGORIES.index(item["type"]) if item["type"] in SHUTTER_CATEGORIES else 0,
                 key=f"type_{idx}"
             )
         with col_del:
@@ -139,26 +118,74 @@ for idx, item in enumerate(st.session_state["shutter_items"]):
             if len(st.session_state["shutter_items"]) > 1:
                 st.button("❌ Remove", key=f"del_{idx}", on_click=remove_shutter, args=(idx,))
 
-        # Actuator options change based on selected Shutter Category
+        item["hsn"] = st.text_input("HSN Code", value=item["hsn"], key=f"hsn_{idx}")
+
+        # --- SLAT TYPES ---
+        st.markdown("##### 📐 Slat Specifications")
+        col_sn, col_sp = st.columns(2)
+        
+        with col_sn:
+            item["slat_nat"] = st.multiselect("Slat Type - Natural Finish", st.session_state["slat_nat_list"], default=item["slat_nat"], key=f"sn_{idx}")
+            new_sn = st.text_input("➕ Add new 'Natural Finish Slat' option", key=f"add_sn_{idx}")
+            if new_sn and new_sn not in st.session_state["slat_nat_list"]:
+                st.session_state["slat_nat_list"].append(new_sn)
+                st.rerun()
+
+        with col_sp:
+            item["slat_pow"] = st.multiselect("Slat Type - Powder Coating", st.session_state["slat_pow_list"], default=item["slat_pow"], key=f"sp_{idx}")
+            new_sp = st.text_input("➕ Add new 'Powder Coating Slat' option", key=f"add_sp_{idx}")
+            if new_sp and new_sp not in st.session_state["slat_pow_list"]:
+                st.session_state["slat_pow_list"].append(new_sp)
+                st.rerun()
+
+        # --- GUIDE & BOTTOM & HOOD COVER ---
+        st.markdown("##### 🛠️ Guide, Bottom Sheet & Hood Cover")
+        cg, cb, ch_col = st.columns(3)
+
+        with cg:
+            item["guide"] = st.multiselect("Guide Specification", st.session_state["guide_list"], default=item["guide"], key=f"gd_{idx}")
+            new_gd = st.text_input("➕ Add new Guide option", key=f"add_gd_{idx}")
+            if new_gd and new_gd not in st.session_state["guide_list"]:
+                st.session_state["guide_list"].append(new_gd)
+                st.rerun()
+
+        with cb:
+            item["bottom"] = st.multiselect("Bottom Sheet Specification", st.session_state["bottom_list"], default=item["bottom"], key=f"bt_{idx}")
+            new_bt = st.text_input("➕ Add new Bottom Sheet option", key=f"add_bt_{idx}")
+            if new_bt and new_bt not in st.session_state["bottom_list"]:
+                st.session_state["bottom_list"].append(new_bt)
+                st.rerun()
+
+        with ch_col:
+            item["hood"] = st.multiselect("Hood Cover Specification", st.session_state["hood_list"], default=item["hood"], key=f"hd_{idx}")
+            new_hd = st.text_input("➕ Add new Hood Cover option", key=f"add_hd_{idx}")
+            if new_hd and new_hd not in st.session_state["hood_list"]:
+                st.session_state["hood_list"].append(new_hd)
+                st.rerun()
+
+        # --- LOCKS & SAFETY ---
+        st.markdown("##### 🔒 Locks & Safety Features")
+        item["safety_locks"] = st.multiselect(
+            "Select Locks & Safety Features (Tick / Multi-select)",
+            SAFETY_LOCK_OPTIONS,
+            default=item["safety_locks"],
+            key=f"lock_{idx}"
+        )
+
+        # --- OPERATOR FOR ROLLING SHUTTER (ONLY FOR MOTORIZED) ---
+        st.markdown("##### ⚙️ Operator For Rolling Shutter")
         if item["type"] == "Motorized Rolling Shutter":
-            act_options = master_data["actuator_motorized"]
-        elif item["type"] == "Gear Rolling Shutter":
-            act_options = master_data["actuator_gear"]
+            item["operator"] = st.multiselect(
+                "Operator For Rolling Shutter (Select Option)",
+                OPERATOR_OPTIONS,
+                default=item["operator"],
+                key=f"op_{idx}"
+            )
         else:
-            act_options = master_data["actuator_manual"]
+            st.info("🔒 Operator selection is disabled for Gear and Manual Shutters.")
+            item["operator"] = []
 
-        c1, c2, c3 = st.columns(3)
-        item["hsn"] = c1.text_input("HSN Code", value=item["hsn"], key=f"hsn_{idx}")
-        item["slat"] = c2.selectbox("Slat Type", master_data["slat_options"], index=0, key=f"slat_{idx}")
-        item["guide"] = c3.selectbox("Guide Specification", master_data["guide_options"], index=0, key=f"guide_{idx}")
-
-        c4, c5, c6 = st.columns(3)
-        item["bottom_hood"] = c4.selectbox("Bottom Sheet / Hood Cover", master_data["bottom_hood_options"], index=0, key=f"hood_{idx}")
-        item["safety_lock"] = c5.selectbox("Locks & Safety Features", master_data["safety_lock_options"], index=0, key=f"lock_{idx}")
-        item["actuator"] = c6.selectbox("Actuator / Drive Mechanism", act_options, index=0, key=f"act_{idx}")
-
-        item["custom_note"] = st.text_input("➕ Custom Specification / Additional Free-Text Note (Optional)", value=item["custom_note"], key=f"custom_{idx}")
-
+        st.markdown("---")
         st.markdown("**Sizes & Dual Rates (Material Supply vs Installation):**")
         cw, ch, cq, cmr, cir = st.columns(5)
         item["width"] = cw.number_input("Width (mm)", value=int(item["width"]), step=50, key=f"w_{idx}")
@@ -231,16 +258,27 @@ def generate_pdf():
         inst_grand_total += i_amt
         total_qty += itm["qty"]
 
-        desc = f"<b>{itm['type']}</b><br/>" \
-               f"- {itm['slat']}<br/>" \
-               f"- {itm['guide']}<br/>" \
-               f"- {itm['bottom_hood']}<br/>" \
-               f"- {itm['safety_lock']}<br/>" \
-               f"<b>Drive / Mechanism:</b><br/>" \
-               f"- {itm['actuator']}"
+        desc_lines = [f"<b>{itm['type']}</b>"]
         
-        if itm["custom_note"]:
-            desc += f"<br/>- {itm['custom_note']}"
+        for s in itm["slat_nat"]:
+            desc_lines.append(f"- {s}")
+        for s in itm["slat_pow"]:
+            desc_lines.append(f"- {s}")
+        for g in itm["guide"]:
+            desc_lines.append(f"- {g}")
+        for b in itm["bottom"]:
+            desc_lines.append(f"- {b}")
+        for h in itm["hood"]:
+            desc_lines.append(f"- {h}")
+        for l in itm["safety_locks"]:
+            desc_lines.append(f"- {l}")
+            
+        if itm["type"] == "Motorized Rolling Shutter" and itm["operator"]:
+            desc_lines.append("<b>Operator For Rolling Shutter:</b>")
+            for op in itm["operator"]:
+                desc_lines.append(f"- {op}")
+
+        desc = "<br/>".join(desc_lines)
 
         items_data.append([
             Paragraph(str(i+1), small_text),
