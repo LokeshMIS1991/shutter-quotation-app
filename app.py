@@ -5,23 +5,55 @@ from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import io
+import json
+import os
 
 st.set_page_config(page_title="Sidharth Shutters - Advanced Quotation Builder", layout="wide")
 
 st.title("🛡️ Sidharth Shutters & Automation Pvt. Ltd.")
 st.subheader("Automated Quotation Builder")
 
-# --- MASTER DROPDOWN LISTS ---
-if "slat_nat_list" not in st.session_state:
-    st.session_state["slat_nat_list"] = ["90mm (H) x 1.2 mm thick Galvalume Plain slats in natural finish"]
-if "slat_pow_list" not in st.session_state:
-    st.session_state["slat_pow_list"] = ["90mm (H) x 1.2 mm thick Galvalume Powder Coated slats"]
-if "guide_list" not in st.session_state:
-    st.session_state["guide_list"] = ["TG Guide with rubber seal with grey epoxy"]
-if "bottom_list" not in st.session_state:
-    st.session_state["bottom_list"] = ["Super bottom with rubber seal with grey epoxy"]
-if "hood_list" not in st.session_state:
-    st.session_state["hood_list"] = [".80mm thick Galvalume Hood & Motor cover in natural finish"]
+# --- PERMANENT SPECIFICATIONS FILE MANAGEMENT (Change 1) ---
+SPEC_FILE = "specifications_master.json"
+
+DEFAULT_SPECS = {
+    "slat_nat_list": ["90mm (H) x 1.2 mm thick Galvalume Plain slats in natural finish"],
+    "slat_pow_list": ["90mm (H) x 1.2 mm thick Galvalume Powder Coated slats"],
+    "guide_list": ["TG Guide with rubber seal with grey epoxy"],
+    "bottom_list": ["Super bottom with rubber seal with grey epoxy"],
+    "hood_list": [".80mm thick Galvalume Hood & Motor cover in natural finish"]
+}
+
+def load_specifications():
+    if os.path.exists(SPEC_FILE):
+        try:
+            with open(SPEC_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                # Ensure all required keys exist
+                for k, v in DEFAULT_SPECS.items():
+                    if k not in data:
+                        data[k] = v
+                return data
+        except Exception:
+            return DEFAULT_SPECS.copy()
+    return DEFAULT_SPECS.copy()
+
+def save_specifications():
+    data = {
+        "slat_nat_list": st.session_state["slat_nat_list"],
+        "slat_pow_list": st.session_state["slat_pow_list"],
+        "guide_list": st.session_state["guide_list"],
+        "bottom_list": st.session_state["bottom_list"],
+        "hood_list": st.session_state["hood_list"]
+    }
+    with open(SPEC_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
+
+# Initialize Session State Specs from file
+specs = load_specifications()
+for key, value in specs.items():
+    if key not in st.session_state:
+        st.session_state[key] = value
 
 SAFETY_LOCK_OPTIONS = [
     "Wind Locks",
@@ -56,8 +88,9 @@ qtn_date = c_date.date_input("Quotation Date")
 qtn_ref_no = c_ref.text_input("Qtn Ref No", "SSAPL/2026-27/319R2")
 
 st.sidebar.markdown("---")
-sales_person_1 = st.sidebar.text_input("Sales Person 1", "Mr. Nishant (90010 42914)")
-sales_person_2 = st.sidebar.text_input("Sales Person 2", "Mr. Jeevan Sharma (9828771899)")
+# Change 2: Sales Reference
+sales_reference_1 = st.sidebar.text_input("Sales Reference 1", "Mr. Nishant (90010 42914)")
+sales_reference_2 = st.sidebar.text_input("Sales Reference 2", "Mr. Jeevan Sharma (9828771899)")
 
 # --- SHUTTER ITEMS MANAGEMENT ---
 st.header("🧱 Shutter Specifications & Pricing")
@@ -127,17 +160,23 @@ for idx, item in enumerate(st.session_state["shutter_items"]):
         
         with col_sn:
             item["slat_nat"] = st.multiselect("Slat Type - Natural Finish", st.session_state["slat_nat_list"], default=item.get("slat_nat", []), key=f"sn_{idx}")
-            new_sn = st.text_input("➕ Add new 'Natural Finish Slat' option", key=f"add_sn_{idx}")
-            if new_sn and new_sn not in st.session_state["slat_nat_list"]:
-                st.session_state["slat_nat_list"].append(new_sn)
-                st.rerun()
+            col_in_sn, col_btn_sn = st.columns([3, 1])
+            new_sn = col_in_sn.text_input("➕ New Natural Slat Option", key=f"add_sn_{idx}", label_visibility="collapsed", placeholder="Type new natural slat specification...")
+            if col_btn_sn.button("Add Option", key=f"btn_add_sn_{idx}"):
+                if new_sn and new_sn not in st.session_state["slat_nat_list"]:
+                    st.session_state["slat_nat_list"].append(new_sn)
+                    save_specifications()
+                    st.rerun()
 
         with col_sp:
             item["slat_pow"] = st.multiselect("Slat Type - Powder Coating", st.session_state["slat_pow_list"], default=item.get("slat_pow", []), key=f"sp_{idx}")
-            new_sp = st.text_input("➕ Add new 'Powder Coating Slat' option", key=f"add_sp_{idx}")
-            if new_sp and new_sp not in st.session_state["slat_pow_list"]:
-                st.session_state["slat_pow_list"].append(new_sp)
-                st.rerun()
+            col_in_sp, col_btn_sp = st.columns([3, 1])
+            new_sp = col_in_sp.text_input("➕ New Powder Slat Option", key=f"add_sp_{idx}", label_visibility="collapsed", placeholder="Type new powder slat specification...")
+            if col_btn_sp.button("Add Option", key=f"btn_add_sp_{idx}"):
+                if new_sp and new_sp not in st.session_state["slat_pow_list"]:
+                    st.session_state["slat_pow_list"].append(new_sp)
+                    save_specifications()
+                    st.rerun()
 
         # --- GUIDE & BOTTOM & HOOD COVER ---
         st.markdown("##### 🛠️ Guide, Bottom Sheet & Hood Cover")
@@ -145,24 +184,33 @@ for idx, item in enumerate(st.session_state["shutter_items"]):
 
         with cg:
             item["guide"] = st.multiselect("Guide Specification", st.session_state["guide_list"], default=item.get("guide", []), key=f"gd_{idx}")
-            new_gd = st.text_input("➕ Add new Guide option", key=f"add_gd_{idx}")
-            if new_gd and new_gd not in st.session_state["guide_list"]:
-                st.session_state["guide_list"].append(new_gd)
-                st.rerun()
+            col_in_gd, col_btn_gd = st.columns([2, 1])
+            new_gd = col_in_gd.text_input("➕ New Guide", key=f"add_gd_{idx}", label_visibility="collapsed", placeholder="Type new guide...")
+            if col_btn_gd.button("Add Option", key=f"btn_add_gd_{idx}"):
+                if new_gd and new_gd not in st.session_state["guide_list"]:
+                    st.session_state["guide_list"].append(new_gd)
+                    save_specifications()
+                    st.rerun()
 
         with cb:
             item["bottom"] = st.multiselect("Bottom Sheet Specification", st.session_state["bottom_list"], default=item.get("bottom", []), key=f"bt_{idx}")
-            new_bt = st.text_input("➕ Add new Bottom Sheet option", key=f"add_bt_{idx}")
-            if new_bt and new_bt not in st.session_state["bottom_list"]:
-                st.session_state["bottom_list"].append(new_bt)
-                st.rerun()
+            col_in_bt, col_btn_bt = st.columns([2, 1])
+            new_bt = col_in_bt.text_input("➕ New Bottom", key=f"add_bt_{idx}", label_visibility="collapsed", placeholder="Type new bottom...")
+            if col_btn_bt.button("Add Option", key=f"btn_add_bt_{idx}"):
+                if new_bt and new_bt not in st.session_state["bottom_list"]:
+                    st.session_state["bottom_list"].append(new_bt)
+                    save_specifications()
+                    st.rerun()
 
         with ch_col:
             item["hood"] = st.multiselect("Hood Cover Specification", st.session_state["hood_list"], default=item.get("hood", []), key=f"hd_{idx}")
-            new_hd = st.text_input("➕ Add new Hood Cover option", key=f"add_hd_{idx}")
-            if new_hd and new_hd not in st.session_state["hood_list"]:
-                st.session_state["hood_list"].append(new_hd)
-                st.rerun()
+            col_in_hd, col_btn_hd = st.columns([2, 1])
+            new_hd = col_in_hd.text_input("➕ New Hood", key=f"add_hd_{idx}", label_visibility="collapsed", placeholder="Type new hood...")
+            if col_btn_hd.button("Add Option", key=f"btn_add_hd_{idx}"):
+                if new_hd and new_hd not in st.session_state["hood_list"]:
+                    st.session_state["hood_list"].append(new_hd)
+                    save_specifications()
+                    st.rerun()
 
         # --- LOCKS & SAFETY ---
         st.markdown("##### 🔒 Locks & Safety Features")
@@ -197,11 +245,14 @@ for idx, item in enumerate(st.session_state["shutter_items"]):
 
 st.button("➕ Add Another Shutter Item", on_click=add_shutter)
 
-# --- CHARGES & TAXES ---
+# --- CHARGES & TAXES (Change 3: Added New Charges) ---
 st.header("🚚 Extra Charges")
-col_p, col_f = st.columns(2)
-packing_charges = col_p.number_input("Packing & Loading Charges (INR)", value=5000)
-freight_charges = col_f.number_input("Freight Charges (INR)", value=15000)
+c1, c2, c3, c4, c5 = st.columns(5)
+packing_charges = c1.number_input("Packing & Loading (INR)", value=5000)
+freight_charges = c2.number_input("Freight Charges (INR)", value=15000)
+unloading_charges = c3.number_input("Unloading Charges (INR)", value=0)
+crane_charges = c4.number_input("Crane Charges (INR)", value=0)
+scaffolding_charges = c5.number_input("Scaffolding Charges (INR)", value=0)
 
 # --- PDF GENERATOR ---
 def generate_pdf():
@@ -220,12 +271,12 @@ def generate_pdf():
 
     header_data = [
         [Paragraph("<b>Company Name</b>", small_bold), Paragraph(client_name, small_text), Paragraph("<b>Qtn Date:</b>", small_bold), Paragraph(str(qtn_date), small_text)],
-        [Paragraph("<b>Contact Details</b>", small_bold), Paragraph(contact_details, small_text), Paragraph("<b>Sales Staff:</b>", small_bold), Paragraph(f"{sales_person_1}<br/>{sales_person_2}", small_text)],
+        [Paragraph("<b>Contact Details</b>", small_bold), Paragraph(contact_details, small_text), Paragraph("<b>Sales Reference:</b>", small_bold), Paragraph(f"{sales_reference_1}<br/>{sales_reference_2}", small_text)],
         [Paragraph("<b>Shipping Address</b>", small_bold), Paragraph(shipping_address, small_text), Paragraph("<b>Qtn Ref No:</b>", small_bold), Paragraph(qtn_ref_no, small_bold)],
         [Paragraph("<b>Billing Address</b>", small_bold), Paragraph(billing_address, small_text), Paragraph("", small_text), Paragraph("", small_text)],
         [Paragraph("<b>GSTIN</b>", small_bold), Paragraph(gstin, small_text), Paragraph("", small_text), Paragraph("", small_text)]
     ]
-    t_header = Table(header_data, colWidths=[80, 250, 65, 170])
+    t_header = Table(header_data, colWidths=[80, 250, 80, 155])
     t_header.setStyle(TableStyle([
         ('BOX', (0,0), (-1,-1), 0.5, colors.black),
         ('INNERGRID', (0,0), (-1,-1), 0.5, colors.grey),
@@ -293,7 +344,8 @@ def generate_pdf():
             Paragraph(f"{i_amt:,}", small_text)
         ])
 
-    subtotal_mat = mat_grand_total + packing_charges + freight_charges
+    subtotal_extras = packing_charges + freight_charges + unloading_charges + crane_charges + scaffolding_charges
+    subtotal_mat = mat_grand_total + subtotal_extras
     gst_mat = round(subtotal_mat * 0.18)
     gst_inst = round(inst_grand_total * 0.18)
     
@@ -301,9 +353,16 @@ def generate_pdf():
     total_inst_with_gst = inst_grand_total + gst_inst
     final_grand_total = total_mat_with_gst + total_inst_with_gst
 
-    items_data.append(["", Paragraph("<b>Packing & Loading charges</b>", small_bold), "", "", "", Paragraph(f"<b>{total_qty}</b>", small_bold), "<b>TOTAL</b>", Paragraph(f"<b>{mat_grand_total:,}</b>", small_bold), "", Paragraph(f"<b>{inst_grand_total:,}</b>", small_bold)])
+    items_data.append(["", Paragraph("<b>Item Total</b>", small_bold), "", "", "", Paragraph(f"<b>{total_qty}</b>", small_bold), "<b>TOTAL</b>", Paragraph(f"<b>{mat_grand_total:,}</b>", small_bold), "", Paragraph(f"<b>{inst_grand_total:,}</b>", small_bold)])
     items_data.append(["", Paragraph("Packing Charges", small_text), "", "", "", "", "", Paragraph(f"{packing_charges:,}", small_text), "", "-"])
-    items_data.append(["", Paragraph("Freight charges", small_text), "", "", "", "", "", Paragraph(f"{freight_charges:,}", small_text), "", "-"])
+    items_data.append(["", Paragraph("Freight Charges", small_text), "", "", "", "", "", Paragraph(f"{freight_charges:,}", small_text), "", "-"])
+    if unloading_charges > 0:
+        items_data.append(["", Paragraph("Unloading Charges", small_text), "", "", "", "", "", Paragraph(f"{unloading_charges:,}", small_text), "", "-"])
+    if crane_charges > 0:
+        items_data.append(["", Paragraph("Crane Charges", small_text), "", "", "", "", "", Paragraph(f"{crane_charges:,}", small_text), "", "-"])
+    if scaffolding_charges > 0:
+        items_data.append(["", Paragraph("Scaffolding Charges", small_text), "", "", "", "", "", Paragraph(f"{scaffolding_charges:,}", small_text), "", "-"])
+
     items_data.append(["", Paragraph("<b>Supply & Installation Amount Excluding GST</b>", small_bold), "", "", "", "", "", Paragraph(f"<b>{subtotal_mat:,}</b>", small_bold), "", Paragraph(f"<b>{inst_grand_total:,}</b>", small_bold)])
     items_data.append(["", Paragraph("GST on supply & installation @18%", small_text), "", "", "", "", "", Paragraph(f"{gst_mat:,}", small_text), "@18%", Paragraph(f"{gst_inst:,}", small_text)])
     items_data.append(["", Paragraph("<b>Total supply & installation with GST</b>", small_bold), "", "", "", "", "", Paragraph(f"<b>{total_mat_with_gst:,}</b>", small_bold), "", Paragraph(f"<b>{total_inst_with_gst:,}</b>", small_bold)])
@@ -322,12 +381,106 @@ def generate_pdf():
     buffer.seek(0)
     return buffer
 
+# --- EXCEL GENERATOR (Change 4: Excel Download) ---
+def generate_excel():
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        # Header Info Sheet
+        header_df = pd.DataFrame([
+            ["Company Name", client_name, "Qtn Date", str(qtn_date)],
+            ["Contact Details", contact_details, "Sales Reference 1", sales_reference_1],
+            ["Shipping Address", shipping_address, "Sales Reference 2", sales_reference_2],
+            ["Billing Address", billing_address, "Qtn Ref No", qtn_ref_no],
+            ["GSTIN", gstin, "", ""]
+        ], columns=["Field", "Value", "Field", "Value"])
+        header_df.to_excel(writer, sheet_name="Client Info", index=False)
+
+        # Items Sheet
+        items_rows = []
+        mat_grand_total = 0
+        inst_grand_total = 0
+
+        for i, itm in enumerate(st.session_state["shutter_items"]):
+            m_amt = itm.get("qty", 1) * itm.get("mat_rate", 0)
+            i_amt = itm.get("qty", 1) * itm.get("inst_rate", 0)
+            mat_grand_total += m_amt
+            inst_grand_total += i_amt
+
+            specs_combined = ", ".join(
+                itm.get("slat_nat", []) + 
+                itm.get("slat_pow", []) + 
+                itm.get("guide", []) + 
+                itm.get("bottom", []) + 
+                itm.get("hood", []) + 
+                itm.get("safety_locks", []) + 
+                itm.get("operator", [])
+            )
+
+            items_rows.append({
+                "Sr. No.": i + 1,
+                "Category": itm.get("type", ""),
+                "Specifications": specs_combined,
+                "HSN Code": itm.get("hsn", ""),
+                "Width (mm)": itm.get("width", 0),
+                "Height (mm)": itm.get("height", 0),
+                "Qty": itm.get("qty", 1),
+                "Material Rate (INR)": itm.get("mat_rate", 0),
+                "Material Amount (INR)": m_amt,
+                "Installation Rate (INR)": itm.get("inst_rate", 0),
+                "Installation Amount (INR)": i_amt
+            })
+
+        items_df = pd.DataFrame(items_rows)
+        items_df.to_excel(writer, sheet_name="Quotation Items", index=False)
+
+        # Summary Sheet
+        subtotal_extras = packing_charges + freight_charges + unloading_charges + crane_charges + scaffolding_charges
+        subtotal_mat = mat_grand_total + subtotal_extras
+        gst_mat = round(subtotal_mat * 0.18)
+        gst_inst = round(inst_grand_total * 0.18)
+        
+        summary_df = pd.DataFrame([
+            ["Material Total", mat_grand_total],
+            ["Packing & Loading Charges", packing_charges],
+            ["Freight Charges", freight_charges],
+            ["Unloading Charges", unloading_charges],
+            ["Crane Charges", crane_charges],
+            ["Scaffolding Charges", scaffolding_charges],
+            ["Subtotal Material (Excl. GST)", subtotal_mat],
+            ["Installation Total (Excl. GST)", inst_grand_total],
+            ["18% GST on Material", gst_mat],
+            ["18% GST on Installation", gst_inst],
+            ["Total Material with GST", subtotal_mat + gst_mat],
+            ["Total Installation with GST", inst_grand_total + gst_inst],
+            ["GRAND TOTAL WITH GST", subtotal_mat + gst_mat + inst_grand_total + gst_inst]
+        ], columns=["Description", "Amount (INR)"])
+        summary_df.to_excel(writer, sheet_name="Cost Summary", index=False)
+
+    output.seek(0)
+    return output
+
+# --- DOWNLOAD BUTTONS ---
 st.markdown("---")
-if st.button("📄 Generate PDF Quotation", type="primary"):
-    pdf_buffer = generate_pdf()
-    st.download_button(
-        label="📥 Download Quotation PDF",
-        data=pdf_buffer,
-        file_name=f"Quotation_{qtn_ref_no.replace('/', '_')}.pdf",
-        mime="application/pdf"
-    )
+col_pdf, col_excel = st.columns(2)
+
+with col_pdf:
+    if st.button("📄 Generate PDF Quotation", type="primary", use_container_width=True):
+        pdf_buffer = generate_pdf()
+        st.download_button(
+            label="📥 Download Quotation PDF",
+            data=pdf_buffer,
+            file_name=f"Quotation_{qtn_ref_no.replace('/', '_')}.pdf",
+            mime="application/pdf",
+            use_container_width=True
+        )
+
+with col_excel:
+    if st.button("📊 Generate Excel Quotation", use_container_width=True):
+        excel_buffer = generate_excel()
+        st.download_button(
+            label="📥 Download Quotation Excel (.xlsx)",
+            data=excel_buffer,
+            file_name=f"Quotation_{qtn_ref_no.replace('/', '_')}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            use_container_width=True
+        )
