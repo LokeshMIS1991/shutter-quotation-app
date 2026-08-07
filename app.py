@@ -251,7 +251,7 @@ unloading_charges = c3.number_input("Unloading Charges (INR)", value=0)
 crane_charges = c4.number_input("Crane Charges (INR)", value=0)
 scaffolding_charges = c5.number_input("Scaffolding Charges (INR)", value=0)
 
-# --- PDF GENERATOR ---
+# --- PDF GENERATOR (OVERLAPPING FIXED) ---
 def generate_pdf():
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=15, leftMargin=15, topMargin=15, bottomMargin=15)
@@ -260,7 +260,10 @@ def generate_pdf():
     styles = getSampleStyleSheet()
     title_style = ParagraphStyle('Title', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10, alignment=1, textColor=colors.HexColor('#1A365D'))
     small_bold = ParagraphStyle('SmallBold', fontName='Helvetica-Bold', fontSize=7.5, leading=9)
+    small_bold_right = ParagraphStyle('SmallBoldRight', fontName='Helvetica-Bold', fontSize=7.5, leading=9, alignment=2)
+    small_bold_center = ParagraphStyle('SmallBoldCenter', fontName='Helvetica-Bold', fontSize=7.5, leading=9, alignment=1)
     small_text = ParagraphStyle('SmallText', fontName='Helvetica', fontSize=7.5, leading=9)
+    small_text_right = ParagraphStyle('SmallTextRight', fontName='Helvetica', fontSize=7.5, leading=9, alignment=2)
 
     story.append(Paragraph("SIDHARTH SHUTTER & AUTOMATION PRIVATE LIMITED", title_style))
     story.append(Paragraph("G-1-66, Industrial Area, Prahaladpura, Sanganer, Jaipur, Rajasthan, 303903", ParagraphStyle('Sub', alignment=1, fontSize=7.5)))
@@ -283,16 +286,16 @@ def generate_pdf():
     story.append(Spacer(1, 8))
 
     items_data = [[
-        Paragraph("<b>Sr. No.</b>", small_bold),
+        Paragraph("<b>Sr. No.</b>", small_bold_center),
         Paragraph("<b>Description</b>", small_bold),
-        Paragraph("<b>HSN Code</b>", small_bold),
-        Paragraph("<b>Width (mm)</b>", small_bold),
-        Paragraph("<b>Height (mm)</b>", small_bold),
-        Paragraph("<b>Qty</b>", small_bold),
-        Paragraph("<b>Mat. Rate (INR)</b>", small_bold),
-        Paragraph("<b>Mat. Amount (INR)</b>", small_bold),
-        Paragraph("<b>Inst. Rate (INR)</b>", small_bold),
-        Paragraph("<b>Inst. Amount (INR)</b>", small_bold)
+        Paragraph("<b>HSN Code</b>", small_bold_center),
+        Paragraph("<b>Width (mm)</b>", small_bold_center),
+        Paragraph("<b>Height (mm)</b>", small_bold_center),
+        Paragraph("<b>Qty</b>", small_bold_center),
+        Paragraph("<b>Mat. Rate (INR)</b>", small_bold_right),
+        Paragraph("<b>Mat. Amount (INR)</b>", small_bold_right),
+        Paragraph("<b>Inst. Rate (INR)</b>", small_bold_right),
+        Paragraph("<b>Inst. Amount (INR)</b>", small_bold_right)
     ]]
 
     mat_grand_total = 0
@@ -308,18 +311,12 @@ def generate_pdf():
 
         desc_lines = [f"<b>{itm.get('type', 'Motorized Rolling Shutter')}</b>"]
         
-        for s in itm.get("slat_nat", []):
-            desc_lines.append(f"- {s}")
-        for s in itm.get("slat_pow", []):
-            desc_lines.append(f"- {s}")
-        for g in itm.get("guide", []):
-            desc_lines.append(f"- {g}")
-        for b in itm.get("bottom", []):
-            desc_lines.append(f"- {b}")
-        for h in itm.get("hood", []):
-            desc_lines.append(f"- {h}")
-        for l in itm.get("safety_locks", []):
-            desc_lines.append(f"- {l}")
+        for s in itm.get("slat_nat", []): desc_lines.append(f"- {s}")
+        for s in itm.get("slat_pow", []): desc_lines.append(f"- {s}")
+        for g in itm.get("guide", []): desc_lines.append(f"- {g}")
+        for b in itm.get("bottom", []): desc_lines.append(f"- {b}")
+        for h in itm.get("hood", []): desc_lines.append(f"- {h}")
+        for l in itm.get("safety_locks", []): desc_lines.append(f"- {l}")
             
         if itm.get("type") == "Motorized Rolling Shutter" and itm.get("operator"):
             desc_lines.append("<b>Operator For Rolling Shutter:</b>")
@@ -335,10 +332,10 @@ def generate_pdf():
             Paragraph(str(itm.get("width", "-")), small_text),
             Paragraph(str(itm.get("height", "-")), small_text),
             Paragraph(str(itm.get("qty", "-")), small_text),
-            Paragraph(f"{itm.get('mat_rate', 0):,}", small_text),
-            Paragraph(f"{m_amt:,}", small_text),
-            Paragraph(f"{itm.get('inst_rate', 0):,}", small_text),
-            Paragraph(f"{i_amt:,}", small_text)
+            Paragraph(f"{itm.get('mat_rate', 0):,}", small_text_right),
+            Paragraph(f"{m_amt:,}", small_text_right),
+            Paragraph(f"{itm.get('inst_rate', 0):,}", small_text_right),
+            Paragraph(f"{i_amt:,}", small_text_right)
         ])
 
     subtotal_extras = packing_charges + freight_charges + unloading_charges + crane_charges + scaffolding_charges
@@ -350,22 +347,24 @@ def generate_pdf():
     total_inst_with_gst = inst_grand_total + gst_inst
     final_grand_total = total_mat_with_gst + total_inst_with_gst
 
-    items_data.append(["", Paragraph("<b>Item Total</b>", small_bold), "", "", "", Paragraph(f"<b>{total_qty}</b>", small_bold), "<b>TOTAL</b>", Paragraph(f"<b>{mat_grand_total:,}</b>", small_bold), "", Paragraph(f"<b>{inst_grand_total:,}</b>", small_bold)])
-    items_data.append(["", Paragraph("Packing Charges", small_text), "", "", "", "", "", Paragraph(f"{packing_charges:,}", small_text), "", "-"])
-    items_data.append(["", Paragraph("Freight Charges", small_text), "", "", "", "", "", Paragraph(f"{freight_charges:,}", small_text), "", "-"])
+    # Clean totals without html tag bug
+    items_data.append(["", Paragraph("<b>Item Total</b>", small_bold), "", "", "", Paragraph(f"<b>{total_qty}</b>", small_bold_center), "", Paragraph(f"<b>{mat_grand_total:,}</b>", small_bold_right), "", Paragraph(f"<b>{inst_grand_total:,}</b>", small_bold_right)])
+    items_data.append(["", Paragraph("Packing Charges", small_text), "", "", "", "", "", Paragraph(f"{packing_charges:,}", small_text_right), "", Paragraph("-", small_text_right)])
+    items_data.append(["", Paragraph("Freight Charges", small_text), "", "", "", "", "", Paragraph(f"{freight_charges:,}", small_text_right), "", Paragraph("-", small_text_right)])
     if unloading_charges > 0:
-        items_data.append(["", Paragraph("Unloading Charges", small_text), "", "", "", "", "", Paragraph(f"{unloading_charges:,}", small_text), "", "-"])
+        items_data.append(["", Paragraph("Unloading Charges", small_text), "", "", "", "", "", Paragraph(f"{unloading_charges:,}", small_text_right), "", Paragraph("-", small_text_right)])
     if crane_charges > 0:
-        items_data.append(["", Paragraph("Crane Charges", small_text), "", "", "", "", "", Paragraph(f"{crane_charges:,}", small_text), "", "-"])
+        items_data.append(["", Paragraph("Crane Charges", small_text), "", "", "", "", "", Paragraph(f"{crane_charges:,}", small_text_right), "", Paragraph("-", small_text_right)])
     if scaffolding_charges > 0:
-        items_data.append(["", Paragraph("Scaffolding Charges", small_text), "", "", "", "", "", Paragraph(f"{scaffolding_charges:,}", small_text), "", "-"])
+        items_data.append(["", Paragraph("Scaffolding Charges", small_text), "", "", "", "", "", Paragraph(f"{scaffolding_charges:,}", small_text_right), "", Paragraph("-", small_text_right)])
 
-    items_data.append(["", Paragraph("<b>Supply & Installation Amount Excluding GST</b>", small_bold), "", "", "", "", "", Paragraph(f"<b>{subtotal_mat:,}</b>", small_bold), "", Paragraph(f"<b>{inst_grand_total:,}</b>", small_bold)])
-    items_data.append(["", Paragraph("GST on supply & installation @18%", small_text), "", "", "", "", "", Paragraph(f"{gst_mat:,}", small_text), "@18%", Paragraph(f"{gst_inst:,}", small_text)])
-    items_data.append(["", Paragraph("<b>Total supply & installation with GST</b>", small_bold), "", "", "", "", "", Paragraph(f"<b>{total_mat_with_gst:,}</b>", small_bold), "", Paragraph(f"<b>{total_inst_with_gst:,}</b>", small_bold)])
-    items_data.append(["", Paragraph("<b>Grand total with GST</b>", small_bold), "", "", "", "", "", "", "", Paragraph(f"<b>{final_grand_total:,}</b>", small_bold)])
+    items_data.append(["", Paragraph("<b>Supply & Installation Amount Excluding GST</b>", small_bold), "", "", "", "", "", Paragraph(f"<b>{subtotal_mat:,}</b>", small_bold_right), "", Paragraph(f"<b>{inst_grand_total:,}</b>", small_bold_right)])
+    items_data.append(["", Paragraph("GST on supply & installation @18%", small_text), "", "", "", "", "", Paragraph(f"{gst_mat:,}", small_text_right), Paragraph("@18%", small_text_right), Paragraph(f"{gst_inst:,}", small_text_right)])
+    items_data.append(["", Paragraph("<b>Total supply & installation with GST</b>", small_bold), "", "", "", "", "", Paragraph(f"<b>{total_mat_with_gst:,}</b>", small_bold_right), "", Paragraph(f"<b>{total_inst_with_gst:,}</b>", small_bold_right)])
+    items_data.append(["", Paragraph("<b>Grand total with GST</b>", small_bold), "", "", "", "", "", "", "", Paragraph(f"<b>{final_grand_total:,}</b>", small_bold_right)])
 
-    t_items = Table(items_data, colWidths=[20, 185, 45, 35, 35, 20, 55, 60, 50, 60])
+    # Column widths adjusted to prevent overflow
+    t_items = Table(items_data, colWidths=[22, 170, 50, 38, 38, 22, 55, 60, 50, 60])
     t_items.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#E2E8F0')),
         ('BOX', (0,0), (-1,-1), 0.5, colors.black),
@@ -378,13 +377,12 @@ def generate_pdf():
     buffer.seek(0)
     return buffer
 
-# --- FORMATTED EXCEL GENERATOR (SAME AS PDF QUOTATION FORMAT) ---
+# --- FORMATTED EXCEL GENERATOR ---
 def generate_excel():
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Quotation"
 
-    # Styles Definition
     font_company = Font(name="Calibri", size=14, bold=True, color="1A365D")
     font_address = Font(name="Calibri", size=9, italic=True)
     font_header_bold = Font(name="Calibri", size=10, bold=True)
@@ -405,7 +403,6 @@ def generate_excel():
     align_left = Alignment(horizontal="left", vertical="top", wrap_text=True)
     align_right = Alignment(horizontal="right", vertical="top", wrap_text=True)
 
-    # 1. Company Header
     ws.merge_cells("A1:J1")
     ws["A1"] = "SIDHARTH SHUTTER & AUTOMATION PRIVATE LIMITED"
     ws["A1"].font = font_company
@@ -419,7 +416,6 @@ def generate_excel():
     ws.row_dimensions[1].height = 25
     ws.row_dimensions[2].height = 18
 
-    # 2. Client & Qtn Details Block
     client_info = [
         [("Company Name:", font_header_bold), (client_name, font_regular), ("Qtn Date:", font_header_bold), (str(qtn_date), font_regular)],
         [("Contact Details:", font_header_bold), (contact_details, font_regular), ("Sales Reference:", font_header_bold), (f"{sales_reference_1} / {sales_reference_2}", font_regular)],
@@ -442,15 +438,13 @@ def generate_excel():
         ws.cell(row=curr_row, column=7, value=row[3][0]).font = row[3][1]
         ws.cell(row=curr_row, column=7).alignment = align_left
         
-        # Borders for Header Block
         for c in range(1, 11):
             ws.cell(row=curr_row, column=c).border = thin_border
         
         curr_row += 1
 
-    curr_row += 1 # Empty row spacing
+    curr_row += 1
 
-    # 3. Main Items Table Headers
     headers = ["Sr. No.", "Description", "HSN Code", "Width (mm)", "Height (mm)", "Qty", "Mat. Rate (INR)", "Mat. Amount (INR)", "Inst. Rate (INR)", "Inst. Amount (INR)"]
     for col_num, h_text in enumerate(headers, 1):
         cell = ws.cell(row=curr_row, column=col_num, value=h_text)
@@ -462,7 +456,6 @@ def generate_excel():
     ws.row_dimensions[curr_row].height = 25
     curr_row += 1
 
-    # 4. Populating Items Data
     mat_grand_total = 0
     inst_grand_total = 0
     total_qty = 0
@@ -517,7 +510,6 @@ def generate_excel():
 
         curr_row += 1
 
-    # 5. Totals & Extra Charges Block
     subtotal_extras = packing_charges + freight_charges + unloading_charges + crane_charges + scaffolding_charges
     subtotal_mat = mat_grand_total + subtotal_extras
     gst_mat = round(subtotal_mat * 0.18)
@@ -565,7 +557,6 @@ def generate_excel():
     add_summary_row("Total supply & installation with GST", total_mat_with_gst, total_inst_with_gst, is_bold=True, is_fill=True)
     add_summary_row("Grand total with GST", "", final_grand_total, is_bold=True, is_fill=True)
 
-    # Set Column Widths for clean viewing
     col_widths = {1: 8, 2: 45, 3: 12, 4: 12, 5: 12, 6: 8, 7: 15, 8: 18, 9: 15, 10: 18}
     for col_idx, width in col_widths.items():
         ws.column_dimensions[openpyxl.utils.get_column_letter(col_idx)].width = width
