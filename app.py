@@ -207,6 +207,43 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
     sales_reference_1 = st.sidebar.text_input("Sales Reference 1", "Mr. Nishant (90010 42914)")
     sales_reference_2 = st.sidebar.text_input("Sales Reference 2", "Mr. Jeevan Sharma (9828771899)")
 
+    # --- BULK IMPORT SPECIFICATIONS SECTION ---
+    with st.expander("📥 Bulk Import Specifications (एक साथ कई ऑप्शंस जोड़ें)", expanded=False):
+        st.markdown("यहाँ आप अपनी पूरी लिस्ट एक साथ कॉपी-पेस्ट करके ऐप में जोड़ सकते हैं। हर एक ऑप्शन को **नई लाइन (New Line)** में लिखें।")
+        
+        col_cat, col_txt = st.columns([1, 2])
+        
+        category_mapping = {
+            "Natural Finish Slats": "slat_nat_list",
+            "Powder Coated Slats": "slat_pow_list",
+            "Guide Specifications": "guide_list",
+            "Bottom Specifications": "bottom_list",
+            "Hood Cover Specifications": "hood_list"
+        }
+        
+        target_category = col_cat.selectbox("किस लिस्ट में जोड़ना चाहते हैं?", list(category_mapping.keys()))
+        bulk_text = col_txt.text_area("ऑप्शंस पेस्ट करें (Line by Line):", height=120, placeholder="Option 1\nOption 2\nOption 3...")
+        
+        if st.button("🚀 Import Options in Bulk", type="primary"):
+            if bulk_text.strip():
+                lines = [line.strip() for line in bulk_text.split("\n") if line.strip()]
+                target_key = category_mapping[target_category]
+                
+                added_count = 0
+                for item in lines:
+                    if item not in st.session_state[target_key]:
+                        st.session_state[target_key].append(item)
+                        added_count += 1
+                
+                if added_count > 0:
+                    save_specifications()
+                    st.success(f"✅ Successfully added {added_count} new options to {target_category}!")
+                    st.rerun()
+                else:
+                    st.warning("⚠️ All pasted options already exist in the list.")
+            else:
+                st.error("Please enter some text to import.")
+
     # --- SHUTTER ITEMS MANAGEMENT ---
     st.markdown("### 🧱 Shutter Specifications & Pricing")
 
