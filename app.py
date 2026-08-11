@@ -7,7 +7,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import io
 import json
 import os
-import base64
+import pypdfium2 as pdfium  # PDF to Image Rendering for Chrome Compatibility
 
 # OpenPyXL styles for formatted Excel output
 import openpyxl
@@ -158,7 +158,6 @@ if st.session_state["selected_product"] == "Home":
         {"name": "Dock Bumper", "desc": "Heavy Rubber & Moulded Bumpers", "icon": "🛡️"}
     ]
 
-    # Display Product Cards in 3 Columns Grid
     col1, col2, col3 = st.columns(3)
     cols = [col1, col2, col3]
 
@@ -180,7 +179,6 @@ if st.session_state["selected_product"] == "Home":
 # ==============================================================================
 elif st.session_state["selected_product"] == "Rolling Shutters":
 
-    # Top Navigation Bar
     col_nav1, col_nav2 = st.columns([1, 6])
     with col_nav1:
         if st.button("🏠 Home", use_container_width=True):
@@ -189,7 +187,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
     with col_nav2:
         st.title("🌀 Rolling Shutters Quotation Builder")
 
-    # --- CLIENT & HEADER DETAILS (SIDEBAR) ---
     st.sidebar.header("📋 Client & Proposal Details")
 
     client_id = st.sidebar.text_input("Client ID", "SSAPL-CL-8842")
@@ -208,12 +205,9 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
     sales_reference_1 = st.sidebar.text_input("Sales Reference 1", "Mr. Nishant (90010 42914)")
     sales_reference_2 = st.sidebar.text_input("Sales Reference 2", "Mr. Jeevan Sharma (9828771899)")
 
-    # --- BULK IMPORT SPECIFICATIONS SECTION ---
     with st.expander("📥 Bulk Import Specifications", expanded=False):
         st.markdown("Paste your complete list below. Add each option on a **new line**.")
-        
         col_cat, col_txt = st.columns([1, 2])
-        
         category_mapping = {
             "Natural Finish Slats": "slat_nat_list",
             "Powder Coated Slats": "slat_pow_list",
@@ -221,7 +215,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "Bottom Specifications": "bottom_list",
             "Hood Cover Specifications": "hood_list"
         }
-        
         target_category = col_cat.selectbox("Select Target List:", list(category_mapping.keys()))
         bulk_text = col_txt.text_area("Paste Options (Line by Line):", height=120, placeholder="Option 1\nOption 2\nOption 3...")
         
@@ -229,13 +222,11 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             if bulk_text.strip():
                 lines = [line.strip() for line in bulk_text.split("\n") if line.strip()]
                 target_key = category_mapping[target_category]
-                
                 added_count = 0
                 for item in lines:
                     if item not in st.session_state[target_key]:
                         st.session_state[target_key].append(item)
                         added_count += 1
-                
                 if added_count > 0:
                     save_specifications()
                     st.success(f"✅ Successfully added {added_count} new options to {target_category}!")
@@ -245,7 +236,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             else:
                 st.error("Please enter some text to import.")
 
-    # --- SHUTTER ITEMS MANAGEMENT ---
     st.markdown("### 🧱 Shutter Specifications & Pricing")
 
     if "shutter_items" not in st.session_state:
@@ -290,7 +280,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
 
     for idx, item in enumerate(st.session_state["shutter_items"]):
         with st.expander(f"📌 Item #{idx + 1}: {item.get('type', 'Motorized Rolling Shutter')}", expanded=True):
-            
             col_title, col_del = st.columns([5, 1])
             with col_title:
                 current_type = item.get("type", "Motorized Rolling Shutter")
@@ -309,7 +298,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
 
             st.markdown("##### 📐 Slat Specifications")
             col_sn, col_sp = st.columns(2)
-            
             with col_sn:
                 item["slat_nat"] = st.multiselect("Natural Finish Slats", st.session_state["slat_nat_list"], default=item.get("slat_nat", []), key=f"sn_{idx}")
                 col_in_sn, col_btn_sn = st.columns([3, 1])
@@ -332,7 +320,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
 
             st.markdown("##### 🛠️ Guide, Bottom Sheet & Hood Cover")
             cg, cb, ch_col = st.columns(3)
-
             with cg:
                 item["guide"] = st.multiselect("Guide Specification", st.session_state["guide_list"], default=item.get("guide", []), key=f"gd_{idx}")
                 col_in_gd, col_btn_gd = st.columns([2, 1])
@@ -394,7 +381,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
 
     st.button("➕ Add Another Shutter Item", on_click=add_shutter)
 
-    # --- CHARGES & TAXES ---
     st.markdown("### 🚚 Extra Charges & Expenses")
     c1, c2, c3, c4, c5 = st.columns(5)
     packing_charges = c1.number_input("Packing & Loading (INR)", value=5000)
@@ -737,14 +723,13 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 use_container_width=True
             )
 
-    # --- PDF PREVIEW AND DOWNLOAD SECTION ---
+    # --- CHROME-SAFE PDF PREVIEW AND DOWNLOAD SECTION ---
     if "pdf_preview_bytes" in st.session_state:
         st.markdown("---")
         st.markdown("### 🔍 PDF Quotation Preview & Download")
         
         pdf_data = st.session_state["pdf_preview_bytes"]
         
-        # Action Buttons Above Preview
         c_dl, c_cls = st.columns([2, 1])
         with c_dl:
             st.download_button(
@@ -760,13 +745,14 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 del st.session_state["pdf_preview_bytes"]
                 st.rerun()
 
-        # Embedded PDF Viewer iframe
-        base64_pdf = base64.b64encode(pdf_data).decode('utf-8')
-        pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="750" type="application/pdf" style="border: 1px solid #cbd5e1; border-radius: 8px; margin-top: 15px;"></iframe>'
-        st.markdown(pdf_display, unsafe_allow_html=True)
+        # Render PDF pages as High-Resolution Images (Chrome Block Free)
+        pdf = pdfium.PdfDocument(pdf_data)
+        for i, page in enumerate(pdf):
+            image = page.render(scale=2).to_pil()
+            st.image(image, caption=f"Page {i+1}", use_column_width=True)
 
 # ==============================================================================
-# PAGE 3: OTHER PRODUCTS (PLACEHOLDER FOR FUTURE MODULES)
+# PAGE 3: OTHER PRODUCTS (PLACEHOLDER)
 # ==============================================================================
 else:
     col_nav1, col_nav2 = st.columns([1, 6])
