@@ -392,37 +392,75 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
     # --- PDF GENERATOR ---
     def generate_pdf():
         buffer = io.BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=A4, rightMargin=15, leftMargin=15, topMargin=15, bottomMargin=15)
+        
+        # Document Setup with updated margins
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=A4,
+            leftMargin=20,
+            rightMargin=20,
+            topMargin=20,
+            bottomMargin=20
+        )
         story = []
         
         styles = getSampleStyleSheet()
-        title_style = ParagraphStyle('Title', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=11, alignment=1, textColor=colors.HexColor('#1A365D'))
-        small_bold = ParagraphStyle('SmallBold', fontName='Helvetica-Bold', fontSize=7.5, leading=9)
-        small_bold_right = ParagraphStyle('SmallBoldRight', fontName='Helvetica-Bold', fontSize=7.5, leading=9, alignment=2)
-        small_bold_center = ParagraphStyle('SmallBoldCenter', fontName='Helvetica-Bold', fontSize=7.5, leading=9, alignment=1)
-        small_text = ParagraphStyle('SmallText', fontName='Helvetica', fontSize=7.5, leading=9)
-        small_text_right = ParagraphStyle('SmallTextRight', fontName='Helvetica', fontSize=7.5, leading=9, alignment=2)
+        
+        # --- HEAD SECTION UPDATES: PDF Header & Client Info Styles ---
+        header_title_style = ParagraphStyle(
+            'HeaderTitle',
+            parent=styles['Normal'],
+            fontName='Helvetica-Bold',
+            fontSize=13,
+            leading=15,
+            alignment=1,
+            textColor=colors.HexColor('#0F172A')
+        )
+        
+        header_sub_style = ParagraphStyle(
+            'HeaderSub',
+            parent=styles['Normal'],
+            fontName='Helvetica',
+            fontSize=8,
+            leading=10,
+            alignment=1,
+            textColor=colors.HexColor('#475569')
+        )
+        
+        small_bold = ParagraphStyle('SmallBold', fontName='Helvetica-Bold', fontSize=8, leading=10, textColor=colors.HexColor('#1E293B'))
+        small_bold_right = ParagraphStyle('SmallBoldRight', fontName='Helvetica-Bold', fontSize=8, leading=10, alignment=2, textColor=colors.HexColor('#1E293B'))
+        small_bold_center = ParagraphStyle('SmallBoldCenter', fontName='Helvetica-Bold', fontSize=8, leading=10, alignment=1, textColor=colors.HexColor('#1E293B'))
+        small_text = ParagraphStyle('SmallText', fontName='Helvetica', fontSize=8, leading=10, textColor=colors.HexColor('#334155'))
+        small_text_right = ParagraphStyle('SmallTextRight', fontName='Helvetica', fontSize=8, leading=10, alignment=2, textColor=colors.HexColor('#334155'))
 
-        story.append(Paragraph("SIDHARTH SHUTTER & AUTOMATION PRIVATE LIMITED", title_style))
-        story.append(Paragraph("G-1-66, Industrial Area, Prahaladpura, Sanganer, Jaipur, Rajasthan, 303903", ParagraphStyle('Sub', alignment=1, fontSize=7.5)))
-        story.append(Spacer(1, 8))
+        # Header Title Banner
+        story.append(Paragraph("SIDHARTH SHUTTER & AUTOMATION PRIVATE LIMITED", header_title_style))
+        story.append(Spacer(1, 2))
+        story.append(Paragraph("G-1-66, Industrial Area, Prahaladpura, Sanganer, Jaipur, Rajasthan, 303903", header_sub_style))
+        story.append(Spacer(1, 10))
 
+        # Head Section: Formatted Client Details Table
         header_data = [
             [Paragraph("<b>Company Name</b>", small_bold), Paragraph(client_name, small_text), Paragraph("<b>Client ID:</b>", small_bold), Paragraph(client_id, small_bold)],
             [Paragraph("<b>Contact Details</b>", small_bold), Paragraph(contact_details, small_text), Paragraph("<b>Qtn Date:</b>", small_bold), Paragraph(str(qtn_date), small_text)],
             [Paragraph("<b>Shipping Address</b>", small_bold), Paragraph(shipping_address, small_text), Paragraph("<b>Qtn Ref No:</b>", small_bold), Paragraph(qtn_ref_no, small_bold)],
             [Paragraph("<b>Billing Address</b>", small_bold), Paragraph(billing_address, small_text), Paragraph("<b>Sales Reference:</b>", small_bold), Paragraph(f"{sales_reference_1}<br/>{sales_reference_2}", small_text)],
-            [Paragraph("<b>GSTIN</b>", small_bold), Paragraph(gstin, small_text), Paragraph("", small_text), Paragraph("", small_text)]
+            [Paragraph("<b>GSTIN</b>", small_bold), Paragraph(gstin, small_text), Paragraph("<b>Site Contact:</b>", small_bold), Paragraph(site_person, small_text)]
         ]
-        t_header = Table(header_data, colWidths=[80, 250, 80, 155])
+        
+        t_header = Table(header_data, colWidths=[90, 240, 85, 140])
         t_header.setStyle(TableStyle([
-            ('BOX', (0,0), (-1,-1), 0.5, colors.black),
-            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.grey),
-            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+            ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#F8FAFC')),
+            ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#CBD5E1')),
+            ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#E2E8F0')),
+            ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+            ('TOPPADDING', (0,0), (-1,-1), 4),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
         ]))
         story.append(t_header)
-        story.append(Spacer(1, 8))
+        story.append(Spacer(1, 10))
 
+        # --- ITEMS & PRICING TABLE ---
         items_data = [[
             Paragraph("<b>Sr. No.</b>", small_bold_center),
             Paragraph("<b>Description</b>", small_bold),
