@@ -7,6 +7,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import io
 import json
 import os
+import base64
 
 # OpenPyXL styles for formatted Excel output
 import openpyxl
@@ -714,22 +715,16 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         output.seek(0)
         return output
 
-    # --- DOWNLOAD BUTTONS SECTION ---
+    # --- DOWNLOAD & PREVIEW BUTTONS SECTION ---
     st.markdown("---")
     st.markdown("### 📥 Generate & Export Proposals")
 
     col_pdf, col_excel = st.columns(2)
 
     with col_pdf:
-        if st.button("📄 Generate PDF Quotation", type="primary", use_container_width=True):
-            pdf_buffer = generate_pdf()
-            st.download_button(
-                label="📥 Download Quotation PDF",
-                data=pdf_buffer,
-                file_name=f"Quotation_{qtn_ref_no.replace('/', '_')}.pdf",
-                mime="application/pdf",
-                use_container_width=True
-            )
+        if st.button("👁️ Preview PDF Quotation", type="primary", use_container_width=True):
+            pdf_bytes = generate_pdf().getvalue()
+            st.session_state["pdf_preview_bytes"] = pdf_bytes
 
     with col_excel:
         if st.button("📊 Generate Excel Quotation", use_container_width=True):
@@ -741,6 +736,34 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 use_container_width=True
             )
+
+    # --- PDF PREVIEW AND DOWNLOAD SECTION ---
+    if "pdf_preview_bytes" in st.session_state:
+        st.markdown("---")
+        st.markdown("### 🔍 PDF Quotation Preview & Download")
+        
+        pdf_data = st.session_state["pdf_preview_bytes"]
+        
+        # Action Buttons Above Preview
+        c_dl, c_cls = st.columns([2, 1])
+        with c_dl:
+            st.download_button(
+                label="📥 Download Verified PDF Quotation",
+                data=pdf_data,
+                file_name=f"Quotation_{qtn_ref_no.replace('/', '_')}.pdf",
+                mime="application/pdf",
+                type="primary",
+                use_container_width=True
+            )
+        with c_cls:
+            if st.button("❌ Close Preview", use_container_width=True):
+                del st.session_state["pdf_preview_bytes"]
+                st.rerun()
+
+        # Embedded PDF Viewer iframe
+        base64_pdf = base64.b64encode(pdf_data).decode('utf-8')
+        pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="750" type="application/pdf" style="border: 1px solid #cbd5e1; border-radius: 8px; margin-top: 15px;"></iframe>'
+        st.markdown(pdf_display, unsafe_allow_html=True)
 
 # ==============================================================================
 # PAGE 3: OTHER PRODUCTS (PLACEHOLDER FOR FUTURE MODULES)
