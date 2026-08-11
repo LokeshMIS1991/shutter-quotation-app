@@ -745,11 +745,11 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 del st.session_state["pdf_preview_bytes"]
                 st.rerun()
 
-        # Render PDF pages as High-Resolution Images (Chrome Block Free)
+        # Render PDF pages as High-Resolution Images (Fixed for latest Streamlit version)
         pdf = pdfium.PdfDocument(pdf_data)
         for i, page in enumerate(pdf):
             image = page.render(scale=2).to_pil()
-            st.image(image, caption=f"Page {i+1}", use_column_width=True)
+            st.image(image, caption=f"Page {i+1}", use_container_width=True)
 
 # ==============================================================================
 # PAGE 3: OTHER PRODUCTS (PLACEHOLDER)
