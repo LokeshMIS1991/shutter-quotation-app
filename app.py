@@ -208,8 +208,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
     sales_reference_2 = st.sidebar.text_input("Sales Reference 2", "Mr. Jeevan Sharma (9828771899)")
 
     # --- BULK IMPORT SPECIFICATIONS SECTION ---
-    with st.expander("📥 Bulk Import Specifications (एक साथ कई ऑप्शंस जोड़ें)", expanded=False):
-        st.markdown("यहाँ आप अपनी पूरी लिस्ट एक साथ कॉपी-पेस्ट करके ऐप में जोड़ सकते हैं। हर एक ऑप्शन को **नई लाइन (New Line)** में लिखें।")
+    with st.expander("📥 Bulk Import Specifications", expanded=False):
+        st.markdown("Paste your complete list below. Add each option on a **new line**.")
         
         col_cat, col_txt = st.columns([1, 2])
         
@@ -221,8 +221,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "Hood Cover Specifications": "hood_list"
         }
         
-        target_category = col_cat.selectbox("किस लिस्ट में जोड़ना चाहते हैं?", list(category_mapping.keys()))
-        bulk_text = col_txt.text_area("ऑप्शंस पेस्ट करें (Line by Line):", height=120, placeholder="Option 1\nOption 2\nOption 3...")
+        target_category = col_cat.selectbox("Select Target List:", list(category_mapping.keys()))
+        bulk_text = col_txt.text_area("Paste Options (Line by Line):", height=120, placeholder="Option 1\nOption 2\nOption 3...")
         
         if st.button("🚀 Import Options in Bulk", type="primary"):
             if bulk_text.strip():
