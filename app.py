@@ -7,7 +7,6 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import io
 import json
 import os
-from datetime import datetime
 import pypdfium2 as pdfium  # PDF to Image Rendering for Chrome Compatibility
 
 # OpenPyXL styles for formatted Excel output
@@ -69,27 +68,12 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- DATABASE MANAGEMENT FOR CLIENTS & REVISIONS ---
-DB_FILE = "quotations_db.json"
-
-def load_db():
-    if os.path.exists(DB_FILE):
-        try:
-            with open(DB_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            return {}
-    return {}
-
-def save_db(db):
-    with open(DB_FILE, "w", encoding="utf-8") as f:
-        json.dump(db, f, indent=4, ensure_ascii=False)
-
-db = load_db()
-
 # --- SESSION STATE FOR NAVIGATION ---
 if "selected_product" not in st.session_state:
     st.session_state["selected_product"] = "Home"
+
+def navigate_to(page_name):
+    st.session_state["selected_product"] = page_name
 
 # --- PERMANENT SPECIFICATIONS FILE MANAGEMENT ---
 SPEC_FILE = "specifications_master.json"
@@ -191,7 +175,7 @@ if st.session_state["selected_product"] == "Home":
                 st.rerun()
 
 # ==============================================================================
-# PAGE 2: ROLLING SHUTTERS QUOTATION PAGE (WITH REVISION SYSTEM)
+# PAGE 2: ROLLING SHUTTERS QUOTATION PAGE
 # ==============================================================================
 elif st.session_state["selected_product"] == "Rolling Shutters":
 
@@ -201,73 +185,26 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             st.session_state["selected_product"] = "Home"
             st.rerun()
     with col_nav2:
-        st.title("🌀 Rolling Shutters Quotation & Revision Builder")
+        st.title("🌀 Rolling Shutters Quotation Builder")
 
-    # --- REVISION MANAGEMENT PANEL IN SIDEBAR ---
-    st.sidebar.header("📂 Client & Revision Management")
-    
-    app_mode = st.sidebar.radio("Select Mode", ["Create New Quotation", "Search Client ID / Load Revisions"])
-
-    if app_mode == "Search Client ID / Load Revisions":
-        all_clients = list(db.keys())
-        if not all_clients:
-            st.sidebar.warning("No saved quotations found.")
-        else:
-            selected_client = st.sidebar.selectbox("Select Client ID", options=all_clients)
-            if selected_client and selected_client in db:
-                client_entry = db[selected_client]
-                qtn_refs = list(client_entry.get("quotations", {}).keys())
-                
-                if qtn_refs:
-                    selected_qtn_ref = st.sidebar.selectbox("Select Quotation Ref", options=qtn_refs)
-                    revisions_data = client_entry["quotations"][selected_qtn_ref]
-                    
-                    rev_options = [r["revision_no"] for r in revisions_data]
-                    selected_rev_no = st.sidebar.selectbox("Select Revision Number", options=rev_options)
-                    
-                    if st.sidebar.button("🔄 Load Selected Revision Data", type="primary", use_container_width=True):
-                        rev_obj = next(r for r in revisions_data if r["revision_no"] == selected_rev_no)
-                        
-                        st.session_state["loaded_client_id"] = selected_client
-                        st.session_state["loaded_client_name"] = client_entry.get("client_name", "")
-                        st.session_state["loaded_contact"] = client_entry.get("contact_details", "")
-                        st.session_state["loaded_shipping"] = client_entry.get("shipping_address", "")
-                        st.session_state["loaded_billing"] = client_entry.get("billing_address", "")
-                        st.session_state["loaded_gstin"] = client_entry.get("gstin", "")
-                        st.session_state["loaded_ref"] = selected_qtn_ref
-                        st.session_state["loaded_rev_no"] = selected_rev_no
-                        st.session_state["shutter_items"] = rev_obj.get("shutter_items", [])
-                        st.session_state["packing_charges"] = rev_obj.get("packing_charges", 5000)
-                        st.session_state["freight_charges"] = rev_obj.get("freight_charges", 15000)
-                        st.session_state["unloading_charges"] = rev_obj.get("unloading_charges", 0)
-                        st.session_state["crane_charges"] = rev_obj.get("crane_charges", 0)
-                        st.session_state["scaffolding_charges"] = rev_obj.get("scaffolding_charges", 0)
-                        st.success(f"Loaded {selected_qtn_ref}-{selected_rev_no} successfully!")
-                        st.rerun()
-
-    st.sidebar.markdown("---")
     st.sidebar.header("📋 Client & Proposal Details")
 
-    client_id = st.sidebar.text_input("Client ID", st.session_state.get("loaded_client_id", f"SSAPL-CL-{len(db)+8800}"))
-    client_name = st.sidebar.text_input("Company Name", st.session_state.get("loaded_client_name", "M/S ABHINAV INFRA BUILD PVT. LTD."))
-    contact_details = st.sidebar.text_input("Contact Details", st.session_state.get("loaded_contact", "Mob:-8889911529"))
-    shipping_address = st.sidebar.text_area("Shipping Address", st.session_state.get("loaded_shipping", "RGLP PITHAMPUR Sector-1 Pithampur MADHYA PRADESH 454774"), height=80)
-    billing_address = st.sidebar.text_area("Billing Address", st.session_state.get("loaded_billing", "207,208, Industry House, Indore, MP 452001"), height=80)
-    gstin = st.sidebar.text_input("Client GSTIN", st.session_state.get("loaded_gstin", "23AAHCA9425D1ZY"))
+    client_id = st.sidebar.text_input("Client ID", "SSAPL-CL-8842")
+    client_name = st.sidebar.text_input("Company Name", "M/S ABHINAV INFRA BUILD PVT. LTD.")
+    contact_details = st.sidebar.text_input("Contact Details", "Mob:-8889911529")
+    shipping_address = st.sidebar.text_area("Shipping Address", "RGLP PITHAMPUR Sector-1 Pithampur MADHYA PRADESH 454774", height=80)
+    site_person = st.sidebar.text_input("Site Person Mobile", "9926952398")
+    billing_address = st.sidebar.text_area("Billing Address", "207,208, Industry House, Indore, MP 452001", height=80)
+    gstin = st.sidebar.text_input("Client GSTIN", "23AAHCA9425D1ZY")
 
     st.sidebar.markdown("---")
     c_date, c_ref = st.sidebar.columns(2)
     qtn_date = c_date.date_input("Quotation Date")
-    base_qtn_ref = c_ref.text_input("Base Qtn Ref No", st.session_state.get("loaded_ref", "SSAPL/2026-27/319"))
-
-    current_rev_no = st.sidebar.text_input("Current Revision", st.session_state.get("loaded_rev_no", "R0"))
+    qtn_ref_no = c_ref.text_input("Qtn Ref No", "SSAPL/2026-27/319R2")
 
     sales_reference_1 = st.sidebar.text_input("Sales Reference 1", "Mr. Nishant (90010 42914)")
     sales_reference_2 = st.sidebar.text_input("Sales Reference 2", "Mr. Jeevan Sharma (9828771899)")
 
-    full_qtn_ref_no = f"{base_qtn_ref}-{current_rev_no}" if not base_qtn_ref.endswith(current_rev_no) else base_qtn_ref
-
-    # BULK IMPORT SECTION
     with st.expander("📥 Bulk Import Specifications", expanded=False):
         st.markdown("Paste your complete list below. Add each option on a **new line**.")
         col_cat, col_txt = st.columns([1, 2])
@@ -294,22 +231,10 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                     save_specifications()
                     st.success(f"✅ Successfully added {added_count} new options to {target_category}!")
                     st.rerun()
-
-    # --- CLIENT REVISION HISTORY TABLE (IF CLIENT EXISTS) ---
-    if client_id in db and base_qtn_ref in db[client_id].get("quotations", {}):
-        st.markdown(f"### 📜 Revision History for Client `{client_id}` ({base_qtn_ref})")
-        rev_history = db[client_id]["quotations"][base_qtn_ref]
-        
-        history_table = []
-        for r_item in rev_history:
-            history_table.append({
-                "Revision": r_item["revision_no"],
-                "Date": r_item["date"],
-                "Total Items": len(r_item.get("shutter_items", [])),
-                "Grand Total (Excl GST)": f"₹{r_item.get('subtotal_mat', 0) + r_item.get('inst_grand_total', 0):,}",
-                "Remarks / Note": r_item.get("note", "Issued")
-            })
-        st.dataframe(pd.DataFrame(history_table), use_container_width=True)
+                else:
+                    st.warning("⚠️ All pasted options already exist in the list.")
+            else:
+                st.error("Please enter some text to import.")
 
     st.markdown("### 🧱 Shutter Specifications & Pricing")
 
@@ -375,18 +300,55 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             col_sn, col_sp = st.columns(2)
             with col_sn:
                 item["slat_nat"] = st.multiselect("Natural Finish Slats", st.session_state["slat_nat_list"], default=item.get("slat_nat", []), key=f"sn_{idx}")
+                col_in_sn, col_btn_sn = st.columns([3, 1])
+                new_sn = col_in_sn.text_input("➕ New Natural Option", key=f"add_sn_{idx}", label_visibility="collapsed", placeholder="Add new natural slat...")
+                if col_btn_sn.button("Add Option", key=f"btn_add_sn_{idx}"):
+                    if new_sn and new_sn not in st.session_state["slat_nat_list"]:
+                        st.session_state["slat_nat_list"].append(new_sn)
+                        save_specifications()
+                        st.rerun()
 
             with col_sp:
                 item["slat_pow"] = st.multiselect("Powder Coated Slats", st.session_state["slat_pow_list"], default=item.get("slat_pow", []), key=f"sp_{idx}")
+                col_in_sp, col_btn_sp = st.columns([3, 1])
+                new_sp = col_in_sp.text_input("➕ New Powder Option", key=f"add_sp_{idx}", label_visibility="collapsed", placeholder="Add new powder slat...")
+                if col_btn_sp.button("Add Option", key=f"btn_add_sp_{idx}"):
+                    if new_sp and new_sp not in st.session_state["slat_pow_list"]:
+                        st.session_state["slat_pow_list"].append(new_sp)
+                        save_specifications()
+                        st.rerun()
 
             st.markdown("##### 🛠️ Guide, Bottom Sheet & Hood Cover")
             cg, cb, ch_col = st.columns(3)
             with cg:
                 item["guide"] = st.multiselect("Guide Specification", st.session_state["guide_list"], default=item.get("guide", []), key=f"gd_{idx}")
+                col_in_gd, col_btn_gd = st.columns([2, 1])
+                new_gd = col_in_gd.text_input("➕ New Guide", key=f"add_gd_{idx}", label_visibility="collapsed", placeholder="Add guide...")
+                if col_btn_gd.button("Add", key=f"btn_add_gd_{idx}"):
+                    if new_gd and new_gd not in st.session_state["guide_list"]:
+                        st.session_state["guide_list"].append(new_gd)
+                        save_specifications()
+                        st.rerun()
+
             with cb:
                 item["bottom"] = st.multiselect("Bottom Specification", st.session_state["bottom_list"], default=item.get("bottom", []), key=f"bt_{idx}")
+                col_in_bt, col_btn_bt = st.columns([2, 1])
+                new_bt = col_in_bt.text_input("➕ New Bottom", key=f"add_bt_{idx}", label_visibility="collapsed", placeholder="Add bottom...")
+                if col_btn_bt.button("Add", key=f"btn_add_bt_{idx}"):
+                    if new_bt and new_bt not in st.session_state["bottom_list"]:
+                        st.session_state["bottom_list"].append(new_bt)
+                        save_specifications()
+                        st.rerun()
+
             with ch_col:
                 item["hood"] = st.multiselect("Hood Cover Specification", st.session_state["hood_list"], default=item.get("hood", []), key=f"hd_{idx}")
+                col_in_hd, col_btn_hd = st.columns([2, 1])
+                new_hd = col_in_hd.text_input("➕ New Hood", key=f"add_hd_{idx}", label_visibility="collapsed", placeholder="Add hood...")
+                if col_btn_hd.button("Add", key=f"btn_add_hd_{idx}"):
+                    if new_hd and new_hd not in st.session_state["hood_list"]:
+                        st.session_state["hood_list"].append(new_hd)
+                        save_specifications()
+                        st.rerun()
 
             st.markdown("##### 🔒 Locks & Safety Features")
             item["safety_locks"] = st.multiselect(
@@ -405,6 +367,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                     key=f"op_{idx}"
                 )
             else:
+                st.info("🔒 Operator selection disabled for Gear and Manual Shutters.")
                 item["operator"] = []
 
             st.markdown("---")
@@ -420,73 +383,11 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
 
     st.markdown("### 🚚 Extra Charges & Expenses")
     c1, c2, c3, c4, c5 = st.columns(5)
-    packing_charges = c1.number_input("Packing & Loading (INR)", value=st.session_state.get("packing_charges", 5000))
-    freight_charges = c2.number_input("Freight Charges (INR)", value=st.session_state.get("freight_charges", 15000))
-    unloading_charges = c3.number_input("Unloading Charges (INR)", value=st.session_state.get("unloading_charges", 0))
-    crane_charges = c4.number_input("Crane Charges (INR)", value=st.session_state.get("crane_charges", 0))
-    scaffolding_charges = c5.number_input("Scaffolding Charges (INR)", value=st.session_state.get("scaffolding_charges", 0))
-
-    # --- SAVE TO DATABASE REVISION FUNCTION ---
-    def save_current_revision_to_db(rev_note=""):
-        mat_grand_total = sum(i["qty"] * i["mat_rate"] for i in st.session_state["shutter_items"])
-        inst_grand_total = sum(i["qty"] * i["inst_rate"] for i in st.session_state["shutter_items"])
-        subtotal_extras = packing_charges + freight_charges + unloading_charges + crane_charges + scaffolding_charges
-        subtotal_mat = mat_grand_total + subtotal_extras
-
-        rev_record = {
-            "revision_no": current_rev_no,
-            "date": datetime.now().strftime("%Y-%m-%d %H:%M"),
-            "shutter_items": st.session_state["shutter_items"],
-            "packing_charges": packing_charges,
-            "freight_charges": freight_charges,
-            "unloading_charges": unloading_charges,
-            "crane_charges": crane_charges,
-            "scaffolding_charges": scaffolding_charges,
-            "subtotal_mat": subtotal_mat,
-            "inst_grand_total": inst_grand_total,
-            "note": rev_note
-        }
-
-        if client_id not in db:
-            db[client_id] = {
-                "client_name": client_name,
-                "contact_details": contact_details,
-                "shipping_address": shipping_address,
-                "billing_address": billing_address,
-                "gstin": gstin,
-                "quotations": {}
-            }
-        
-        if base_qtn_ref not in db[client_id]["quotations"]:
-            db[client_id]["quotations"][base_qtn_ref] = []
-
-        # Update if revision exists, else append
-        existing_revs = db[client_id]["quotations"][base_qtn_ref]
-        idx_match = next((i for i, r in enumerate(existing_revs) if r["revision_no"] == current_rev_no), None)
-        
-        if idx_match is not None:
-            existing_revs[idx_match] = rev_record
-        else:
-            existing_revs.append(rev_record)
-
-        save_db(db)
-
-    # --- SAVE & NEXT REVISION ACTION BUTTONS ---
-    st.markdown("---")
-    c_s1, c_s2 = st.columns(2)
-    with c_s1:
-        if st.button(f"💾 Save Current ({current_rev_no}) Data", use_container_width=True):
-            save_current_revision_to_db(f"Saved {current_rev_no}")
-            st.success(f"Quotation {full_qtn_ref_no} saved to database!")
-
-    with c_s2:
-        curr_num = int(current_rev_no.replace("R", "")) if current_rev_no.startswith("R") else 0
-        next_rev_str = f"R{curr_num + 1}"
-        if st.button(f"🚀 Create Next Revision ({next_rev_str})", type="primary", use_container_width=True):
-            save_current_revision_to_db(f"Baseline for {next_rev_str}")
-            st.session_state["loaded_rev_no"] = next_rev_str
-            st.success(f"Upgraded to {next_rev_str}! Make your changes and export PDF.")
-            st.rerun()
+    packing_charges = c1.number_input("Packing & Loading (INR)", value=5000)
+    freight_charges = c2.number_input("Freight Charges (INR)", value=15000)
+    unloading_charges = c3.number_input("Unloading Charges (INR)", value=0)
+    crane_charges = c4.number_input("Crane Charges (INR)", value=0)
+    scaffolding_charges = c5.number_input("Scaffolding Charges (INR)", value=0)
 
     # --- PDF GENERATOR ---
     def generate_pdf():
@@ -509,7 +410,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         header_data = [
             [Paragraph("<b>Company Name</b>", small_bold), Paragraph(client_name, small_text), Paragraph("<b>Client ID:</b>", small_bold), Paragraph(client_id, small_bold)],
             [Paragraph("<b>Contact Details</b>", small_bold), Paragraph(contact_details, small_text), Paragraph("<b>Qtn Date:</b>", small_bold), Paragraph(str(qtn_date), small_text)],
-            [Paragraph("<b>Shipping Address</b>", small_bold), Paragraph(shipping_address, small_text), Paragraph("<b>Qtn Ref No:</b>", small_bold), Paragraph(full_qtn_ref_no, small_bold)],
+            [Paragraph("<b>Shipping Address</b>", small_bold), Paragraph(shipping_address, small_text), Paragraph("<b>Qtn Ref No:</b>", small_bold), Paragraph(qtn_ref_no, small_bold)],
             [Paragraph("<b>Billing Address</b>", small_bold), Paragraph(billing_address, small_text), Paragraph("<b>Sales Reference:</b>", small_bold), Paragraph(f"{sales_reference_1}<br/>{sales_reference_2}", small_text)],
             [Paragraph("<b>GSTIN</b>", small_bold), Paragraph(gstin, small_text), Paragraph("", small_text), Paragraph("", small_text)]
         ]
@@ -647,10 +548,13 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         ws["A2"].font = font_address
         ws["A2"].alignment = Alignment(horizontal="center")
 
+        ws.row_dimensions[1].height = 25
+        ws.row_dimensions[2].height = 18
+
         client_info = [
             [("Company Name:", font_header_bold), (client_name, font_regular), ("Client ID:", font_header_bold), (client_id, font_header_bold)],
             [("Contact Details:", font_header_bold), (contact_details, font_regular), ("Qtn Date:", font_header_bold), (str(qtn_date), font_regular)],
-            [("Shipping Address:", font_header_bold), (shipping_address, font_regular), ("Qtn Ref No:", font_header_bold), (full_qtn_ref_no, font_header_bold)],
+            [("Shipping Address:", font_header_bold), (shipping_address, font_regular), ("Qtn Ref No:", font_header_bold), (qtn_ref_no, font_header_bold)],
             [("Billing Address:", font_header_bold), (billing_address, font_regular), ("Sales Reference:", font_header_bold), (f"{sales_reference_1} / {sales_reference_2}", font_regular)],
             [("Client GSTIN:", font_header_bold), (gstin, font_regular), ("", font_regular), ("", font_regular)]
         ]
@@ -658,14 +562,20 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         curr_row = 4
         for row in client_info:
             ws.cell(row=curr_row, column=1, value=row[0][0]).font = row[0][1]
+            
             ws.merge_cells(start_row=curr_row, start_column=2, end_row=curr_row, end_column=5)
             ws.cell(row=curr_row, column=2, value=row[1][0]).font = row[1][1]
+            ws.cell(row=curr_row, column=2).alignment = align_left
+
             ws.cell(row=curr_row, column=6, value=row[2][0]).font = row[2][1]
+            
             ws.merge_cells(start_row=curr_row, start_column=7, end_row=curr_row, end_column=10)
             ws.cell(row=curr_row, column=7, value=row[3][0]).font = row[3][1]
+            ws.cell(row=curr_row, column=7).alignment = align_left
             
             for c in range(1, 11):
                 ws.cell(row=curr_row, column=c).border = thin_border
+            
             curr_row += 1
 
         curr_row += 1
@@ -678,6 +588,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             cell.alignment = align_center
             cell.border = thin_border
         
+        ws.row_dimensions[curr_row].height = 25
         curr_row += 1
 
         mat_grand_total = 0
@@ -746,6 +657,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         def add_summary_row(label, mat_val, inst_val, is_bold=False, is_fill=False):
             nonlocal curr_row
             ws.cell(row=curr_row, column=2, value=label).font = font_bold if is_bold else font_regular
+            ws.cell(row=curr_row, column=2).alignment = align_left
             
             if label == "Item Total":
                 ws.cell(row=curr_row, column=6, value=total_qty).font = font_bold
@@ -797,18 +709,16 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
 
     with col_pdf:
         if st.button("👁️ Preview PDF Quotation", type="primary", use_container_width=True):
-            save_current_revision_to_db("Generated PDF Preview")
             pdf_bytes = generate_pdf().getvalue()
             st.session_state["pdf_preview_bytes"] = pdf_bytes
 
     with col_excel:
         if st.button("📊 Generate Excel Quotation", use_container_width=True):
-            save_current_revision_to_db("Generated Excel Export")
             excel_buffer = generate_excel()
             st.download_button(
                 label="📥 Download Quotation Excel (.xlsx)",
                 data=excel_buffer,
-                file_name=f"Quotation_{full_qtn_ref_no.replace('/', '_')}.xlsx",
+                file_name=f"Quotation_{qtn_ref_no.replace('/', '_')}.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 use_container_width=True
             )
@@ -823,9 +733,9 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         c_dl, c_cls = st.columns([2, 1])
         with c_dl:
             st.download_button(
-                label=f"📥 Download Verified PDF Quotation ({full_qtn_ref_no})",
+                label="📥 Download Verified PDF Quotation",
                 data=pdf_data,
-                file_name=f"Quotation_{full_qtn_ref_no.replace('/', '_')}.pdf",
+                file_name=f"Quotation_{qtn_ref_no.replace('/', '_')}.pdf",
                 mime="application/pdf",
                 type="primary",
                 use_container_width=True
