@@ -744,7 +744,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
     crane_charges = c4.number_input("Crane Charges (INR)", value=0)
     scaffolding_charges = c5.number_input("Scaffolding Charges (INR)", value=0)
 
-    # --- PDF GENERATOR WITH UPDATED STYLING & ALIGNMENTS ---
+    # --- PDF GENERATOR WITH FIXED HEADER (NO UNICODE BOX GLITCHES) ---
     def generate_pdf():
         buffer = io.BytesIO()
 
@@ -759,7 +759,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story = []
         styles = getSampleStyleSheet()
 
-        # --- UPDATED HEADER HELPER FUNCTION (LOGO + VECTOR TEXT FOR CRISP QUALITY) ---
+        # --- UPDATED HEADER HELPER FUNCTION (NO UNICODE BOX GLITCHES) ---
         def get_header_element():
             # 1. Check for Logo Image
             logo_path = None
@@ -797,16 +797,16 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 textColor=colors.HexColor("#1E293B"),
             )
 
-            # 3. Right Side Information Details
+            # 3. Right Side Information Details (Clean Labels for Standard PDF Fonts)
             right_content = [
                 Paragraph("<b>GSTIN/UIN: 08AEEPJ6848R1ZN</b>", right_bold),
-                Paragraph("🌐 www.ssaapl.com", right_text),
-                Paragraph("✉️ sales@ssaapl.com", right_text),
-                Paragraph("📞 +91 90019 96526, +91 90010 42908", right_text),
-                Paragraph("📍 H-1-89, RIICO Ind. Area, Mansarovar,<br/>Jaipur, Rajasthan, 302020", right_text),
+                Paragraph("<b>Web:</b> www.ssaapl.com", right_text),
+                Paragraph("<b>Email:</b> sales@ssaapl.com", right_text),
+                Paragraph("<b>Ph:</b> +91 90019 96526, +91 90010 42908", right_text),
+                Paragraph("<b>Add:</b> H-1-89, RIICO Ind. Area, Mansarovar,<br/>Jaipur, Rajasthan, 302020", right_text),
             ]
 
-            # 4. Header Table Construction (Width total: 545pt for A4 printable region)
+            # 4. Header Table Construction
             t_head = Table([[logo_element, right_content]], colWidths=[200, 345])
             t_head.setStyle(
                 TableStyle([
@@ -821,7 +821,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             )
             return t_head
 
-        # --- STYLES FOR PDF (UPDATED DARK THEME FOR LINES & BORDERS) ---
+        # --- STYLES FOR PDF ---
         style_cover_meta = ParagraphStyle(
             "CoverMeta",
             parent=styles["Normal"],
@@ -890,7 +890,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story.append(Paragraph(sign_off_p1, style_cover_meta))
 
         # ==========================================
-        # 🏢 PAGE 2: SECTION A: ABOUT US & EXPERTISE (FULL PAGE COVERAGE)
+        # 🏢 PAGE 2: SECTION A: ABOUT US & EXPERTISE
         # ==========================================
         story.append(PageBreak())
         story.append(get_header_element())
@@ -963,7 +963,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         t_box.setStyle(
             TableStyle([
                 ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
-                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),  # BLACK BORDER
+                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
                 ("TOPPADDING", (0, 0), (-1, -1), 6),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
                 ("LEFTPADDING", (0, 0), (-1, -1), 8),
@@ -973,14 +973,13 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story.append(t_box)
         story.append(Spacer(1, 8))
 
-        # Bottom Portfolio Table with Dark Black/Slate Borders
         style_pf_header = ParagraphStyle(
             "PfHead",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
             fontSize=8.5,
             leading=10,
-            alignment=1, # Center Align
+            alignment=1,
             textColor=colors.HexColor("#000000"),
         )
         style_pf_col = ParagraphStyle(
@@ -989,7 +988,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=7.5,
             leading=9,
-            alignment=1, # Center Align
+            alignment=1,
             textColor=colors.HexColor("#1E293B"),
         )
         style_pf_body = ParagraphStyle(
@@ -998,7 +997,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica",
             fontSize=6.8,
             leading=8.5,
-            alignment=1, # Center Align
+            alignment=1,
             textColor=colors.HexColor("#334155"),
         )
 
@@ -1024,8 +1023,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 ("SPAN", (0, 0), (3, 0)),
                 ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E2E8F0")),
                 ("BACKGROUND", (0, 1), (-1, 1), colors.HexColor("#F1F5F9")),
-                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),  # BLACK BORDER
-                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),  # BLACK INNER GRID
+                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
+                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                 ("TOPPADDING", (0, 0), (-1, -1), 4),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
@@ -1053,7 +1052,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=8,
             leading=10,
-            alignment=0, # Left Align
+            alignment=0,
             textColor=colors.HexColor("#1E293B"),
         )
         small_bold_center = ParagraphStyle(
@@ -1061,7 +1060,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=8,
             leading=10,
-            alignment=1, # Center Align
+            alignment=1,
             textColor=colors.HexColor("#1E293B"),
         )
         small_bold_right = ParagraphStyle(
@@ -1069,7 +1068,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=8,
             leading=10,
-            alignment=2, # Right Align
+            alignment=2,
             textColor=colors.HexColor("#1E293B"),
         )
         small_text = ParagraphStyle(
@@ -1077,7 +1076,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica",
             fontSize=8,
             leading=10,
-            alignment=0, # Left Align
+            alignment=0,
             textColor=colors.HexColor("#334155"),
         )
         small_text_center = ParagraphStyle(
@@ -1085,7 +1084,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica",
             fontSize=8,
             leading=10,
-            alignment=1, # Center Align
+            alignment=1,
             textColor=colors.HexColor("#334155"),
         )
         small_text_right = ParagraphStyle(
@@ -1093,7 +1092,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica",
             fontSize=8,
             leading=10,
-            alignment=2, # Right Align
+            alignment=2,
             textColor=colors.HexColor("#334155"),
         )
 
@@ -1136,8 +1135,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         t_header.setStyle(
             TableStyle([
                 ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
-                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),  # BLACK BORDER
-                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#1E293B")),  # DARK GRID
+                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
+                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#1E293B")),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                 ("TOPPADDING", (0, 0), (-1, -1), 4),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
@@ -1146,7 +1145,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story.append(t_header)
         story.append(Spacer(1, 10))
 
-        # ITEMS & PRICING TABLE WITH SPECIFIC CELL ALIGNMENTS
         items_data = [[
             Paragraph("<b>Sr. No.</b>", small_bold_center),
             Paragraph("<b>Description</b>", small_bold),
@@ -1356,15 +1354,15 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         t_items.setStyle(
             TableStyle([
                 ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E2E8F0")),
-                ("BOX", (0, 0), (-1, -1), 1, colors.black),  # BLACK BORDER
-                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#334155")),  # DARK GRID
+                ("BOX", (0, 0), (-1, -1), 1, colors.black),
+                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#334155")),
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
             ])
         )
         story.append(t_items)
 
         # ==========================================
-        # ⚙️ PAGE 4: SECTION C: TECHNICAL SPECIFICATIONS (FULL COVERAGE)
+        # ⚙️ PAGE 4: SECTION C: TECHNICAL SPECIFICATIONS
         # ==========================================
         story.append(PageBreak())
         story.append(get_header_element())
@@ -1398,7 +1396,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=8,
             leading=10,
-            alignment=0, # Left Align
+            alignment=0,
             textColor=colors.HexColor("#000000"),
         )
         style_th_spec = ParagraphStyle(
@@ -1407,7 +1405,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=8,
             leading=10,
-            alignment=1, # Center Align
+            alignment=1,
             textColor=colors.HexColor("#000000"),
         )
         style_td_param = ParagraphStyle(
@@ -1416,7 +1414,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=7.2,
             leading=9,
-            alignment=0, # Left Align
+            alignment=0,
             textColor=colors.HexColor("#0F172A"),
         )
         style_td_spec = ParagraphStyle(
@@ -1425,7 +1423,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica",
             fontSize=7.2,
             leading=9,
-            alignment=0, # Left Align
+            alignment=0,
             textColor=colors.HexColor("#334155"),
         )
 
@@ -1444,8 +1442,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         t_tech.setStyle(
             TableStyle([
                 ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E2E8F0")),
-                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),  # BLACK BORDER
-                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),  # BLACK GRID
+                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
+                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                 ("TOPPADDING", (0, 0), (-1, -1), 2.5),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
@@ -1467,7 +1465,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story.append(Paragraph(tech_note_text, style_note_text))
 
         # ==========================================
-        # 📋 PAGE 5: SECTION D: TERMS & CONDITIONS (FULL COVERAGE)
+        # 📋 PAGE 5: SECTION D: TERMS & CONDITIONS
         # ==========================================
         story.append(PageBreak())
         story.append(get_header_element())
@@ -1501,7 +1499,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=7.5,
             leading=9.5,
-            alignment=0, # Left Align
+            alignment=0,
             textColor=colors.HexColor("#000000"),
         )
         style_tc_det = ParagraphStyle(
@@ -1510,7 +1508,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica",
             fontSize=7,
             leading=9,
-            alignment=0, # Left Align
+            alignment=0,
             textColor=colors.HexColor("#1E293B"),
         )
 
@@ -1526,8 +1524,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         t_terms = Table(terms_table_data, colWidths=[135, 410])
         t_terms.setStyle(
             TableStyle([
-                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),  # BLACK BORDER
-                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),  # BLACK INNER GRID
+                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
+                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                 ("TOPPADDING", (0, 0), (-1, -1), 3.5),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 3.5),
@@ -1537,7 +1535,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         )
         story.append(t_terms)
 
-        # Page 5 Bottom Sign-off Box to complete coverage
         story.append(Spacer(1, 10))
         style_sign_box = ParagraphStyle(
             "SignBox",
@@ -1570,7 +1567,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         buffer.seek(0)
         return buffer
 
-    # --- FORMATTED EXCEL GENERATOR WITH ALIGNMENTS & PATTERN FILLS ---
+    # --- FORMATTED EXCEL GENERATOR ---
     def generate_excel():
         wb = openpyxl.Workbook()
         ws = wb.active
@@ -1915,7 +1912,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 del st.session_state["pdf_preview_bytes"]
                 st.rerun()
 
-        # Render PDF pages as High-Resolution Images
         pdf = pdfium.PdfDocument(pdf_data)
         for i, page in enumerate(pdf):
             image = page.render(scale=2).to_pil()
