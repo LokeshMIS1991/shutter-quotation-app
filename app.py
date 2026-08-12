@@ -744,7 +744,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
     crane_charges = c4.number_input("Crane Charges (INR)", value=0)
     scaffolding_charges = c5.number_input("Scaffolding Charges (INR)", value=0)
 
-    # --- PDF GENERATOR ---
+    # --- PDF GENERATOR WITH UPDATED STYLING & ALIGNMENTS ---
     def generate_pdf():
         buffer = io.BytesIO()
 
@@ -821,7 +821,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             )
             return t_head
 
-        # --- STYLES FOR PDF (DARK THEME FOR LINES & BORDERS) ---
+        # --- STYLES FOR PDF (UPDATED DARK THEME FOR LINES & BORDERS) ---
         style_cover_meta = ParagraphStyle(
             "CoverMeta",
             parent=styles["Normal"],
@@ -980,7 +980,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=8.5,
             leading=10,
-            alignment=1,
+            alignment=1, # Center Align
             textColor=colors.HexColor("#000000"),
         )
         style_pf_col = ParagraphStyle(
@@ -989,7 +989,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=7.5,
             leading=9,
-            alignment=1,
+            alignment=1, # Center Align
             textColor=colors.HexColor("#1E293B"),
         )
         style_pf_body = ParagraphStyle(
@@ -998,7 +998,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica",
             fontSize=6.8,
             leading=8.5,
-            alignment=1,
+            alignment=1, # Center Align
             textColor=colors.HexColor("#334155"),
         )
 
@@ -1053,6 +1053,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=8,
             leading=10,
+            alignment=0, # Left Align
             textColor=colors.HexColor("#1E293B"),
         )
         small_bold_center = ParagraphStyle(
@@ -1060,7 +1061,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=8,
             leading=10,
-            alignment=1,
+            alignment=1, # Center Align
             textColor=colors.HexColor("#1E293B"),
         )
         small_bold_right = ParagraphStyle(
@@ -1068,7 +1069,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=8,
             leading=10,
-            alignment=2,
+            alignment=2, # Right Align
             textColor=colors.HexColor("#1E293B"),
         )
         small_text = ParagraphStyle(
@@ -1076,6 +1077,15 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica",
             fontSize=8,
             leading=10,
+            alignment=0, # Left Align
+            textColor=colors.HexColor("#334155"),
+        )
+        small_text_center = ParagraphStyle(
+            "SmallTextCenter",
+            fontName="Helvetica",
+            fontSize=8,
+            leading=10,
+            alignment=1, # Center Align
             textColor=colors.HexColor("#334155"),
         )
         small_text_right = ParagraphStyle(
@@ -1083,7 +1093,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica",
             fontSize=8,
             leading=10,
-            alignment=2,
+            alignment=2, # Right Align
             textColor=colors.HexColor("#334155"),
         )
 
@@ -1136,7 +1146,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story.append(t_header)
         story.append(Spacer(1, 10))
 
-        # ITEMS & PRICING TABLE (BLACK BORDERS)
+        # ITEMS & PRICING TABLE WITH SPECIFIC CELL ALIGNMENTS
         items_data = [[
             Paragraph("<b>Sr. No.</b>", small_bold_center),
             Paragraph("<b>Description</b>", small_bold),
@@ -1186,12 +1196,12 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             desc = "<br/>".join(desc_lines)
 
             items_data.append([
-                Paragraph(str(i + 1), small_text),
+                Paragraph(str(i + 1), small_text_center),
                 Paragraph(desc, small_text),
-                Paragraph(itm.get("hsn", "-"), small_text),
-                Paragraph(str(itm.get("width", "-")), small_text),
-                Paragraph(str(itm.get("height", "-")), small_text),
-                Paragraph(str(itm.get("qty", "-")), small_text),
+                Paragraph(itm.get("hsn", "-"), small_text_center),
+                Paragraph(str(itm.get("width", "-")), small_text_center),
+                Paragraph(str(itm.get("height", "-")), small_text_center),
+                Paragraph(str(itm.get("qty", "-")), small_text_center),
                 Paragraph(f"{itm.get('mat_rate', 0):,}", small_text_right),
                 Paragraph(f"{m_amt:,}", small_text_right),
                 Paragraph(f"{itm.get('inst_rate', 0):,}", small_text_right),
@@ -1388,7 +1398,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=8,
             leading=10,
-            alignment=0,
+            alignment=0, # Left Align
             textColor=colors.HexColor("#000000"),
         )
         style_th_spec = ParagraphStyle(
@@ -1397,7 +1407,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=8,
             leading=10,
-            alignment=1,
+            alignment=1, # Center Align
             textColor=colors.HexColor("#000000"),
         )
         style_td_param = ParagraphStyle(
@@ -1406,6 +1416,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=7.2,
             leading=9,
+            alignment=0, # Left Align
             textColor=colors.HexColor("#0F172A"),
         )
         style_td_spec = ParagraphStyle(
@@ -1414,6 +1425,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica",
             fontSize=7.2,
             leading=9,
+            alignment=0, # Left Align
             textColor=colors.HexColor("#334155"),
         )
 
@@ -1489,7 +1501,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=7.5,
             leading=9.5,
-            alignment=0,
+            alignment=0, # Left Align
             textColor=colors.HexColor("#000000"),
         )
         style_tc_det = ParagraphStyle(
@@ -1498,6 +1510,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica",
             fontSize=7,
             leading=9,
+            alignment=0, # Left Align
             textColor=colors.HexColor("#1E293B"),
         )
 
@@ -1557,7 +1570,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         buffer.seek(0)
         return buffer
 
-    # --- FORMATTED EXCEL GENERATOR ---
+    # --- FORMATTED EXCEL GENERATOR WITH ALIGNMENTS & PATTERN FILLS ---
     def generate_excel():
         wb = openpyxl.Workbook()
         ws = wb.active
