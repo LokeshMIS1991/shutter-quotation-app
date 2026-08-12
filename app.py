@@ -171,6 +171,61 @@ DEFAULT_TECH_SPECS = [
 if "tech_specs_data" not in st.session_state:
     st.session_state["tech_specs_data"] = DEFAULT_TECH_SPECS.copy()
 
+# DEFAULT TERMS & CONDITIONS FOR SECTION D (PAGE 5)
+DEFAULT_TERMS = [
+    {
+        "category": "Unloading & Handling",
+        "details": "• Unloading of Material will be in client scope.\n• Civil work will be in client scope.\n• Scaffolding (Height arrangament) will be in client scope.\n• Hydra, crane will be in client scope."
+    },
+    {
+        "category": "Storage & Material Handling",
+        "details": "• Safe storage of materials at site until installation.\n• Material checking with the packing list and shifting the consignment to the installation location will be done by client side."
+    },
+    {
+        "category": "Site Material Security",
+        "details": "• Any shortage of material due to pilferage, misplacement, etc., at the site during installation will be borne by the client."
+    },
+    {
+        "category": "Material Deterioration",
+        "details": "• In case of prolonged storage at site/warehouse, any refurbishment due to weathering (e.g., rust removal, re-painting, etc.) shall be in the client's scope."
+    },
+    {
+        "category": "Electrical Work",
+        "details": "• Electrical wiring for providing single/three-phase AC supply through a separate MCB up to the installation point shall be done by the client.\n• Sockets and provision of a free electric point should be made available near the work/installation area within 10 meters.\n• All cables, conduits, and cable trays required for the installation of accessories will be supplied and laid by the client.\n• If permanent power supply is not available at the time of installation, our team will check the connection using a temporary supply and complete the handover accordingly."
+    },
+    {
+        "category": "Power Quality",
+        "details": "• Client shall provide a stabilized and uninterrupted power supply."
+    },
+    {
+        "category": "Site Visits",
+        "details": "• Our team will visit the site for installation a maximum of 2 times.\n• Any additional visits required will incur extra charges:\n   ~ ₹2,000/- per person per visit\n   ~ Both-side travel expenses to be borne by the client"
+    },
+    {
+        "category": "Warranty",
+        "details": "• Warranty for the automation system will be provided against manufacturing defects for a period of 12 months from the date of installation or 13 months from the date of invoice, whichever is earlier."
+    },
+    {
+        "category": "Payment Terms",
+        "details": "• 75% Advance along with the Purchase Order.\n• 25% before material dispatch, against proforma invoice."
+    },
+    {
+        "category": "Delivery Terms",
+        "details": "• For at Site: Freight charges mentioned in the offer are valid for one-time delivery only and not applicable for partial shipments"
+    },
+    {
+        "category": "Delivery Schedule",
+        "details": "• 2 weeks from the date of drawing approval or receipt of advance payment whichever is later"
+    },
+    {
+        "category": "Validity Of Offer",
+        "details": "• This offer is valid for 20 days from the date of issue"
+    }
+]
+
+if "terms_data" not in st.session_state:
+    st.session_state["terms_data"] = DEFAULT_TERMS.copy()
+
 # ==============================================================================
 # PAGE 1: HOME / LANDING PAGE
 # ==============================================================================
@@ -377,6 +432,21 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "Footer Note Text",
             "Note: Technical specifications are subject to final site measurements and drawing approval. Custom configurations can be engineered to suit the precise dimensions of your facility opening."
         )
+
+    # --- SECTION D: TERMS & CONDITIONS CUSTOMIZATION IN EXPANDER ---
+    with st.expander("📄 Page 5: Section D - Terms & Conditions Customization", expanded=False):
+        st.markdown("Edit the Annexure - Terms & Conditions entries below:")
+        exclusions_subhead = st.text_input("Sub-Header Title", "Exclusions - Client Scope")
+        
+        updated_terms = []
+        for idx, term in enumerate(st.session_state["terms_data"]):
+            st.markdown(f"**Term Block #{idx+1}**")
+            col_tc, col_td = st.columns([1, 2])
+            c_val = col_tc.text_input(f"Category #{idx+1}", value=term["category"], key=f"tc_cat_{idx}")
+            d_val = col_td.text_area(f"Details #{idx+1}", value=term["details"], height=80, key=f"tc_det_{idx}")
+            updated_terms.append({"category": c_val, "details": d_val})
+        
+        st.session_state["terms_data"] = updated_terms
 
     with st.expander("📥 Bulk Import Specifications", expanded=False):
         st.markdown(
@@ -1380,6 +1450,76 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             textColor=colors.HexColor("#475569"),
         )
         story.append(Paragraph(tech_note_text, style_note_text))
+
+        # ==========================================
+        # 📋 PAGE 5: SECTION D: ANNEXURE – TERMS & CONDITION
+        # ==========================================
+        story.append(PageBreak())
+        story.append(get_header_element())
+        story.append(Spacer(1, 8))
+        story.append(
+            HRFlowable(
+                width="100%",
+                thickness=1.5,
+                color=colors.HexColor("#0D2A72"),
+                spaceAfter=10,
+            )
+        )
+
+        story.append(Paragraph("Section D: Annexure – Terms & Condition", style_sec_title))
+        story.append(Spacer(1, 6))
+
+        style_subhead = ParagraphStyle(
+            "SubHeadEx",
+            parent=styles["Normal"],
+            fontName="Helvetica-Bold",
+            fontSize=9.5,
+            leading=12,
+            textColor=colors.HexColor("#0F172A"),
+        )
+        story.append(Paragraph(f"<b>{exclusions_subhead}</b>", style_subhead))
+        story.append(Spacer(1, 8))
+
+        style_tc_cat = ParagraphStyle(
+            "TcCat",
+            parent=styles["Normal"],
+            fontName="Helvetica-Bold",
+            fontSize=8,
+            leading=10,
+            alignment=0,
+            textColor=colors.HexColor("#0F172A"),
+        )
+        style_tc_det = ParagraphStyle(
+            "TcDet",
+            parent=styles["Normal"],
+            fontName="Helvetica",
+            fontSize=7.5,
+            leading=9.5,
+            textColor=colors.HexColor("#334155"),
+        )
+
+        terms_table_data = []
+
+        for term in st.session_state["terms_data"]:
+            details_formatted = term["details"].replace("\n", "<br/>").replace("•", "&bull;")
+            terms_table_data.append([
+                Paragraph(f"<b>{term['category']}</b>", style_tc_cat),
+                Paragraph(details_formatted, style_tc_det)
+            ])
+
+        t_terms = Table(terms_table_data, colWidths=[140, 405])
+        t_terms.setStyle(
+            TableStyle([
+                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#3B82F6")),
+                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#93C5FD")),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("TOPPADDING", (0, 0), (-1, -1), 4),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ("LEFTPADDING", (0, 0), (-1, -1), 6),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+            ])
+        )
+        story.append(t_terms)
 
         doc.build(story)
         buffer.seek(0)
