@@ -759,80 +759,67 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story = []
         styles = getSampleStyleSheet()
 
-        # --- HEADER IMAGE HELPER ---
+        # --- UPDATED HEADER HELPER FUNCTION (LOGO + VECTOR TEXT FOR CRISP QUALITY) ---
         def get_header_element():
-            header_img_source = None
-            for possible_path in [
-                "Header.jpg",
-                "header.jpg",
-                "Header.png",
-                "header.png",
-                "Header.jpeg",
-            ]:
+            # 1. Check for Logo Image
+            logo_path = None
+            for possible_path in ["Logo.jpeg", "logo.jpeg", "Logo.png", "logo.png", "Logo.jpg", "logo.jpg"]:
                 if os.path.exists(possible_path):
-                    header_img_source = possible_path
+                    logo_path = possible_path
                     break
-            if not header_img_source:
-                header_img_source = "https://raw.githubusercontent.com/LokeshMIS1991/shutter-quotation-app/main/Header.jpg"
+                    
+            if logo_path:
+                try:
+                    logo_element = RLImage(logo_path, width=180, height=60)
+                except Exception:
+                    logo_element = Paragraph("<b>SIDHARTH</b><br/><font size=7>SHUTTER & AUTOMATION</font>", styles["Normal"])
+            else:
+                logo_element = Paragraph("<b>SIDHARTH</b><br/><font size=7>SHUTTER & AUTOMATION</font>", styles["Normal"])
 
-            try:
-                return RLImage(header_img_source, width=545, height=88)
-            except Exception:
-                title_style = ParagraphStyle(
-                    "HeadTitle",
-                    parent=styles["Normal"],
-                    fontName="Helvetica-Bold",
-                    fontSize=16,
-                    leading=18,
-                    textColor=colors.HexColor("#000000"),
-                )
-                subtitle_style = ParagraphStyle(
-                    "HeadSubTitle",
-                    parent=styles["Normal"],
-                    fontName="Helvetica-Bold",
-                    fontSize=7.5,
-                    leading=9,
-                    textColor=colors.HexColor("#1E293B"),
-                )
-                right_bold = ParagraphStyle(
-                    "HeadRightBold",
-                    parent=styles["Normal"],
-                    fontName="Helvetica-Bold",
-                    fontSize=8,
-                    leading=10,
-                    alignment=2,
-                    textColor=colors.black,
-                )
-                right_text = ParagraphStyle(
-                    "HeadRightText",
-                    parent=styles["Normal"],
-                    fontName="Helvetica",
-                    fontSize=7.5,
-                    leading=9,
-                    alignment=2,
-                    textColor=colors.HexColor("#333333"),
-                )
+            # 2. Right Side Vector Text Styles
+            right_bold = ParagraphStyle(
+                "HeadRightBold",
+                parent=styles["Normal"],
+                fontName="Helvetica-Bold",
+                fontSize=8.5,
+                leading=11,
+                alignment=2,  # Right align
+                textColor=colors.HexColor("#000000"),
+            )
+            
+            right_text = ParagraphStyle(
+                "HeadRightText",
+                parent=styles["Normal"],
+                fontName="Helvetica",
+                fontSize=7.5,
+                leading=10,
+                alignment=2,  # Right align
+                textColor=colors.HexColor("#1E293B"),
+            )
 
-                left_content = [
-                    Paragraph("Sidharth", title_style),
-                    Paragraph("SHUTTER & AUTOMATION PVT. LTD.", subtitle_style),
-                ]
-                right_content = [
-                    Paragraph("<b>GSTIN/UIN: 08AEEPJ6848R1ZN</b>", right_bold),
-                    Paragraph("🌐 www.ssaapl.com", right_text),
-                    Paragraph("✉️ sales@ssaapl.com", right_text),
-                    Paragraph("📞 +91 90019 96526, +91 90010 42908", right_text),
-                    Paragraph(
-                        "📍 H-1-89, RIICO Ind. Area, Mansarovar,<br/>Jaipur, Rajasthan,"
-                        " 302020",
-                        right_text,
-                    ),
-                ]
-                t_head = Table([[left_content, right_content]], colWidths=[270, 275])
-                t_head.setStyle(
-                    TableStyle([("VALIGN", (0, 0), (-1, -1), "MIDDLE")])
-                )
-                return t_head
+            # 3. Right Side Information Details
+            right_content = [
+                Paragraph("<b>GSTIN/UIN: 08AEEPJ6848R1ZN</b>", right_bold),
+                Paragraph("🌐 www.ssaapl.com", right_text),
+                Paragraph("✉️ sales@ssaapl.com", right_text),
+                Paragraph("📞 +91 90019 96526, +91 90010 42908", right_text),
+                Paragraph("📍 H-1-89, RIICO Ind. Area, Mansarovar,<br/>Jaipur, Rajasthan, 302020", right_text),
+            ]
+
+            # 4. Header Table Construction (Width total: 545pt for A4 printable region)
+            t_head = Table([[logo_element, right_content]], colWidths=[200, 345])
+            t_head.setStyle(
+                TableStyle([
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                    ("ALIGN", (0, 0), (0, 0), "LEFT"),
+                    ("ALIGN", (1, 0), (1, 0), "RIGHT"),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                    ("TOPPADDING", (0, 0), (-1, -1), 0),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+                ])
+            )
+            return t_head
 
         # --- STYLES FOR PDF (DARK THEME FOR LINES & BORDERS) ---
         style_cover_meta = ParagraphStyle(
