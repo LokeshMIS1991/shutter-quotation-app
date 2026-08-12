@@ -270,12 +270,13 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
       "Sales Reference 2", "Mr. Jeevan Sharma (9828771899)"
   )
 
-  # --- PAGE 1: COVER LETTER DETAILS IN EXPANDER ---
-  with st.expander("📄 Page 1: Cover Letter & Subject Customization", expanded=False):
-    qtn_subject = st.text_input(
-        "Quotation Subject Line",
-        "Quotation for Supply & Installation of Motorized / Manual Rolling Shutters",
-    )
+  # NAYA FIELD: Quotation Prepared By
+  quotation_made_by = st.sidebar.text_input(
+      "Quotation Made By", "Lokesh MIS"
+  )
+
+  # --- PAGE 1: COVER LETTER INTRO BODY IN EXPANDER ---
+  with st.expander("📄 Page 1: Cover Letter Text Customization", expanded=False):
     cover_body_text = st.text_area(
         "Cover Letter Intro Body",
         "Dear Sir/Madam,\n\n"
@@ -283,7 +284,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         "we are pleased to submit our best competitive offer for the same.\n\n"
         "We assure you the best quality standards, timely delivery, and professional installation services. "
         "Please find our commercial and technical details attached herewith for your kind perusal.",
-        height=120,
+        height=140,
     )
 
   with st.expander("📥 Bulk Import Specifications", expanded=False):
@@ -581,7 +582,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
   crane_charges = c4.number_input("Crane Charges (INR)", value=0)
   scaffolding_charges = c5.number_input("Scaffolding Charges (INR)", value=0)
 
-  # --- PDF GENERATOR (WITH INTEGRATED PAGE 1 COVER LETTER + PAGE 2 COMMERCIAL OFFER) ---
+  # --- PDF GENERATOR ---
   def generate_pdf():
     buffer = io.BytesIO()
 
@@ -679,16 +680,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         leading=14,
         textColor=colors.HexColor("#1E293B"),
     )
-    style_cover_subject = ParagraphStyle(
-        "CoverSubject",
-        parent=styles["Heading2"],
-        fontSize=10.5,
-        leading=15,
-        textColor=colors.HexColor("#0D2A72"),
-        fontName="Helvetica-Bold",
-        spaceBefore=12,
-        spaceAfter=12,
-    )
     style_cover_body = ParagraphStyle(
         "CoverBody",
         parent=styles["Normal"],
@@ -717,7 +708,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         f" <b>Date:</b> {qtn_date}"
     )
     story.append(Paragraph(meta_text, style_cover_meta))
-    story.append(Spacer(1, 12))
+    story.append(Spacer(1, 15))
 
     ship_formatted = shipping_address.replace("\n", "<br/>")
     client_info_p1 = (
@@ -728,25 +719,24 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         f"<b>Contact:</b> {contact_details}"
     )
     story.append(Paragraph(client_info_p1, style_cover_meta))
-    story.append(Spacer(1, 10))
-
-    story.append(Paragraph(f"<u>Sub: {qtn_subject}</u>", style_cover_subject))
+    story.append(Spacer(1, 20))
 
     body_formatted = cover_body_text.replace("\n", "<br/>")
     story.append(Paragraph(body_formatted, style_cover_body))
-    story.append(Spacer(1, 25))
+    story.append(Spacer(1, 35))
 
+    # UPDATED SIGN-OFF: Uses 'quotation_made_by'
     sign_off_p1 = (
         "<b>For SIDHARTH SHUTTER & AUTOMATION PVT. LTD.</b><br/><br/><br/>"
         f"<b>Authorized Signatory</b><br/>"
-        f"Sales Ref: {sales_reference_1}"
+        f"<b>({quotation_made_by})</b>"
     )
     story.append(Paragraph(sign_off_p1, style_cover_meta))
 
     # ==========================================
     # 🧱 PAGE 2: COMMERCIAL OFFER & PRICING TABLE
     # ==========================================
-    story.append(PageBreak())  # Force PageBreak to move to Page 2
+    story.append(PageBreak())  # PageBreak to Page 2
     story.append(get_header_element())
     story.append(Spacer(1, 10))
 
@@ -1133,8 +1123,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         [
             ("Client GSTIN:", font_header_bold),
             (gstin, font_regular),
-            ("", font_regular),
-            ("", font_regular),
+            ("Quotation Made By:", font_header_bold),
+            (quotation_made_by, font_header_bold),
         ],
     ]
 
@@ -1382,7 +1372,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
           use_container_width=True,
       )
 
-  # --- CHROME-SAFE PDF PREVIEW AND DOWNLOAD SECTION ---
+  # --- PDF PREVIEW AND DOWNLOAD SECTION ---
   if "pdf_preview_bytes" in st.session_state:
     st.markdown("---")
     st.markdown("### 🔍 PDF Quotation Preview & Download")
