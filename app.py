@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image as RLImage
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import io
 import json
@@ -389,57 +389,81 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
     crane_charges = c4.number_input("Crane Charges (INR)", value=0)
     scaffolding_charges = c5.number_input("Scaffolding Charges (INR)", value=0)
 
-    # --- PDF GENERATOR ---
+    # --- PDF GENERATOR (WITH GUARANTEED IMAGE HEADER) ---
     def generate_pdf():
         buffer = io.BytesIO()
         
-        # Document Setup with updated margins
         doc = SimpleDocTemplate(
             buffer,
             pagesize=A4,
             leftMargin=20,
             rightMargin=20,
-            topMargin=20,
-            bottomMargin=20
+            topMargin=15,
+            bottomMargin=15
         )
         story = []
-        
         styles = getSampleStyleSheet()
         
-        # --- HEAD SECTION UPDATES: PDF Header & Client Info Styles ---
-        header_title_style = ParagraphStyle(
-            'HeaderTitle',
-            parent=styles['Normal'],
-            fontName='Helvetica-Bold',
-            fontSize=13,
-            leading=15,
-            alignment=1,
-            textColor=colors.HexColor('#0F172A')
-        )
+        # --- 1. HEADER SECTION (LOCAL / GITHUB RAW IMAGE LOAD) ---
+        header_img_source = None
         
-        header_sub_style = ParagraphStyle(
-            'HeaderSub',
-            parent=styles['Normal'],
-            fontName='Helvetica',
-            fontSize=8,
-            leading=10,
-            alignment=1,
-            textColor=colors.HexColor('#475569')
-        )
+        # Check local path options
+        for possible_path in ["Header.jpg", "header.jpg", "Header.png", "header.png", "Header.jpeg"]:
+            if os.path.exists(possible_path):
+                header_img_source = possible_path
+                break
         
+        # Fallback to direct raw GitHub link if server environment cannot access relative file
+        if not header_img_source:
+            header_img_source = "https://raw.githubusercontent.com/LokeshMIS1991/shutter-quotation-app/main/Header.jpg"
+
+        try:
+            header_img = RLImage(header_img_source, width=555, height=90)
+            story.append(header_img)
+            story.append(Spacer(1, 10))
+        except Exception:
+            # Fallback styled layout matching Header.jpg structure
+            title_style = ParagraphStyle('HeadTitle', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=16, leading=18, textColor=colors.HexColor('#0D2A72'))
+            subtitle_style = ParagraphStyle('HeadSubTitle', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=7.5, leading=9, textColor=colors.HexColor('#0D2A72'))
+            right_bold = ParagraphStyle('HeadRightBold', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=8, leading=10, alignment=2, textColor=colors.black)
+            right_text = ParagraphStyle('HeadRightText', parent=styles['Normal'], fontName='Helvetica', fontSize=7.5, leading=9, alignment=2, textColor=colors.HexColor('#333333'))
+
+            left_content = [
+                Paragraph("Sidharth", title_style),
+                Paragraph("SHUTTER & AUTOMATION PVT. LTD.", subtitle_style)
+            ]
+            
+            right_content = [
+                Paragraph("<b>GSTIN/UIN: 08AEEPJ6848R1ZN</b>", right_bold),
+                Paragraph("🌐 www.ssaapl.com", right_text),
+                Paragraph("✉️ sales@ssaapl.com", right_text),
+                Paragraph("📞 +91 90019 96526, +91 90010 42908", right_text),
+                Paragraph("📍 H-1-89, RIICO Ind. Area, Mansarovar,<br/>Jaipur, Rajasthan, 302020", right_text)
+            ]
+
+            t_head = Table([[left_content, right_content]], colWidths=[270, 285])
+            t_head.setStyle(TableStyle([
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+            ]))
+            story.append(t_head)
+
+            line_table = Table([['']], colWidths=[555], rowHeights=[3])
+            line_table.setStyle(TableStyle([
+                ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#0D2A72')),
+                ('TOPPADDING', (0,0), (-1,-1), 0),
+                ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+            ]))
+            story.append(line_table)
+            story.append(Spacer(1, 10))
+
+        # --- 2. CLIENT & PROPOSAL DETAILS ---
         small_bold = ParagraphStyle('SmallBold', fontName='Helvetica-Bold', fontSize=8, leading=10, textColor=colors.HexColor('#1E293B'))
-        small_bold_right = ParagraphStyle('SmallBoldRight', fontName='Helvetica-Bold', fontSize=8, leading=10, alignment=2, textColor=colors.HexColor('#1E293B'))
         small_bold_center = ParagraphStyle('SmallBoldCenter', fontName='Helvetica-Bold', fontSize=8, leading=10, alignment=1, textColor=colors.HexColor('#1E293B'))
+        small_bold_right = ParagraphStyle('SmallBoldRight', fontName='Helvetica-Bold', fontSize=8, leading=10, alignment=2, textColor=colors.HexColor('#1E293B'))
         small_text = ParagraphStyle('SmallText', fontName='Helvetica', fontSize=8, leading=10, textColor=colors.HexColor('#334155'))
         small_text_right = ParagraphStyle('SmallTextRight', fontName='Helvetica', fontSize=8, leading=10, alignment=2, textColor=colors.HexColor('#334155'))
 
-        # Header Title Banner
-        story.append(Paragraph("SIDHARTH SHUTTER & AUTOMATION PRIVATE LIMITED", header_title_style))
-        story.append(Spacer(1, 2))
-        story.append(Paragraph("G-1-66, Industrial Area, Prahaladpura, Sanganer, Jaipur, Rajasthan, 303903", header_sub_style))
-        story.append(Spacer(1, 10))
-
-        # Head Section: Formatted Client Details Table
         header_data = [
             [Paragraph("<b>Company Name</b>", small_bold), Paragraph(client_name, small_text), Paragraph("<b>Client ID:</b>", small_bold), Paragraph(client_id, small_bold)],
             [Paragraph("<b>Contact Details</b>", small_bold), Paragraph(contact_details, small_text), Paragraph("<b>Qtn Date:</b>", small_bold), Paragraph(str(qtn_date), small_text)],
@@ -460,7 +484,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story.append(t_header)
         story.append(Spacer(1, 10))
 
-        # --- ITEMS & PRICING TABLE ---
+        # --- 3. ITEMS & PRICING TABLE ---
         items_data = [[
             Paragraph("<b>Sr. No.</b>", small_bold_center),
             Paragraph("<b>Description</b>", small_bold),
@@ -556,7 +580,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         ws = wb.active
         ws.title = "Quotation"
 
-        font_company = Font(name="Calibri", size=14, bold=True, color="1A365D")
+        font_company = Font(name="Calibri", size=14, bold=True, color="0D2A72")
         font_address = Font(name="Calibri", size=9, italic=True)
         font_header_bold = Font(name="Calibri", size=10, bold=True)
         font_regular = Font(name="Calibri", size=9)
@@ -582,7 +606,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         ws["A1"].alignment = Alignment(horizontal="center")
 
         ws.merge_cells("A2:J2")
-        ws["A2"] = "G-1-66, Industrial Area, Prahaladpura, Sanganer, Jaipur, Rajasthan, 303903"
+        ws["A2"] = "GSTIN: 08AEEPJ6848R1ZN | www.ssaapl.com | sales@ssaapl.com | H-1-89, RIICO Ind. Area, Mansarovar, Jaipur"
         ws["A2"].font = font_address
         ws["A2"].alignment = Alignment(horizontal="center")
 
@@ -783,7 +807,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 del st.session_state["pdf_preview_bytes"]
                 st.rerun()
 
-        # Render PDF pages as High-Resolution Images (Fixed for latest Streamlit version)
+        # Render PDF pages as High-Resolution Images
         pdf = pdfium.PdfDocument(pdf_data)
         for i, page in enumerate(pdf):
             image = page.render(scale=2).to_pil()
