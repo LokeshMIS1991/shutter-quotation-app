@@ -26,7 +26,7 @@ st.markdown(
     
     /* Welcome Header Banner */
     .welcome-header {
-        background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         padding: 35px 25px;
         border-radius: 16px;
         color: white;
@@ -59,8 +59,8 @@ st.markdown(
         margin-bottom: 15px;
     }
     .product-card:hover {
-        border-color: #2563eb;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        border-color: #0f172a;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
     }
     
     .stButton>button {
@@ -145,81 +145,75 @@ SHUTTER_CATEGORIES = [
     "Manual Rolling Shutter",
 ]
 
-# DEFAULT TECH SPECS FOR SECTION C (PAGE 4)
+# EXTENDED TECH SPECS FOR SECTION C (PAGE 4) TO FILL PAGE
 DEFAULT_TECH_SPECS = [
-    {"param": "Shutter Type", "spec": "Motorized Rolling Shutter"},
-    {"param": "Slat Type", "spec": "Single Skin Curved Interlocking Galvanized Steel Slats"},
-    {"param": "Slat Material", "spec": "Galvanized Steel (GI)"},
-    {"param": "Slat Thickness", "spec": "0.90 mm"},
-    {"param": "Slat Height", "spec": "78 mm"},
-    {"param": "Surface Finish", "spec": "Powder Coated in Standard RAL Colour (As Approved)"},
-    {"param": "Curtain Construction", "spec": "Single Skin Interlocking Curved Slats with End Locks"},
-    {"param": "Support Brackets", "spec": "Fabricated from 5 mm Thick HR Steel Plate"},
-    {"param": "Shaft Assembly", "spec": "Heavy Duty MS Pipe Shaft designed as per shutter size and loading, complete with suitable bearings and mounting arrangement."},
-    {"param": "Side Guides", "spec": "Heavy Duty TG Guide fabricated from 2 mm Thick Steel with Rubber Seal"},
-    {"param": "Bottom Profile", "spec": "Heavy Duty 2 mm Thick HR Steel Bottom Rail fitted with EPDM seals"},
-    {"param": "Motor", "spec": "Side Mounted Motor Brand Strong Life Indirect Drive, CE Certified."},
-    {"param": "Operation", "spec": "Push Button Station with Open/Close/Stop Function"},
-    {"param": "Limit Switch", "spec": "Adjustable Electro-Mechanical Limit Switch for precise opening and closing"},
-    {"param": "Safety Features", "spec": "Manual Override for emergency operation"},
-    {"param": "Hood Cover", "spec": "0.80 mm Thick Galvanized Steel Hood and Motor Cover with reinforced support brackets"},
-    {"param": "Locking Arrangement", "spec": "Not Applicable (Motorized Operation)"},
-    {"param": "Fasteners", "spec": "Zinc Plated / Galvanized High Tensile Fasteners"},
-    {"param": "Colour", "spec": "Standard RAL Shade as approved by the client"},
+    {"param": "Shutter Type", "spec": "Motorized Heavy Duty Industrial Rolling Shutter"},
+    {"param": "Slat Type", "spec": "Single Skin Curved Interlocking Galvanized / Galvalume Steel Slats"},
+    {"param": "Slat Material", "spec": "Galvanized Steel (GI) / Galvalume Alloy High Tensile Grade"},
+    {"param": "Slat Thickness", "spec": "0.90 mm to 1.20 mm Heavy Gauge Option"},
+    {"param": "Slat Height", "spec": "78 mm / 90 mm profile pitch with anti-vibration design"},
+    {"param": "Surface Finish", "spec": "Pure Polyester Outdoor Powder Coating in Standard RAL Shade (60-80 microns)"},
+    {"param": "Curtain Construction", "spec": "Interlocking curved profile continuous slats with heavy nylon end locks to prevent lateral movement"},
+    {"param": "Support Brackets", "spec": "Laser-cut fabricated from 5 mm to 8 mm Thick HR Steel Plates with structural gussets"},
+    {"param": "Shaft Assembly", "spec": "Heavy Duty Seamless MS Pipe Shaft designed for zero deflection, with self-aligning sealed bearings"},
+    {"param": "Side Guides", "spec": "Heavy Duty TG Guide fabricated from 2.0 mm / 2.5 mm Thick Galvanized Steel with continuous EPDM rubber seals"},
+    {"param": "Bottom Profile", "spec": "Heavy Duty 2.5 mm Thick HR Steel Bottom Angle/Rail with weather-resistant EPDM bottom seal"},
+    {"param": "Drive Motor Unit", "spec": "Side Mounted Heavy Duty Motor, Brand: Strong Life / Sidharth Make, CE Certified, IP54 rated"},
+    {"param": "Operation Control", "spec": "Heavy Duty 3-Station Push Button Station (Open/Close/Stop) with Key Lock Box option"},
+    {"param": "Limit Switch System", "spec": "Dual Electro-Mechanical Micro Limit Switches for precise high-accuracy height limit regulation"},
+    {"param": "Safety Emergency System", "spec": "Manual Hand Chain / Crank Override System for operation during power failure"},
+    {"param": "Wind Resistance", "spec": "Engineered to withstand Class 3/4 wind pressure (Up to 120 km/h) with wind lock attachments"},
+    {"param": "Hood Cover Unit", "spec": "0.80 mm Thick Galvanized Steel Protective Hood & Motor Enclosure with rigid support framing"},
+    {"param": "Control Panel & Supply", "spec": "IP65 Rated Control Box with integrated Thermal Overload Protection & Phase Reversing Relay"},
+    {"param": "Locking Arrangement", "spec": "Electrical Self-Locking Gear Mechanism (Optional Mechanical Side Locks for dual security)"},
+    {"param": "Fasteners & Hardware", "spec": "High Tensile Zinc-Plated / Hot-Dip Galvanized Fasteners & Anchor Expansion Bolts"},
+    {"param": "Operating Temp & Cycle", "spec": "-10°C to +55°C Ambient Operating Range; Designed for Heavy Continuous Industrial Cycles"},
 ]
 
 if "tech_specs_data" not in st.session_state:
     st.session_state["tech_specs_data"] = DEFAULT_TECH_SPECS.copy()
 
-# DEFAULT TERMS & CONDITIONS FOR SECTION D (PAGE 5)
+# EXTENDED TERMS & CONDITIONS FOR SECTION D (PAGE 5) TO FILL PAGE
 DEFAULT_TERMS = [
     {
         "category": "Unloading & Handling",
-        "details": "• Unloading of Material will be in client scope.\n• Civil work will be in client scope.\n• Scaffolding (Height arrangament) will be in client scope.\n• Hydra, crane will be in client scope."
+        "details": "• Unloading of material at site is strictly in client scope.\n• All required civil work, pocket cutting, and masonry work is in client scope.\n• Scaffolding, staging, and height access arrangements are in client scope.\n• Hydra crane, forklift, and heavy material handling equipment to be arranged by client."
     },
     {
         "category": "Storage & Material Handling",
-        "details": "• Safe storage of materials at site until installation.\n• Material checking with the packing list and shifting the consignment to the installation location will be done by client side."
+        "details": "• Safe, dry, and locked storage space for materials at site until installation completion.\n• Material verification against packing list and shifting to exact location is client's responsibility."
     },
     {
-        "category": "Site Material Security",
-        "details": "• Any shortage of material due to pilferage, misplacement, etc., at the site during installation will be borne by the client."
+        "category": "Site Security & Deterioration",
+        "details": "• Any shortage or damage due to theft, pilferage, or misplacement at site is borne by client.\n• Refurbishment/painting necessitated by prolonged site storage in open environment is in client scope."
     },
     {
-        "category": "Material Deterioration",
-        "details": "• In case of prolonged storage at site/warehouse, any refurbishment due to weathering (e.g., rust removal, re-painting, etc.) shall be in the client's scope."
+        "category": "Electrical Scope",
+        "details": "• Single/Three-phase AC power supply with dedicated MCB up to installation point by client.\n• Standard 16A socket and free electric power point within 10 meters of installation spot.\n• Supply and laying of main power cables, conduits, and cable trays in client scope.\n• If permanent power is unavailable, testing will be done via client's temporary supply for handover."
     },
     {
-        "category": "Electrical Work",
-        "details": "• Electrical wiring for providing single/three-phase AC supply through a separate MCB up to the installation point shall be done by the client.\n• Sockets and provision of a free electric point should be made available near the work/installation area within 10 meters.\n• All cables, conduits, and cable trays required for the installation of accessories will be supplied and laid by the client.\n• If permanent power supply is not available at the time of installation, our team will check the connection using a temporary supply and complete the handover accordingly."
+        "category": "Power Quality & Stability",
+        "details": "• Client shall ensure stabilized, uninterrupted power supply with standard voltage tolerances."
     },
     {
-        "category": "Power Quality",
-        "details": "• Client shall provide a stabilized and uninterrupted power supply."
+        "category": "Site Visits & Travel",
+        "details": "• Installation scope covers maximum 2 site visits by our erection technical team.\n• Additional visits required due to site unreadiness incur ₹2,000/- per person per visit plus travel expenses."
     },
     {
-        "category": "Site Visits",
-        "details": "• Our team will visit the site for installation a maximum of 2 times.\n• Any additional visits required will incur extra charges:\n   ~ ₹2,000/- per person per visit\n   ~ Both-side travel expenses to be borne by the client"
+        "category": "Warranty Terms",
+        "details": "• Automation system is warranted against manufacturing defects for 12 months from installation or 13 months from invoice date, whichever is earlier."
     },
     {
-        "category": "Warranty",
-        "details": "• Warranty for the automation system will be provided against manufacturing defects for a period of 12 months from the date of installation or 13 months from the date of invoice, whichever is earlier."
+        "category": "Payment & Price Validity",
+        "details": "• 75% Advance along with formal Purchase Order.\n• 25% balance payment prior to material dispatch against proforma invoice.\n• This commercial offer remains valid for 20 days from the date of issuance."
     },
     {
-        "category": "Payment Terms",
-        "details": "• 75% Advance along with the Purchase Order.\n• 25% before material dispatch, against proforma invoice."
+        "category": "Delivery & Freight Scope",
+        "details": "• Quoted freight charges apply for single full shipment. Partial shipments incur extra charges.\n• Delivery timeline: 2 weeks from drawing approval or advance receipt, whichever is later."
     },
     {
-        "category": "Delivery Terms",
-        "details": "• For at Site: Freight charges mentioned in the offer are valid for one-time delivery only and not applicable for partial shipments"
-    },
-    {
-        "category": "Delivery Schedule",
-        "details": "• 2 weeks from the date of drawing approval or receipt of advance payment whichever is later"
-    },
-    {
-        "category": "Validity Of Offer",
-        "details": "• This offer is valid for 20 days from the date of issue"
+        "category": "Force Majeure & Legal",
+        "details": "• Delays due to natural disasters, strikes, wars, or government restrictions are beyond our liability.\n• Any legal disputes arising out of this contract shall be subject to Jaipur Jurisdiction only."
     }
 ]
 
@@ -386,28 +380,35 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "• Proven Track Record: Successfully engineered, manufactured, and installed over 10,000+ heavy-duty industrial shutters and door systems nationwide.\n"
             "• Pan-India Presence & Client Reach: Serving premier logistics parks, industrial hubs, manufacturing plants, and commercial complexes with prompt execution.\n"
             "• State-of-the-Art Manufacturing: Modern production facility equipped with CNC roll-forming machines, laser cutting, and automatic powder-coating lines.",
-            height=130
+            height=120
         )
         about_us_text_2 = st.text_area(
             "2. Engineering & Quality Standards",
             "• ISO & CE Compliant Production: All manufacturing processes adhere strictly to ISO 9001:2015 quality control and European CE safety benchmarks.\n"
             "• Wind-Load & Safety Engineered: Shutters and gates designed specifically to withstand high wind velocity, harsh weather, and rigorous continuous cycles.\n"
             "• Premium Raw Materials: We utilize high-grade Galvalume, Galvanized Steel, and heavy-duty aluminum alloys to ensure maximum corrosion resistance.",
-            height=120
+            height=110
         )
         about_us_text_3 = st.text_area(
             "3. Comprehensive Product Portfolio",
             "• Industrial Rolling Shutters: Motorized, Gear-operated, and Manual options crafted for high security, insulation, and durability.\n"
             "• Entrance Automation Systems: Automatic boom barriers, cantilever sliding gates, retractable gates, and high-speed roll-up doors.\n"
             "• Loading Bay Equipment: Hydraulic dock levelers, inflatable & mechanical dock shelters, rubber dock bumpers, and safety wheel chocks.",
-            height=120
+            height=110
         )
         about_us_text_4 = st.text_area(
             "4. The Sidharth Advantage (Service & Support)",
             "• Turnkey Execution: Complete end-to-end management from site measurement and structural design to supply, testing, and commissioning.\n"
             "• 24x7 Dedicated Service Network: Highly trained technical field engineers ready for rapid maintenance, AMC support, and spare availability.\n"
             "• Customized Solutions: Tailored engineering to fit unique architectural profiles, structural openings, and operational constraints.",
-            height=130
+            height=110
+        )
+        about_us_text_5 = st.text_area(
+            "5. Technical Excellence & Commitment",
+            "• In-House R&D: Continuous innovation in drive automation, low-noise shutter slats, and high-wind lock mechanisms.\n"
+            "• Comprehensive Testing: Every shutter and motor assembly undergoes rigorous multi-cycle factory testing prior to dispatch.\n"
+            "• Safety Compliance: Integrated safety brake systems, optical sensors, and emergency manual release mechanism standard across designs.",
+            height=110
         )
 
     # --- SECTION C: TECHNICAL SPECIFICATIONS CUSTOMIZATION IN EXPANDER ---
@@ -436,14 +437,14 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
     # --- SECTION D: TERMS & CONDITIONS CUSTOMIZATION IN EXPANDER ---
     with st.expander("📄 Page 5: Section D - Terms & Conditions Customization", expanded=False):
         st.markdown("Edit the Annexure - Terms & Conditions entries below:")
-        exclusions_subhead = st.text_input("Sub-Header Title", "Exclusions - Client Scope")
+        exclusions_subhead = st.text_input("Sub-Header Title", "Exclusions - Client Scope & Operational Terms")
         
         updated_terms = []
         for idx, term in enumerate(st.session_state["terms_data"]):
             st.markdown(f"**Term Block #{idx+1}**")
             col_tc, col_td = st.columns([1, 2])
             c_val = col_tc.text_input(f"Category #{idx+1}", value=term["category"], key=f"tc_cat_{idx}")
-            d_val = col_td.text_area(f"Details #{idx+1}", value=term["details"], height=80, key=f"tc_det_{idx}")
+            d_val = col_td.text_area(f"Details #{idx+1}", value=term["details"], height=70, key=f"tc_det_{idx}")
             updated_terms.append({"category": c_val, "details": d_val})
         
         st.session_state["terms_data"] = updated_terms
@@ -783,7 +784,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                     fontName="Helvetica-Bold",
                     fontSize=16,
                     leading=18,
-                    textColor=colors.HexColor("#0D2A72"),
+                    textColor=colors.HexColor("#000000"),
                 )
                 subtitle_style = ParagraphStyle(
                     "HeadSubTitle",
@@ -791,7 +792,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                     fontName="Helvetica-Bold",
                     fontSize=7.5,
                     leading=9,
-                    textColor=colors.HexColor("#0D2A72"),
+                    textColor=colors.HexColor("#1E293B"),
                 )
                 right_bold = ParagraphStyle(
                     "HeadRightBold",
@@ -833,7 +834,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 )
                 return t_head
 
-        # --- STYLES FOR PDF ---
+        # --- STYLES FOR PDF (DARK THEME FOR LINES & BORDERS) ---
         style_cover_meta = ParagraphStyle(
             "CoverMeta",
             parent=styles["Normal"],
@@ -854,7 +855,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             fontName="Helvetica-Bold",
             fontSize=11,
             leading=14,
-            textColor=colors.HexColor("#0D2A72"),
+            textColor=colors.HexColor("#000000"),
         )
 
         # ==========================================
@@ -866,7 +867,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             HRFlowable(
                 width="100%",
                 thickness=1.5,
-                color=colors.HexColor("#0D2A72"),
+                color=colors.HexColor("#000000"),
                 spaceAfter=15,
             )
         )
@@ -902,38 +903,38 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story.append(Paragraph(sign_off_p1, style_cover_meta))
 
         # ==========================================
-        # 🏢 PAGE 2: SECTION A: ABOUT US & EXPERTISE
+        # 🏢 PAGE 2: SECTION A: ABOUT US & EXPERTISE (FULL PAGE COVERAGE)
         # ==========================================
         story.append(PageBreak())
         story.append(get_header_element())
-        story.append(Spacer(1, 8))
+        story.append(Spacer(1, 6))
         story.append(
             HRFlowable(
                 width="100%",
                 thickness=1.5,
-                color=colors.HexColor("#0D2A72"),
-                spaceAfter=10,
+                color=colors.HexColor("#000000"),
+                spaceAfter=8,
             )
         )
 
         story.append(Paragraph("Section A: About Us & Our Expertise (Company Profile)", style_sec_title))
-        story.append(Spacer(1, 8))
+        story.append(Spacer(1, 6))
 
         style_box_head = ParagraphStyle(
             "BoxHead",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=9.5,
-            leading=12,
-            textColor=colors.HexColor("#0F172A"),
+            fontSize=9,
+            leading=11,
+            textColor=colors.HexColor("#000000"),
         )
         style_box_text = ParagraphStyle(
             "BoxText",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=8,
-            leading=11,
-            textColor=colors.HexColor("#334155"),
+            fontSize=7.5,
+            leading=10,
+            textColor=colors.HexColor("#1E293B"),
         )
 
         def build_paragraph_block(text_data):
@@ -942,60 +943,65 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 if line.strip():
                     formatted_line = line.replace("•", "&bull;")
                     elements.append(Paragraph(formatted_line, style_box_text))
-                    elements.append(Spacer(1, 2))
+                    elements.append(Spacer(1, 1))
             return elements
 
         about_box_content = [
             Paragraph("<b>1. Core Company Highlights</b>", style_box_head),
-            Spacer(1, 3),
+            Spacer(1, 2),
             *build_paragraph_block(about_us_text_1),
-            Spacer(1, 4),
+            Spacer(1, 3),
 
             Paragraph("<b>2. Engineering & Quality Standards</b>", style_box_head),
-            Spacer(1, 3),
+            Spacer(1, 2),
             *build_paragraph_block(about_us_text_2),
-            Spacer(1, 4),
+            Spacer(1, 3),
 
             Paragraph("<b>3. Comprehensive Product Portfolio</b>", style_box_head),
-            Spacer(1, 3),
+            Spacer(1, 2),
             *build_paragraph_block(about_us_text_3),
-            Spacer(1, 4),
+            Spacer(1, 3),
 
             Paragraph("<b>4. The Sidharth Advantage (Service & Support)</b>", style_box_head),
-            Spacer(1, 3),
+            Spacer(1, 2),
             *build_paragraph_block(about_us_text_4),
+            Spacer(1, 3),
+
+            Paragraph("<b>5. Technical Excellence & Commitment</b>", style_box_head),
+            Spacer(1, 2),
+            *build_paragraph_block(about_us_text_5),
         ]
 
         t_box = Table([[about_box_content]], colWidths=[545])
         t_box.setStyle(
             TableStyle([
                 ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
-                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#3B82F6")),
-                ("TOPPADDING", (0, 0), (-1, -1), 8),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
-                ("LEFTPADDING", (0, 0), (-1, -1), 10),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),  # BLACK BORDER
+                ("TOPPADDING", (0, 0), (-1, -1), 6),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 8),
             ])
         )
         story.append(t_box)
-        story.append(Spacer(1, 10))
+        story.append(Spacer(1, 8))
 
-        # Bottom Portfolio Table
+        # Bottom Portfolio Table with Dark Black/Slate Borders
         style_pf_header = ParagraphStyle(
             "PfHead",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=9,
-            leading=11,
+            fontSize=8.5,
+            leading=10,
             alignment=1,
-            textColor=colors.HexColor("#0F172A"),
+            textColor=colors.HexColor("#000000"),
         )
         style_pf_col = ParagraphStyle(
             "PfCol",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=8,
-            leading=10,
+            fontSize=7.5,
+            leading=9,
             alignment=1,
             textColor=colors.HexColor("#1E293B"),
         )
@@ -1003,34 +1009,36 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "PfBody",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=7,
-            leading=9,
+            fontSize=6.8,
+            leading=8.5,
             alignment=1,
-            textColor=colors.HexColor("#475569"),
+            textColor=colors.HexColor("#334155"),
         )
 
         portfolio_data = [
-            [Paragraph("<b>Our Product Portfolio & Expertise Summary</b>", style_pf_header), "", ""],
+            [Paragraph("<b>Our Key Enterprise Pillars & Service Footprint</b>", style_pf_header), "", "", ""],
             [
                 Paragraph("<b>Rolling Shutters</b>", style_pf_col),
-                Paragraph("<b>Loading Bay Equipment</b>", style_pf_col),
-                Paragraph("<b>Entrance Automation</b>", style_pf_col),
+                Paragraph("<b>Loading Equipment</b>", style_pf_col),
+                Paragraph("<b>Automation Systems</b>", style_pf_col),
+                Paragraph("<b>Pan-India AMC Support</b>", style_pf_col),
             ],
             [
-                Paragraph("Manual & motorised shutters for industrial, commercial, and warehouse doors", style_pf_body),
-                Paragraph("Dock levelers, dock shelters & vehicle restraints for precise logistics operations", style_pf_body),
-                Paragraph("Boom barriers, swing gates, sliding gates & high-speed doors for secure facility access", style_pf_body),
+                Paragraph("Motorized & gear shutters for industrial, warehouse & commercial openings.", style_pf_body),
+                Paragraph("Dock levelers, shelters & bumpers for integrated logistics bays.", style_pf_body),
+                Paragraph("Boom barriers, sliding gates & high-speed doors for controlled access.", style_pf_body),
+                Paragraph("Dedicated regional engineer teams for fast maintenance & original spare support.", style_pf_body),
             ]
         ]
 
-        t_portfolio = Table(portfolio_data, colWidths=[181, 182, 182])
+        t_portfolio = Table(portfolio_data, colWidths=[136, 136, 136, 137])
         t_portfolio.setStyle(
             TableStyle([
-                ("SPAN", (0, 0), (2, 0)),
-                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#CBD5E1")),
-                ("BACKGROUND", (0, 1), (-1, 1), colors.HexColor("#E2E8F0")),
-                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#64748B")),
-                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#94A3B8")),
+                ("SPAN", (0, 0), (3, 0)),
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E2E8F0")),
+                ("BACKGROUND", (0, 1), (-1, 1), colors.HexColor("#F1F5F9")),
+                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),  # BLACK BORDER
+                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),  # BLACK INNER GRID
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                 ("TOPPADDING", (0, 0), (-1, -1), 4),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
@@ -1043,7 +1051,15 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         # ==========================================
         story.append(PageBreak())
         story.append(get_header_element())
-        story.append(Spacer(1, 10))
+        story.append(Spacer(1, 8))
+        story.append(
+            HRFlowable(
+                width="100%",
+                thickness=1.5,
+                color=colors.HexColor("#000000"),
+                spaceAfter=8,
+            )
+        )
 
         small_bold = ParagraphStyle(
             "SmallBold",
@@ -1123,8 +1139,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         t_header.setStyle(
             TableStyle([
                 ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
-                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#CBD5E1")),
-                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#E2E8F0")),
+                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),  # BLACK BORDER
+                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#1E293B")),  # DARK GRID
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                 ("TOPPADDING", (0, 0), (-1, -1), 4),
                 ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
@@ -1133,7 +1149,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story.append(t_header)
         story.append(Spacer(1, 10))
 
-        # ITEMS & PRICING TABLE
+        # ITEMS & PRICING TABLE (BLACK BORDERS)
         items_data = [[
             Paragraph("<b>Sr. No.</b>", small_bold_center),
             Paragraph("<b>Description</b>", small_bold),
@@ -1343,80 +1359,80 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         t_items.setStyle(
             TableStyle([
                 ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E2E8F0")),
-                ("BOX", (0, 0), (-1, -1), 0.5, colors.black),
-                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                ("BOX", (0, 0), (-1, -1), 1, colors.black),  # BLACK BORDER
+                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#334155")),  # DARK GRID
                 ("VALIGN", (0, 0), (-1, -1), "TOP"),
             ])
         )
         story.append(t_items)
 
         # ==========================================
-        # ⚙️ PAGE 4: SECTION C: TECHNICAL SPECIFICATIONS
+        # ⚙️ PAGE 4: SECTION C: TECHNICAL SPECIFICATIONS (FULL COVERAGE)
         # ==========================================
         story.append(PageBreak())
         story.append(get_header_element())
-        story.append(Spacer(1, 8))
+        story.append(Spacer(1, 6))
         story.append(
             HRFlowable(
                 width="100%",
                 thickness=1.5,
-                color=colors.HexColor("#0D2A72"),
-                spaceAfter=10,
+                color=colors.HexColor("#000000"),
+                spaceAfter=8,
             )
         )
 
         story.append(Paragraph("Section C: Technical Specifications", style_sec_title))
-        story.append(Spacer(1, 6))
+        story.append(Spacer(1, 4))
 
         style_intro_text = ParagraphStyle(
             "IntroText",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=8.5,
-            leading=12,
-            textColor=colors.HexColor("#334155"),
+            fontSize=7.8,
+            leading=10.5,
+            textColor=colors.HexColor("#1E293B"),
         )
         story.append(Paragraph(tech_intro_text, style_intro_text))
-        story.append(Spacer(1, 10))
+        story.append(Spacer(1, 6))
 
         style_th_param = ParagraphStyle(
             "ThParam",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=8.5,
-            leading=11,
+            fontSize=8,
+            leading=10,
             alignment=0,
-            textColor=colors.HexColor("#0F172A"),
+            textColor=colors.HexColor("#000000"),
         )
         style_th_spec = ParagraphStyle(
             "ThSpec",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=8.5,
-            leading=11,
+            fontSize=8,
+            leading=10,
             alignment=1,
-            textColor=colors.HexColor("#0F172A"),
+            textColor=colors.HexColor("#000000"),
         )
         style_td_param = ParagraphStyle(
             "TdParam",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=8,
-            leading=10,
-            textColor=colors.HexColor("#1E293B"),
+            fontSize=7.2,
+            leading=9,
+            textColor=colors.HexColor("#0F172A"),
         )
         style_td_spec = ParagraphStyle(
             "TdSpec",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=8,
-            leading=10,
+            fontSize=7.2,
+            leading=9,
             textColor=colors.HexColor("#334155"),
         )
 
         tech_table_data = [[
             Paragraph("Parameter", style_th_param),
-            Paragraph("Specification", style_th_spec)
+            Paragraph("Specification Details", style_th_spec)
         ]]
 
         for spec_item in st.session_state["tech_specs_data"]:
@@ -1425,77 +1441,77 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 Paragraph(spec_item["spec"], style_td_spec)
             ])
 
-        t_tech = Table(tech_table_data, colWidths=[150, 395])
+        t_tech = Table(tech_table_data, colWidths=[140, 405])
         t_tech.setStyle(
             TableStyle([
-                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#D1D5DB")),
-                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#4B5563")),
-                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#9CA3AF")),
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E2E8F0")),
+                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),  # BLACK BORDER
+                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),  # BLACK GRID
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                ("TOPPADDING", (0, 0), (-1, -1), 3),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
-                ("LEFTPADDING", (0, 0), (-1, -1), 6),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+                ("TOPPADDING", (0, 0), (-1, -1), 2.5),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
+                ("LEFTPADDING", (0, 0), (-1, -1), 5),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 5),
             ])
         )
         story.append(t_tech)
-        story.append(Spacer(1, 10))
+        story.append(Spacer(1, 6))
 
         style_note_text = ParagraphStyle(
             "NoteText",
             parent=styles["Normal"],
             fontName="Helvetica-Oblique",
-            fontSize=7.5,
-            leading=10,
+            fontSize=7,
+            leading=9,
             textColor=colors.HexColor("#475569"),
         )
         story.append(Paragraph(tech_note_text, style_note_text))
 
         # ==========================================
-        # 📋 PAGE 5: SECTION D: ANNEXURE – TERMS & CONDITION
+        # 📋 PAGE 5: SECTION D: TERMS & CONDITIONS (FULL COVERAGE)
         # ==========================================
         story.append(PageBreak())
         story.append(get_header_element())
-        story.append(Spacer(1, 8))
+        story.append(Spacer(1, 6))
         story.append(
             HRFlowable(
                 width="100%",
                 thickness=1.5,
-                color=colors.HexColor("#0D2A72"),
-                spaceAfter=10,
+                color=colors.HexColor("#000000"),
+                spaceAfter=8,
             )
         )
 
         story.append(Paragraph("Section D: Annexure – Terms & Condition", style_sec_title))
-        story.append(Spacer(1, 6))
+        story.append(Spacer(1, 4))
 
         style_subhead = ParagraphStyle(
             "SubHeadEx",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=9.5,
-            leading=12,
-            textColor=colors.HexColor("#0F172A"),
+            fontSize=8.5,
+            leading=11,
+            textColor=colors.HexColor("#000000"),
         )
         story.append(Paragraph(f"<b>{exclusions_subhead}</b>", style_subhead))
-        story.append(Spacer(1, 8))
+        story.append(Spacer(1, 6))
 
         style_tc_cat = ParagraphStyle(
             "TcCat",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=8,
-            leading=10,
+            fontSize=7.5,
+            leading=9.5,
             alignment=0,
-            textColor=colors.HexColor("#0F172A"),
+            textColor=colors.HexColor("#000000"),
         )
         style_tc_det = ParagraphStyle(
             "TcDet",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=7.5,
-            leading=9.5,
-            textColor=colors.HexColor("#334155"),
+            fontSize=7,
+            leading=9,
+            textColor=colors.HexColor("#1E293B"),
         )
 
         terms_table_data = []
@@ -1507,19 +1523,48 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 Paragraph(details_formatted, style_tc_det)
             ])
 
-        t_terms = Table(terms_table_data, colWidths=[140, 405])
+        t_terms = Table(terms_table_data, colWidths=[135, 410])
         t_terms.setStyle(
             TableStyle([
-                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#3B82F6")),
-                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#93C5FD")),
+                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),  # BLACK BORDER
+                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),  # BLACK INNER GRID
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                ("TOPPADDING", (0, 0), (-1, -1), 4),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
-                ("LEFTPADDING", (0, 0), (-1, -1), 6),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+                ("TOPPADDING", (0, 0), (-1, -1), 3.5),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 3.5),
+                ("LEFTPADDING", (0, 0), (-1, -1), 5),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 5),
             ])
         )
         story.append(t_terms)
+
+        # Page 5 Bottom Sign-off Box to complete coverage
+        story.append(Spacer(1, 10))
+        style_sign_box = ParagraphStyle(
+            "SignBox",
+            parent=styles["Normal"],
+            fontName="Helvetica-Bold",
+            fontSize=7.5,
+            leading=10,
+            textColor=colors.HexColor("#000000"),
+        )
+        sign_box_content = [
+            Paragraph("<b>ACCEPTANCE OF OFFER & ORDER CONFIRMATION</b>", style_sign_box),
+            Paragraph("<font size=6.5>We hereby accept the commercial offer, technical specifications, and terms & conditions outlined above.</font>", style_tc_det),
+            Spacer(1, 15),
+            Paragraph("<b>Client Seal & Signature: _______________________ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date: _______________</b>", style_sign_box)
+        ]
+        t_sign = Table([[sign_box_content]], colWidths=[545])
+        t_sign.setStyle(
+            TableStyle([
+                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
+                ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
+                ("TOPPADDING", (0, 0), (-1, -1), 6),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+            ])
+        )
+        story.append(t_sign)
 
         doc.build(story)
         buffer.seek(0)
@@ -1531,7 +1576,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         ws = wb.active
         ws.title = "Quotation"
 
-        font_company = Font(name="Calibri", size=14, bold=True, color="0D2A72")
+        font_company = Font(name="Calibri", size=14, bold=True, color="000000")
         font_address = Font(name="Calibri", size=9, italic=True)
         font_header_bold = Font(name="Calibri", size=10, bold=True)
         font_regular = Font(name="Calibri", size=9)
@@ -1545,10 +1590,10 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         )
 
         thin_border = Border(
-            left=Side(style="thin", color="D3D3D3"),
-            right=Side(style="thin", color="D3D3D3"),
-            top=Side(style="thin", color="D3D3D3"),
-            bottom=Side(style="thin", color="D3D3D3"),
+            left=Side(style="thin", color="000000"),
+            right=Side(style="thin", color="000000"),
+            top=Side(style="thin", color="000000"),
+            bottom=Side(style="thin", color="000000"),
         )
 
         align_center = Alignment(horizontal="center", vertical="top", wrap_text=True)
