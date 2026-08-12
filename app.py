@@ -277,15 +277,26 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
 
   # --- PAGE 1: COVER LETTER INTRO BODY IN EXPANDER ---
   with st.expander("📄 Page 1: Cover Letter Text Customization", expanded=False):
-    cover_body_text = st.text_area(
-        "Cover Letter Intro Body",
-        "Dear Sir/Madam,\n\n"
-        "With reference to your inquiry regarding the requirement of Motorized / Manual Rolling Shutters, "
-        "we are pleased to submit our best competitive offer for the same.\n\n"
-        "We assure you the best quality standards, timely delivery, and professional installation services. "
-        "Please find our commercial and technical details attached herewith for your kind perusal.",
-        height=140,
-    )
+        cover_body_text = st.text_area(
+            "Cover Letter Intro Body",
+            "Dear Sir / Ma'am,\n\n"
+            "We extend our sincere gratitude for the interest you have shown in our products and services. "
+            "It is our privilege to present this detailed commercial offer, crafted to precisely address "
+            "the access control and security requirements of your facility.\n\n"
+            "At Sidharth Shutter & Automation Pvt. Ltd., we understand that a well-secured premise is the "
+            "foundation of efficient operations. Our solutions are engineered not only to keep your unit secure "
+            "but also to ensure smooth, reliable, and operationally efficient entry and exit for your facility, day in and day out.\n\n"
+            "This proposal package consists of the following detailed sections:\n\n"
+            "Section A: About Us & Experience\n"
+            "Section B: Commercial Quotation\n"
+            "Section C: Technical Specifications\n"
+            "Section D: Annexure – Terms & Conditions\n\n"
+            "We are confident that our proposed solution will perfectly align with your requirements. "
+            "For any further clarifications, please feel free to reach out to us.\n\n"
+            "Assuring you of our best services at all times.\n\n"
+            "Warm Regards,",
+            height=280
+        )
 
   with st.expander("📥 Bulk Import Specifications", expanded=False):
     st.markdown(
