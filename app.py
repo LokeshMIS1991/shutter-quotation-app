@@ -145,6 +145,32 @@ SHUTTER_CATEGORIES = [
     "Manual Rolling Shutter",
 ]
 
+# DEFAULT TECH SPECS FOR SECTION C (PAGE 4)
+DEFAULT_TECH_SPECS = [
+    {"param": "Shutter Type", "spec": "Motorized Rolling Shutter"},
+    {"param": "Slat Type", "spec": "Single Skin Curved Interlocking Galvanized Steel Slats"},
+    {"param": "Slat Material", "spec": "Galvanized Steel (GI)"},
+    {"param": "Slat Thickness", "spec": "0.90 mm"},
+    {"param": "Slat Height", "spec": "78 mm"},
+    {"param": "Surface Finish", "spec": "Powder Coated in Standard RAL Colour (As Approved)"},
+    {"param": "Curtain Construction", "spec": "Single Skin Interlocking Curved Slats with End Locks"},
+    {"param": "Support Brackets", "spec": "Fabricated from 5 mm Thick HR Steel Plate"},
+    {"param": "Shaft Assembly", "spec": "Heavy Duty MS Pipe Shaft designed as per shutter size and loading, complete with suitable bearings and mounting arrangement."},
+    {"param": "Side Guides", "spec": "Heavy Duty TG Guide fabricated from 2 mm Thick Steel with Rubber Seal"},
+    {"param": "Bottom Profile", "spec": "Heavy Duty 2 mm Thick HR Steel Bottom Rail fitted with EPDM seals"},
+    {"param": "Motor", "spec": "Side Mounted Motor Brand Strong Life Indirect Drive, CE Certified."},
+    {"param": "Operation", "spec": "Push Button Station with Open/Close/Stop Function"},
+    {"param": "Limit Switch", "spec": "Adjustable Electro-Mechanical Limit Switch for precise opening and closing"},
+    {"param": "Safety Features", "spec": "Manual Override for emergency operation"},
+    {"param": "Hood Cover", "spec": "0.80 mm Thick Galvanized Steel Hood and Motor Cover with reinforced support brackets"},
+    {"param": "Locking Arrangement", "spec": "Not Applicable (Motorized Operation)"},
+    {"param": "Fasteners", "spec": "Zinc Plated / Galvanized High Tensile Fasteners"},
+    {"param": "Colour", "spec": "Standard RAL Shade as approved by the client"},
+]
+
+if "tech_specs_data" not in st.session_state:
+    st.session_state["tech_specs_data"] = DEFAULT_TECH_SPECS.copy()
+
 # ==============================================================================
 # PAGE 1: HOME / LANDING PAGE
 # ==============================================================================
@@ -327,6 +353,29 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "• 24x7 Dedicated Service Network: Highly trained technical field engineers ready for rapid maintenance, AMC support, and spare availability.\n"
             "• Customized Solutions: Tailored engineering to fit unique architectural profiles, structural openings, and operational constraints.",
             height=130
+        )
+
+    # --- SECTION C: TECHNICAL SPECIFICATIONS CUSTOMIZATION IN EXPANDER ---
+    with st.expander("📄 Page 4: Section C - Technical Specifications Customization", expanded=False):
+        st.markdown("Edit the technical specifications parameter and description values below:")
+        tech_intro_text = st.text_area(
+            "Header Introductory Text",
+            "The following specifications define the precise engineering parameters for the High-Speed Door / Rolling Shutter system offered for your facility. Every component is designed for operational efficiency, durability, and safety compliance.",
+            height=70
+        )
+        
+        updated_specs = []
+        for idx, item in enumerate(st.session_state["tech_specs_data"]):
+            col_p, col_s = st.columns([1, 2])
+            p_val = col_p.text_input(f"Parameter #{idx+1}", value=item["param"], key=f"tp_{idx}")
+            s_val = col_s.text_input(f"Specification #{idx+1}", value=item["spec"], key=f"ts_{idx}")
+            updated_specs.append({"param": p_val, "spec": s_val})
+        
+        st.session_state["tech_specs_data"] = updated_specs
+        
+        tech_note_text = st.text_input(
+            "Footer Note Text",
+            "Note: Technical specifications are subject to final site measurements and drawing approval. Custom configurations can be engineered to suit the precise dimensions of your facility opening."
         )
 
     with st.expander("📥 Bulk Import Specifications", expanded=False):
@@ -1230,6 +1279,107 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             ])
         )
         story.append(t_items)
+
+        # ==========================================
+        # ⚙️ PAGE 4: SECTION C: TECHNICAL SPECIFICATIONS
+        # ==========================================
+        story.append(PageBreak())
+        story.append(get_header_element())
+        story.append(Spacer(1, 8))
+        story.append(
+            HRFlowable(
+                width="100%",
+                thickness=1.5,
+                color=colors.HexColor("#0D2A72"),
+                spaceAfter=10,
+            )
+        )
+
+        story.append(Paragraph("Section C: Technical Specifications", style_sec_title))
+        story.append(Spacer(1, 6))
+
+        style_intro_text = ParagraphStyle(
+            "IntroText",
+            parent=styles["Normal"],
+            fontName="Helvetica",
+            fontSize=8.5,
+            leading=12,
+            textColor=colors.HexColor("#334155"),
+        )
+        story.append(Paragraph(tech_intro_text, style_intro_text))
+        story.append(Spacer(1, 10))
+
+        style_th_param = ParagraphStyle(
+            "ThParam",
+            parent=styles["Normal"],
+            fontName="Helvetica-Bold",
+            fontSize=8.5,
+            leading=11,
+            alignment=0,
+            textColor=colors.HexColor("#0F172A"),
+        )
+        style_th_spec = ParagraphStyle(
+            "ThSpec",
+            parent=styles["Normal"],
+            fontName="Helvetica-Bold",
+            fontSize=8.5,
+            leading=11,
+            alignment=1,
+            textColor=colors.HexColor("#0F172A"),
+        )
+        style_td_param = ParagraphStyle(
+            "TdParam",
+            parent=styles["Normal"],
+            fontName="Helvetica-Bold",
+            fontSize=8,
+            leading=10,
+            textColor=colors.HexColor("#1E293B"),
+        )
+        style_td_spec = ParagraphStyle(
+            "TdSpec",
+            parent=styles["Normal"],
+            fontName="Helvetica",
+            fontSize=8,
+            leading=10,
+            textColor=colors.HexColor("#334155"),
+        )
+
+        tech_table_data = [[
+            Paragraph("Parameter", style_th_param),
+            Paragraph("Specification", style_th_spec)
+        ]]
+
+        for spec_item in st.session_state["tech_specs_data"]:
+            tech_table_data.append([
+                Paragraph(spec_item["param"], style_td_param),
+                Paragraph(spec_item["spec"], style_td_spec)
+            ])
+
+        t_tech = Table(tech_table_data, colWidths=[150, 395])
+        t_tech.setStyle(
+            TableStyle([
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#D1D5DB")),
+                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#4B5563")),
+                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#9CA3AF")),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("TOPPADDING", (0, 0), (-1, -1), 3),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+                ("LEFTPADDING", (0, 0), (-1, -1), 6),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+            ])
+        )
+        story.append(t_tech)
+        story.append(Spacer(1, 10))
+
+        style_note_text = ParagraphStyle(
+            "NoteText",
+            parent=styles["Normal"],
+            fontName="Helvetica-Oblique",
+            fontSize=7.5,
+            leading=10,
+            textColor=colors.HexColor("#475569"),
+        )
+        story.append(Paragraph(tech_note_text, style_note_text))
 
         doc.build(story)
         buffer.seek(0)
