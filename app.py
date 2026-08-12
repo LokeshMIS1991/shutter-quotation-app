@@ -145,7 +145,7 @@ SHUTTER_CATEGORIES = [
     "Manual Rolling Shutter",
 ]
 
-# EXTENDED TECH SPECS FOR SECTION C (PAGE 4) TO FILL PAGE
+# EXTENDED TECH SPECS FOR SECTION C (PAGE 4)
 DEFAULT_TECH_SPECS = [
     {"param": "Shutter Type", "spec": "Motorized Heavy Duty Industrial Rolling Shutter"},
     {"param": "Slat Type", "spec": "Single Skin Curved Interlocking Galvanized / Galvalume Steel Slats"},
@@ -173,7 +173,7 @@ DEFAULT_TECH_SPECS = [
 if "tech_specs_data" not in st.session_state:
     st.session_state["tech_specs_data"] = DEFAULT_TECH_SPECS.copy()
 
-# EXTENDED TERMS & CONDITIONS FOR SECTION D (PAGE 5) TO FILL PAGE
+# EXTENDED TERMS & CONDITIONS FOR SECTION D (PAGE 5)
 DEFAULT_TERMS = [
     {
         "category": "Unloading & Handling",
@@ -744,7 +744,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
     crane_charges = c4.number_input("Crane Charges (INR)", value=0)
     scaffolding_charges = c5.number_input("Scaffolding Charges (INR)", value=0)
 
-    # --- PDF GENERATOR WITH FIXED HEADER (NO UNICODE BOX GLITCHES) ---
+    # --- PDF GENERATOR WITH PERFECTLY ALIGNED BLUE HEADER ---
     def generate_pdf():
         buffer = io.BytesIO()
 
@@ -759,7 +759,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story = []
         styles = getSampleStyleSheet()
 
-        # --- UPDATED HEADER HELPER FUNCTION (NO UNICODE BOX GLITCHES) ---
+        # --- UPDATED HEADER HELPER FUNCTION (PERFECT LEFT-ALIGNMENT & BLUE COLOR) ---
         def get_header_element():
             # 1. Check for Logo Image
             logo_path = None
@@ -772,19 +772,19 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 try:
                     logo_element = RLImage(logo_path, width=180, height=60)
                 except Exception:
-                    logo_element = Paragraph("<b>SIDHARTH</b><br/><font size=7>SHUTTER & AUTOMATION</font>", styles["Normal"])
+                    logo_element = Paragraph("<b>SIDHARTH</b><br/><font size=7 color='#003366'>SHUTTER & AUTOMATION</font>", styles["Normal"])
             else:
-                logo_element = Paragraph("<b>SIDHARTH</b><br/><font size=7>SHUTTER & AUTOMATION</font>", styles["Normal"])
+                logo_element = Paragraph("<b>SIDHARTH</b><br/><font size=7 color='#003366'>SHUTTER & AUTOMATION</font>", styles["Normal"])
 
-            # 2. Right Side Vector Text Styles
+            # 2. Right Side Text Styles (Blue Tone & Left Aligned for crisp margins)
             right_bold = ParagraphStyle(
                 "HeadRightBold",
                 parent=styles["Normal"],
                 fontName="Helvetica-Bold",
                 fontSize=8.5,
                 leading=11,
-                alignment=2,  # Right align
-                textColor=colors.HexColor("#000000"),
+                alignment=0,  # Left align so labels start from exact same margin
+                textColor=colors.HexColor("#0F172A"),
             )
             
             right_text = ParagraphStyle(
@@ -793,21 +793,33 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 fontName="Helvetica",
                 fontSize=7.5,
                 leading=10,
-                alignment=2,  # Right align
-                textColor=colors.HexColor("#1E293B"),
+                alignment=0,  # Left align for perfect alignment
+                textColor=colors.HexColor("#1D4ED8"),  # Professional Corporate Blue
             )
 
-            # 3. Right Side Information Details (Clean Labels for Standard PDF Fonts)
-            right_content = [
-                Paragraph("<b>GSTIN/UIN: 08AEEPJ6848R1ZN</b>", right_bold),
-                Paragraph("<b>Web:</b> www.ssaapl.com", right_text),
-                Paragraph("<b>Email:</b> sales@ssaapl.com", right_text),
-                Paragraph("<b>Ph:</b> +91 90019 96526, +91 90010 42908", right_text),
-                Paragraph("<b>Add:</b> H-1-89, RIICO Ind. Area, Mansarovar,<br/>Jaipur, Rajasthan, 302020", right_text),
+            # 3. Structured Data Rows for Header Details
+            right_table_data = [
+                [Paragraph("<b>GSTIN/UIN: 08AEEPJ6848R1ZN</b>", right_bold)],
+                [Paragraph("<b>Web:</b> <font color='#0284C7'>www.ssaapl.com</font>", right_text)],
+                [Paragraph("<b>Email:</b> <font color='#0284C7'>sales@ssaapl.com</font>", right_text)],
+                [Paragraph("<b>Ph:</b> <font color='#0284C7'>+91 90019 96526, +91 90010 42908</font>", right_text)],
+                [Paragraph("<b>Add:</b> <font color='#0284C7'>H-1-89, RIICO Ind. Area, Mansarovar, Jaipur, Rajasthan, 302020</font>", right_text)],
             ]
 
-            # 4. Header Table Construction
-            t_head = Table([[logo_element, right_content]], colWidths=[200, 345])
+            t_right_info = Table(right_table_data, colWidths=[240])
+            t_right_info.setStyle(
+                TableStyle([
+                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                    ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                    ("TOPPADDING", (0, 0), (-1, -1), 1),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 1),
+                ])
+            )
+
+            # 4. Header Outer Table
+            t_head = Table([[logo_element, t_right_info]], colWidths=[295, 250])
             t_head.setStyle(
                 TableStyle([
                     ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
