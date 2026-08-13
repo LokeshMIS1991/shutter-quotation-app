@@ -124,11 +124,34 @@ OPERATOR_OPTIONS = [
     "Three Station Push Button",
 ]
 
-SHUTTER_CATEGORIES = [
-    "Motorized Rolling Shutter",
-    "Gear Rolling Shutter",
-    "Manual Rolling Shutter",
-]
+# --- DYNAMIC MASTER PRODUCTS & SUB-CATEGORIES MAPPING ---
+PRODUCT_HIERARCHY = {
+    "Rolling Shutter": [
+        "Motorized Rolling Shutter",
+        "Gear Rolling Shutter",
+        "Manual Rolling Shutter",
+    ],
+    "High Speed Door": [
+        "High Speed Roll-Up Door",
+        "High Speed Fold-Up Door",
+        "Cleanroom High Speed Door",
+    ],
+    "Sectional Overhead Door": [
+        "Standard Lift Sectional Door",
+        "High Lift Sectional Door",
+        "Vertical Lift Sectional Door",
+    ],
+    "Automatic Boom Barrier": [
+        "Electromechanical Boom Barrier",
+        "High Speed Parking Barrier",
+        "Heavy Duty Toll Barrier",
+    ],
+    "Loading Dock Equipment": [
+        "Hydraulic Dock Leveler",
+        "Mechanical Dock Leveler",
+        "Inflatable Dock Shelter",
+    ]
+}
 
 # EXTENDED TECH SPECS FOR SECTION C (PAGE 4)
 DEFAULT_TECH_SPECS = [
@@ -241,7 +264,7 @@ if st.session_state["selected_product"] == "Home":
             st.rerun()
 
 # ==============================================================================
-# PAGE 2: ROLLING SHUTTERS QUOTATION PAGE
+# PAGE 2: ROLLING SHUTTERS / MULTI-PRODUCT QUOTATION PAGE
 # ==============================================================================
 elif st.session_state["selected_product"] == "Rolling Shutters":
 
@@ -251,7 +274,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             st.session_state["selected_product"] = "Home"
             st.rerun()
     with col_nav2:
-        st.title("🌀 Rolling Shutters Quotation Builder")
+        st.title("📋 Quotation Builder")
 
     st.sidebar.header("📋 Client & Proposal Details")
 
@@ -434,10 +457,12 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             else:
                 st.error("Please enter some text to import.")
 
-    st.markdown("### 🧱 Shutter Specifications & Pricing")
+    # --- REVISED HEADINGS & DYNAMIC PRODUCT MAPPING ---
+    st.markdown("### 📦 Product Specifications & Pricing")
 
     if "shutter_items" not in st.session_state:
         st.session_state["shutter_items"] = [{
+            "main_product": "Rolling Shutter",
             "type": "Motorized Rolling Shutter",
             "slat_nat": [],
             "slat_pow": [],
@@ -462,6 +487,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
 
     def add_shutter():
         st.session_state["shutter_items"].append({
+            "main_product": "Rolling Shutter",
             "type": "Motorized Rolling Shutter",
             "slat_nat": [],
             "slat_pow": [],
@@ -483,28 +509,46 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             st.session_state["shutter_items"].pop(index)
 
     for idx, item in enumerate(st.session_state["shutter_items"]):
+        selected_sub_cat = item.get("type", "Motorized Rolling Shutter")
         with st.expander(
-            f"📌 Item #{idx + 1}: {item.get('type', 'Motorized Rolling Shutter')}",
+            f"📌 Item #{idx + 1}: {selected_sub_cat}",
             expanded=True,
         ):
-            col_title, col_del = st.columns([5, 1])
-            with col_title:
-                current_type = item.get("type", "Motorized Rolling Shutter")
-                item["type"] = st.selectbox(
-                    f"Shutter Category #{idx + 1}",
-                    SHUTTER_CATEGORIES,
-                    index=(
-                        SHUTTER_CATEGORIES.index(current_type)
-                        if current_type in SHUTTER_CATEGORIES
-                        else 0
-                    ),
-                    key=f"type_{idx}",
+            col_p_main, col_p_cat, col_del = st.columns([2, 2, 1])
+            
+            # 1. Primary Product Type Selection
+            with col_p_main:
+                curr_main_prod = item.get("main_product", "Rolling Shutter")
+                main_prod_keys = list(PRODUCT_HIERARCHY.keys())
+                main_idx = main_prod_keys.index(curr_main_prod) if curr_main_prod in main_prod_keys else 0
+                
+                selected_main = st.selectbox(
+                    f"Product Item #{idx + 1}",
+                    main_prod_keys,
+                    index=main_idx,
+                    key=f"main_prod_{idx}"
                 )
+                item["main_product"] = selected_main
+
+            # 2. Dynamic Sub-Category Selection based on Product
+            with col_p_cat:
+                available_sub_cats = PRODUCT_HIERARCHY.get(selected_main, ["Standard Option"])
+                curr_sub = item.get("type", available_sub_cats[0])
+                sub_idx = available_sub_cats.index(curr_sub) if curr_sub in available_sub_cats else 0
+                
+                item["type"] = st.selectbox(
+                    f"Category / Sub-Category #{idx + 1}",
+                    available_sub_cats,
+                    index=sub_idx,
+                    key=f"sub_cat_{idx}"
+                )
+
+            # 3. Item Delete Button
             with col_del:
                 st.markdown("<br>", unsafe_allow_html=True)
                 if len(st.session_state["shutter_items"]) > 1:
                     st.button(
-                        "❌ Remove Item",
+                        "❌ Remove",
                         key=f"del_{idx}",
                         on_click=remove_shutter,
                         args=(idx,),
@@ -514,131 +558,135 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 "HSN Code", value=item.get("hsn", "73083000"), key=f"hsn_{idx}"
             )
 
-            st.markdown("##### 📐 Slat Specifications")
-            col_sn, col_sp = st.columns(2)
-            with col_sn:
-                item["slat_nat"] = st.multiselect(
-                    "Natural Finish Slats",
-                    st.session_state["slat_nat_list"],
-                    default=item.get("slat_nat", []),
-                    key=f"sn_{idx}",
-                )
-                col_in_sn, col_btn_sn = st.columns([3, 1])
-                new_sn = col_in_sn.text_input(
-                    "➕ New Natural Option",
-                    key=f"add_sn_{idx}",
-                    label_visibility="collapsed",
-                    placeholder="Add new natural slat...",
-                )
-                if col_btn_sn.button("Add Option", key=f"btn_add_sn_{idx}"):
-                    if new_sn and new_sn not in st.session_state["slat_nat_list"]:
-                        st.session_state["slat_nat_list"].append(new_sn)
-                        save_specifications()
-                        st.rerun()
+            # Dynamic Form Fields based on Main Product Type
+            if selected_main == "Rolling Shutter":
+                st.markdown("##### 📐 Slat Specifications")
+                col_sn, col_sp = st.columns(2)
+                with col_sn:
+                    item["slat_nat"] = st.multiselect(
+                        "Natural Finish Slats",
+                        st.session_state["slat_nat_list"],
+                        default=item.get("slat_nat", []),
+                        key=f"sn_{idx}",
+                    )
+                    col_in_sn, col_btn_sn = st.columns([3, 1])
+                    new_sn = col_in_sn.text_input(
+                        "➕ New Natural Option",
+                        key=f"add_sn_{idx}",
+                        label_visibility="collapsed",
+                        placeholder="Add new natural slat...",
+                    )
+                    if col_btn_sn.button("Add Option", key=f"btn_add_sn_{idx}"):
+                        if new_sn and new_sn not in st.session_state["slat_nat_list"]:
+                            st.session_state["slat_nat_list"].append(new_sn)
+                            save_specifications()
+                            st.rerun()
 
-            with col_sp:
-                item["slat_pow"] = st.multiselect(
-                    "Powder Coated Slats",
-                    st.session_state["slat_pow_list"],
-                    default=item.get("slat_pow", []),
-                    key=f"sp_{idx}",
-                )
-                col_in_sp, col_btn_sp = st.columns([3, 1])
-                new_sp = col_in_sp.text_input(
-                    "➕ New Powder Option",
-                    key=f"add_sp_{idx}",
-                    label_visibility="collapsed",
-                    placeholder="Add new powder slat...",
-                )
-                if col_btn_sp.button("Add Option", key=f"btn_add_sp_{idx}"):
-                    if new_sp and new_sp not in st.session_state["slat_pow_list"]:
-                        st.session_state["slat_pow_list"].append(new_sp)
-                        save_specifications()
-                        st.rerun()
+                with col_sp:
+                    item["slat_pow"] = st.multiselect(
+                        "Powder Coated Slats",
+                        st.session_state["slat_pow_list"],
+                        default=item.get("slat_pow", []),
+                        key=f"sp_{idx}",
+                    )
+                    col_in_sp, col_btn_sp = st.columns([3, 1])
+                    new_sp = col_in_sp.text_input(
+                        "➕ New Powder Option",
+                        key=f"add_sp_{idx}",
+                        label_visibility="collapsed",
+                        placeholder="Add new powder slat...",
+                    )
+                    if col_btn_sp.button("Add Option", key=f"btn_add_sp_{idx}"):
+                        if new_sp and new_sp not in st.session_state["slat_pow_list"]:
+                            st.session_state["slat_pow_list"].append(new_sp)
+                            save_specifications()
+                            st.rerun()
 
-            st.markdown("##### 🛠️ Guide, Bottom Sheet & Hood Cover")
-            cg, cb, ch_col = st.columns(3)
-            with cg:
-                item["guide"] = st.multiselect(
-                    "Guide Specification",
-                    st.session_state["guide_list"],
-                    default=item.get("guide", []),
-                    key=f"gd_{idx}",
-                )
-                col_in_gd, col_btn_gd = st.columns([2, 1])
-                new_gd = col_in_gd.text_input(
-                    "➕ New Guide",
-                    key=f"add_gd_{idx}",
-                    label_visibility="collapsed",
-                    placeholder="Add guide...",
-                )
-                if col_btn_gd.button("Add", key=f"btn_add_gd_{idx}"):
-                    if new_gd and new_gd not in st.session_state["guide_list"]:
-                        st.session_state["guide_list"].append(new_gd)
-                        save_specifications()
-                        st.rerun()
+                st.markdown("##### 🛠️ Guide, Bottom Sheet & Hood Cover")
+                cg, cb, ch_col = st.columns(3)
+                with cg:
+                    item["guide"] = st.multiselect(
+                        "Guide Specification",
+                        st.session_state["guide_list"],
+                        default=item.get("guide", []),
+                        key=f"gd_{idx}",
+                    )
+                    col_in_gd, col_btn_gd = st.columns([2, 1])
+                    new_gd = col_in_gd.text_input(
+                        "➕ New Guide",
+                        key=f"add_gd_{idx}",
+                        label_visibility="collapsed",
+                        placeholder="Add guide...",
+                    )
+                    if col_btn_gd.button("Add", key=f"btn_add_gd_{idx}"):
+                        if new_gd and new_gd not in st.session_state["guide_list"]:
+                            st.session_state["guide_list"].append(new_gd)
+                            save_specifications()
+                            st.rerun()
 
-            with cb:
-                item["bottom"] = st.multiselect(
-                    "Bottom Specification",
-                    st.session_state["bottom_list"],
-                    default=item.get("bottom", []),
-                    key=f"bt_{idx}",
-                )
-                col_in_bt, col_btn_bt = st.columns([2, 1])
-                new_bt = col_in_bt.text_input(
-                    "➕ New Bottom",
-                    key=f"add_bt_{idx}",
-                    label_visibility="collapsed",
-                    placeholder="Add bottom...",
-                )
-                if col_btn_bt.button("Add", key=f"btn_add_bt_{idx}"):
-                    if new_bt and new_bt not in st.session_state["bottom_list"]:
-                        st.session_state["bottom_list"].append(new_bt)
-                        save_specifications()
-                        st.rerun()
+                with cb:
+                    item["bottom"] = st.multiselect(
+                        "Bottom Specification",
+                        st.session_state["bottom_list"],
+                        default=item.get("bottom", []),
+                        key=f"bt_{idx}",
+                    )
+                    col_in_bt, col_btn_bt = st.columns([2, 1])
+                    new_bt = col_in_bt.text_input(
+                        "➕ New Bottom",
+                        key=f"add_bt_{idx}",
+                        label_visibility="collapsed",
+                        placeholder="Add bottom...",
+                    )
+                    if col_btn_bt.button("Add", key=f"btn_add_bt_{idx}"):
+                        if new_bt and new_bt not in st.session_state["bottom_list"]:
+                            st.session_state["bottom_list"].append(new_bt)
+                            save_specifications()
+                            st.rerun()
 
-            with ch_col:
-                item["hood"] = st.multiselect(
-                    "Hood Cover Specification",
-                    st.session_state["hood_list"],
-                    default=item.get("hood", []),
-                    key=f"hd_{idx}",
-                )
-                col_in_hd, col_btn_hd = st.columns([2, 1])
-                new_hd = col_in_hd.text_input(
-                    "➕ New Hood",
-                    key=f"add_hd_{idx}",
-                    label_visibility="collapsed",
-                    placeholder="Add hood...",
-                )
-                if col_btn_hd.button("Add", key=f"btn_add_hd_{idx}"):
-                    if new_hd and new_hd not in st.session_state["hood_list"]:
-                        st.session_state["hood_list"].append(new_hd)
-                        save_specifications()
-                        st.rerun()
+                with ch_col:
+                    item["hood"] = st.multiselect(
+                        "Hood Cover Specification",
+                        st.session_state["hood_list"],
+                        default=item.get("hood", []),
+                        key=f"hd_{idx}",
+                    )
+                    col_in_hd, col_btn_hd = st.columns([2, 1])
+                    new_hd = col_in_hd.text_input(
+                        "➕ New Hood",
+                        key=f"add_hd_{idx}",
+                        label_visibility="collapsed",
+                        placeholder="Add hood...",
+                    )
+                    if col_btn_hd.button("Add", key=f"btn_add_hd_{idx}"):
+                        if new_hd and new_hd not in st.session_state["hood_list"]:
+                            st.session_state["hood_list"].append(new_hd)
+                            save_specifications()
+                            st.rerun()
 
-            st.markdown("##### 🔒 Locks & Safety Features")
-            item["safety_locks"] = st.multiselect(
-                "Select Locks & Safety Features",
-                SAFETY_LOCK_OPTIONS,
-                default=item.get("safety_locks", []),
-                key=f"lock_{idx}",
-            )
-
-            st.markdown("##### ⚙️ Operator For Rolling Shutter")
-            if item["type"] == "Motorized Rolling Shutter":
-                item["operator"] = st.multiselect(
-                    "Operator Option",
-                    OPERATOR_OPTIONS,
-                    default=item.get("operator", []),
-                    key=f"op_{idx}",
+                st.markdown("##### 🔒 Locks & Safety Features")
+                item["safety_locks"] = st.multiselect(
+                    "Select Locks & Safety Features",
+                    SAFETY_LOCK_OPTIONS,
+                    default=item.get("safety_locks", []),
+                    key=f"lock_{idx}",
                 )
+
+                st.markdown("##### ⚙️ Operator Details")
+                if item["type"] == "Motorized Rolling Shutter":
+                    item["operator"] = st.multiselect(
+                        "Operator Option",
+                        OPERATOR_OPTIONS,
+                        default=item.get("operator", []),
+                        key=f"op_{idx}",
+                    )
+                else:
+                    st.info(
+                        "🔒 Operator selection disabled for Gear and Manual Shutters."
+                    )
+                    item["operator"] = []
             else:
-                st.info(
-                    "🔒 Operator selection disabled for Gear and Manual Shutters."
-                )
-                item["operator"] = []
+                st.info(f"ℹ️ Custom specification fields for **{selected_main}** will load here.")
 
             st.markdown("---")
             st.markdown("**Dimensions & Rates:**")
@@ -675,7 +723,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 key=f"ir_{idx}",
             )
 
-    st.button("➕ Add Another Shutter Item", on_click=add_shutter)
+    st.button("➕ Add Another Product Item", on_click=add_shutter)
 
     st.markdown("### 🚚 Extra Charges & Expenses")
     c1, c2, c3, c4, c5 = st.columns(5)
@@ -702,7 +750,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
 
         # --- UPDATED HEADER HELPER FUNCTION (PERFECT LEFT-ALIGNMENT & BLUE COLOR) ---
         def get_header_element():
-            # 1. Check for Logo Image
             logo_path = None
             for possible_path in ["Logo.jpeg", "logo.jpeg", "Logo.png", "logo.png", "Logo.jpg", "logo.jpg"]:
                 if os.path.exists(possible_path):
@@ -717,7 +764,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             else:
                 logo_element = Paragraph("<b>SIDHARTH</b><br/><font size=7 color='#003366'>SHUTTER & AUTOMATION</font>", styles["Normal"])
 
-            # 2. Right Side Text Styles (Blue Tone & Left Aligned for crisp margins)
             right_bold = ParagraphStyle(
                 "HeadRightBold",
                 parent=styles["Normal"],
@@ -738,7 +784,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 textColor=colors.HexColor("#1D4ED8"),
             )
 
-            # 3. Structured Data Rows for Header Details
             right_table_data = [
                 [Paragraph("<b>GSTIN/UIN: 08AEEPJ6848R1ZN</b>", right_bold)],
                 [Paragraph("<b>Web:</b> <font color='#0284C7'>www.ssaapl.com</font>", right_text)],
@@ -759,7 +804,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 ])
             )
 
-            # 4. Header Outer Table
             t_head = Table([[logo_element, t_right_info]], colWidths=[295, 250])
             t_head.setStyle(
                 TableStyle([
@@ -1140,7 +1184,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 itm.get("type") == "Motorized Rolling Shutter"
                 and itm.get("operator")
             ):
-                desc_lines.append("<b>Operator For Rolling Shutter:</b>")
+                desc_lines.append("<b>Operator Details:</b>")
                 for op in itm.get("operator", []):
                     desc_lines.append(f"- {op}")
 
@@ -1675,7 +1719,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 itm.get("type") == "Motorized Rolling Shutter"
                 and itm.get("operator")
             ):
-                desc_lines.append("Operator For Rolling Shutter:")
+                desc_lines.append("Operator Details:")
                 for op in itm.get("operator", []):
                     desc_lines.append(f"• {op}")
 
