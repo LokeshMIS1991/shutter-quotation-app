@@ -16,6 +16,45 @@ st.set_page_config(
     page_icon="🛡️",
 )
 
+# --- PRODUCTS LIST STRUCTURE ---
+products = [
+    {
+        "productItem": "Rolling Shutters",
+        "subCategory": "Motorized, Gear & Manual Rolling Shutters",
+        "icon": "🌀",
+    },
+    {
+        "productItem": "Dock Leveler",
+        "subCategory": "Hydraulic & Mechanical Dock Levelers",
+        "icon": "🏗️",
+    },
+    {
+        "productItem": "Gates",
+        "subCategory": "Sliding, Telescopic, L-Folding, Swing & Retractable Gates",
+        "icon": "🚪",
+    },
+    {
+        "productItem": "Doors",
+        "subCategory": "High Speed, Fire, HMPS, GPD & Overhead Sectional Doors",
+        "icon": "🚪",
+    },
+    {
+        "productItem": "Boom Barrier",
+        "subCategory": "Automatic & Heavy-Duty Traffic Barriers",
+        "icon": "🚧",
+    },
+    {
+        "productItem": "Dock Shelter",
+        "subCategory": "Retractable & Inflatable Dock Shelters",
+        "icon": "🏬",
+    },
+    {
+        "productItem": "Dock Bumper",
+        "subCategory": "Heavy Rubber & Moulded Bumpers",
+        "icon": "🛡️",
+    },
+]
+
 # --- CUSTOM CSS FOR ENHANCED ENTERPRISE LOOK ---
 st.markdown(
     """
@@ -126,30 +165,40 @@ OPERATOR_OPTIONS = [
 
 # --- DYNAMIC MASTER PRODUCTS & SUB-CATEGORIES MAPPING ---
 PRODUCT_HIERARCHY = {
-    "Rolling Shutter": [
+    "Rolling Shutters": [
         "Motorized Rolling Shutter",
         "Gear Rolling Shutter",
         "Manual Rolling Shutter",
     ],
-    "High Speed Door": [
-        "High Speed Roll-Up Door",
-        "High Speed Fold-Up Door",
-        "Cleanroom High Speed Door",
-    ],
-    "Sectional Overhead Door": [
-        "Standard Lift Sectional Door",
-        "High Lift Sectional Door",
-        "Vertical Lift Sectional Door",
-    ],
-    "Automatic Boom Barrier": [
-        "Electromechanical Boom Barrier",
-        "High Speed Parking Barrier",
-        "Heavy Duty Toll Barrier",
-    ],
-    "Loading Dock Equipment": [
+    "Dock Leveler": [
         "Hydraulic Dock Leveler",
         "Mechanical Dock Leveler",
+    ],
+    "Gates": [
+        "Sliding Gate",
+        "Telescopic Gate",
+        "L-Folding Gate",
+        "Swing Gate",
+        "Retractable Gate",
+    ],
+    "Doors": [
+        "High Speed Door",
+        "Fire Door",
+        "HMPS Door",
+        "GPD Door",
+        "Overhead Sectional Door",
+    ],
+    "Boom Barrier": [
+        "Automatic Traffic Barrier",
+        "Heavy-Duty Traffic Barrier",
+    ],
+    "Dock Shelter": [
+        "Retractable Dock Shelter",
         "Inflatable Dock Shelter",
+    ],
+    "Dock Bumper": [
+        "Heavy Rubber Bumper",
+        "Moulded Bumper",
     ]
 }
 
@@ -462,7 +511,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
 
     if "shutter_items" not in st.session_state:
         st.session_state["shutter_items"] = [{
-            "main_product": "Rolling Shutter",
+            "main_product": "Rolling Shutters",
             "type": "Motorized Rolling Shutter",
             "slat_nat": [],
             "slat_pow": [],
@@ -487,7 +536,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
 
     def add_shutter():
         st.session_state["shutter_items"].append({
-            "main_product": "Rolling Shutter",
+            "main_product": "Rolling Shutters",
             "type": "Motorized Rolling Shutter",
             "slat_nat": [],
             "slat_pow": [],
@@ -518,7 +567,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             
             # 1. Primary Product Type Selection
             with col_p_main:
-                curr_main_prod = item.get("main_product", "Rolling Shutter")
+                curr_main_prod = item.get("main_product", "Rolling Shutters")
                 main_prod_keys = list(PRODUCT_HIERARCHY.keys())
                 main_idx = main_prod_keys.index(curr_main_prod) if curr_main_prod in main_prod_keys else 0
                 
@@ -559,7 +608,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             )
 
             # Dynamic Form Fields based on Main Product Type
-            if selected_main == "Rolling Shutter":
+            if selected_main == "Rolling Shutters":
                 st.markdown("##### 📐 Slat Specifications")
                 col_sn, col_sp = st.columns(2)
                 with col_sn:
