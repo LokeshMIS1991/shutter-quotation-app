@@ -27,40 +27,25 @@ st.markdown(
     /* Welcome Header Banner */
     .welcome-header {
         background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        padding: 35px 25px;
-        border-radius: 16px;
+        padding: 45px 30px;
+        border-radius: 18px;
         color: white;
         text-align: center;
         margin-bottom: 30px;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.15);
     }
     .welcome-header h1 {
         color: #ffffff !important;
         font-weight: 800;
         margin: 0;
-        font-size: 32px;
+        font-size: 36px;
         letter-spacing: 0.5px;
     }
     .welcome-header p {
         color: #94a3b8 !important;
-        margin-top: 10px;
+        margin-top: 12px;
         margin-bottom: 0;
-        font-size: 16px;
-    }
-
-    /* Product Card Styling */
-    .product-card {
-        background-color: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 20px;
-        text-align: center;
-        transition: transform 0.2s, box-shadow 0.2s;
-        margin-bottom: 15px;
-    }
-    .product-card:hover {
-        border-color: #0f172a;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+        font-size: 18px;
     }
     
     .stButton>button {
@@ -221,7 +206,7 @@ if "terms_data" not in st.session_state:
     st.session_state["terms_data"] = DEFAULT_TERMS.copy()
 
 # ==============================================================================
-# PAGE 1: HOME / LANDING PAGE
+# PAGE 1: HOME / LANDING PAGE (WELCOME NOTE ONLY)
 # ==============================================================================
 if st.session_state["selected_product"] == "Home":
 
@@ -229,75 +214,31 @@ if st.session_state["selected_product"] == "Home":
         """
     <div class="welcome-header">
         <h1>Welcome To Sidharth Shutter & Automation Pvt. Ltd.</h1>
-        <p>Select a product line below to create professional quotations & proposals</p>
+        <p>Industrial Access & Entrance Automation Solutions</p>
     </div>
     """,
         unsafe_allow_html=True,
     )
 
-    st.markdown("### 📦 Select Product For Quotation")
-
-    products = [
-        {
-            "name": "Rolling Shutters",
-            "desc": "Motorized, Gear & Manual Rolling Shutters",
-            "icon": "🌀",
-        },
-        {
-            "name": "Dock Leveler",
-            "desc": "Hydraulic & Mechanical Dock Levelers",
-            "icon": "🏗️",
-        },
-        {
-            "name": "Gates",
-            "desc": "Sliding, Telescopic, L-Folding, Swing & Retractable Gates",
-            "icon": "🚪",
-        },
-        {
-            "name": "Doors",
-            "desc": "High Speed, Fire, HMPS, GPD & Overhead Sectional Doors",
-            "icon": "🚪",
-        },
-        {
-            "name": "Boom Barrier",
-            "desc": "Automatic & Heavy-Duty Traffic Barriers",
-            "icon": "🚧",
-        },
-        {
-            "name": "Dock Shelter",
-            "desc": "Retractable & Inflatable Dock Shelters",
-            "icon": "🏬",
-        },
-        {
-            "name": "Dock Bumper",
-            "desc": "Heavy Rubber & Moulded Bumpers",
-            "icon": "🛡️",
-        },
-    ]
-
-    col1, col2, col3 = st.columns(3)
-    cols = [col1, col2, col3]
-
-    for idx, prod in enumerate(products):
-        with cols[idx % 3]:
-            st.markdown(
-                f"""
-            <div class="product-card">
-                <h3 style="margin-bottom: 5px; color: #1e293b;">{prod['icon']} {prod['name']}</h3>
-                <p style="color: #64748b; font-size: 13px; min-height: 38px;">{prod['desc']}</p>
+    st.write("<br>", unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown(
+            """
+            <div style="background-color: white; padding: 30px; border-radius: 12px; border: 1px solid #e2e8f0; text-align: center; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+                <h3 style="color: #0f172a; margin-bottom: 10px;">Create Professional Quotation</h3>
+                <p style="color: #64748b; font-size: 14px; margin-bottom: 25px;">
+                    Click below to start generating custom multi-page commercial offers and technical proposals.
+                </p>
             </div>
             """,
-                unsafe_allow_html=True,
-            )
-
-            if st.button(
-                "Generate Quotation ->",
-                key=f"btn_{idx}",
-                use_container_width=True,
-                type="primary" if idx == 0 else "secondary",
-            ):
-                st.session_state["selected_product"] = prod["name"]
-                st.rerun()
+            unsafe_allow_html=True
+        )
+        st.write("")
+        if st.button("🚀 Create Quotation", use_container_width=True, type="primary"):
+            st.session_state["selected_product"] = "Rolling Shutters"
+            st.rerun()
 
 # ==============================================================================
 # PAGE 2: ROLLING SHUTTERS QUOTATION PAGE
@@ -783,7 +724,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 fontName="Helvetica-Bold",
                 fontSize=8.5,
                 leading=11,
-                alignment=0,  # Left align so labels start from exact same margin
+                alignment=0,
                 textColor=colors.HexColor("#0F172A"),
             )
             
@@ -793,8 +734,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 fontName="Helvetica",
                 fontSize=7.5,
                 leading=10,
-                alignment=0,  # Left align for perfect alignment
-                textColor=colors.HexColor("#1D4ED8"),  # Professional Corporate Blue
+                alignment=0,
+                textColor=colors.HexColor("#1D4ED8"),
             )
 
             # 3. Structured Data Rows for Header Details
