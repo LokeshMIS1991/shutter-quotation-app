@@ -112,7 +112,12 @@ DEFAULT_SPECS = {
     "slat_nat_list": [
         "90mm (H) x 1.2 mm thick Galvalume Plain slats in natural finish"
     ],
-    "slat_pow_list": ["90mm (H) x 1.2 mm thick Galvalume Powder Coated slats"],
+    "slat_pow_list": [
+        "Finish - Powder Coating As Per RAL",
+        "Finish - Red Oxide",
+        "Finish - PU Pain As Per RAL",
+        "Finish - Enamel Paint As Per RAL"
+    ],
     "guide_list": ["TG Guide with rubber seal with grey epoxy"],
     "bottom_list": ["Super bottom with rubber seal with grey epoxy"],
     "hood_list": [".80mm thick Galvalume Hood & Motor cover in natural finish"],
@@ -469,7 +474,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         col_cat, col_txt = st.columns([1, 2])
         category_mapping = {
             "Natural Finish Slats": "slat_nat_list",
-            "Powder Coated Slats": "slat_pow_list",
+            "Paint Finish Options": "slat_pow_list",
             "Guide Specifications": "guide_list",
             "Bottom Specifications": "bottom_list",
             "Hood Cover Specifications": "hood_list",
@@ -633,17 +638,17 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
 
                 with col_sp:
                     item["slat_pow"] = st.multiselect(
-                        "Powder Coated Slats",
+                        "Paint Finish",
                         st.session_state["slat_pow_list"],
                         default=item.get("slat_pow", []),
                         key=f"sp_{idx}",
                     )
                     col_in_sp, col_btn_sp = st.columns([3, 1])
                     new_sp = col_in_sp.text_input(
-                        "➕ New Powder Option",
+                        "➕ New Finish Option",
                         key=f"add_sp_{idx}",
                         label_visibility="collapsed",
-                        placeholder="Add new powder slat...",
+                        placeholder="Add new paint finish...",
                     )
                     if col_btn_sp.button("Add Option", key=f"btn_add_sp_{idx}"):
                         if new_sp and new_sp not in st.session_state["slat_pow_list"]:
