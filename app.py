@@ -110,7 +110,16 @@ SPEC_FILE = "specifications_master.json"
 
 DEFAULT_SPECS = {
     "slat_nat_list": [
-        "90mm (H) x 1.2 mm thick Galvalume Plain slats in natural finish"
+        "78mm (H) x 1mm Thick Galvalume Curved Slat in Natural Finish",
+        "78mm (H) x .80mm Thick Galvalume Curved Slat in Natural Finish",
+        "78mm (H) x .90mm Thick Galvalume Curved Slat in Natural Finish",
+        "78mm (H) x 1mm Thick Galvanized in Curved Slat",
+        "78mm (H) x .80mm Thick Galvanized in Curved Slat",
+        "78mm (H) x .90mm Thick Galvanized in Curved Slat",
+        "90mm (H) x .80mm Thick Galvalume plain slats in Curved Slat",
+        "90mm (H) x .90mm Thick Galvalume plain slats in Natural Finish",
+        "90mm (H) x .80mm Thick Galvanized in plain slats",
+        "90mm (H) x .90mm Thick Galvanized in plain slats"
     ],
     "slat_pow_list": [
         "Finish - Powder Coating As Per RAL",
@@ -473,7 +482,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         )
         col_cat, col_txt = st.columns([1, 2])
         category_mapping = {
-            "Natural Finish Slats": "slat_nat_list",
+            "Slats": "slat_nat_list",
             "Paint Finish Options": "slat_pow_list",
             "Guide Specifications": "guide_list",
             "Bottom Specifications": "bottom_list",
@@ -614,21 +623,21 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
 
             # Dynamic Form Fields based on Main Product Type
             if selected_main == "Rolling Shutters":
-                st.markdown("##### 📐 Slat Specifications")
+                st.markdown("##### 📐 Technical Details")
                 col_sn, col_sp = st.columns(2)
                 with col_sn:
                     item["slat_nat"] = st.multiselect(
-                        "Natural Finish Slats",
+                        "Slats",
                         st.session_state["slat_nat_list"],
                         default=item.get("slat_nat", []),
                         key=f"sn_{idx}",
                     )
                     col_in_sn, col_btn_sn = st.columns([3, 1])
                     new_sn = col_in_sn.text_input(
-                        "➕ New Natural Option",
+                        "➕ New Slat Option",
                         key=f"add_sn_{idx}",
                         label_visibility="collapsed",
-                        placeholder="Add new natural slat...",
+                        placeholder="Add new slat...",
                     )
                     if col_btn_sn.button("Add Option", key=f"btn_add_sn_{idx}"):
                         if new_sn and new_sn not in st.session_state["slat_nat_list"]:
