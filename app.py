@@ -413,40 +413,41 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
     # --- SECTION A: ABOUT US TEXT CUSTOMIZATION IN EXPANDER ---
     with st.expander("📄 Page 2: About Us (Company Profile) Text Customization", expanded=False):
         about_us_text_1 = st.text_area(
-            "1. Core Company Highlights",
-            "• 25+ Years of Industry Legacy: Established in 1998, Sidharth Shutter & Automation Pvt. Ltd. has built over two decades of solid market leadership and trust across India.\n"
-            "• Proven Track Record: Successfully engineered, manufactured, and installed over 10,000+ heavy-duty industrial shutters and door systems nationwide.\n"
-            "• Pan-India Presence & Client Reach: Serving premier logistics parks, industrial hubs, manufacturing plants, and commercial complexes with prompt execution.\n"
-            "• State-of-the-Art Manufacturing: Modern production facility equipped with CNC roll-forming machines, laser cutting, and automatic powder-coating lines.",
-            height=120
+            "1. Core Company Highlights & Industrial Legacy",
+            "• Over Two Decades of Engineering Excellence: Established in 1998, Sidharth Shutter & Automation Pvt. Ltd. (SSAPL) has evolved into a premier national leader in high-performance industrial entrance and access automation systems across India.\n"
+            "• Extensive Nationwide Deployment: Successfully engineered, custom-manufactured, and commissioned over 10,000+ heavy-duty industrial shutters, dock systems, and automated security barriers for leading public and private enterprises.\n"
+            "• Pan-India Operational Footprint: Serving top-tier logistics parks, manufacturing plants, warehouse hubs, defense facilities, commercial complexes, and infrastructure projects with robust regional project execution capability.\n"
+            "• Advanced Manufacturing Facility: Powered by state-of-the-art infrastructure featuring CNC roll-forming machinery, high-precision laser cutters, robotic welding units, and fully automated powder-coating lines.",
+            height=150
         )
         about_us_text_2 = st.text_area(
-            "2. Engineering & Quality Standards",
-            "• ISO & CE Compliant Production: All manufacturing processes adhere strictly to ISO 9001:2015 quality control and European CE safety benchmarks.\n"
-            "• Wind-Load & Safety Engineered: Shutters and gates designed specifically to withstand high wind velocity, harsh weather, and rigorous continuous cycles.\n"
-            "• Premium Raw Materials: We utilize high-grade Galvalume, Galvanized Steel, and heavy-duty aluminum alloys to ensure maximum corrosion resistance.",
-            height=110
+            "2. Engineering, Quality Standards & Certification",
+            "• ISO & CE Certified Quality Benchmarks: Strict compliance with ISO 9001:2015 Quality Management Systems and European CE safety certification standards across all product development cycles.\n"
+            "• High Wind-Load & Extreme Weather Resilience: Structural curtains and frames are specifically calculated and stress-tested to withstand high wind velocity, pressure differentials, severe rain, and harsh industrial environments.\n"
+            "• Premium Heavy-Gauge Raw Materials: Exclusively using certified high-tensile Galvalume, Galvanized Steel (GI), and structural aluminum alloys for exceptional structural stability, long operational lifespan, and maximum corrosion protection.",
+            height=140
         )
         about_us_text_3 = st.text_area(
-            "3. Comprehensive Product Portfolio",
-            "• Industrial Rolling Shutters: Motorized, Gear-operated, and Manual options crafted for high security, insulation, and durability.\n"
-            "• Entrance Automation Systems: Automatic boom barriers, cantilever sliding gates, retractable gates, and high-speed roll-up doors.\n"
-            "• Loading Bay Equipment: Hydraulic dock levelers, inflatable & mechanical dock shelters, rubber dock bumpers, and safety wheel chocks.",
-            height=110
+            "3. Comprehensive Product & Solutions Portfolio",
+            "• Industrial & Commercial Rolling Shutters: Heavy-duty motorized, gear-operated, and manual roll-up systems designed for maximum perimeter security, thermal insulation, and continuous high-frequency operations.\n"
+            "• High-Speed & Specialized Doors: Rapid roll-up PVC doors, insulated sectional overhead doors, fire-rated HMPS doors, and acoustic/cleanroom barriers engineered for dynamic airflow control.\n"
+            "• Advanced Entrance Automation: Automatic boom barriers, cantilever sliding gates, telescopic gates, heavy-duty swing gates, and motor-driven retractable security gates.\n"
+            "• Integrated Loading Bay Equipment: Hydraulic and mechanical dock levelers, inflatable/retractable dock shelters, heavy-duty rubber bumpers, and integrated loading dock safety accessories.",
+            height=150
         )
         about_us_text_4 = st.text_area(
-            "4. The Sidharth Advantage (Service & Support)",
-            "• Turnkey Execution: Complete end-to-end management from site measurement and structural design to supply, testing, and commissioning.\n"
-            "• 24x7 Dedicated Service Network: Highly trained technical field engineers ready for rapid maintenance, AMC support, and spare availability.\n"
-            "• Customized Solutions: Tailored engineering to fit unique architectural profiles, structural openings, and operational constraints.",
-            height=110
+            "4. The Sidharth Advantage: Turnkey Execution & Support",
+            "• End-to-End Turnkey Project Management: Complete project lifecycle execution—from initial site survey, structural shop drawings, and custom fabrication to installation, electrical integration, and final handover.\n"
+            "• 24x7 Rapid Service & Maintenance Network: Highly specialized field service engineering team delivering preventative maintenance, fast emergency troubleshooting, AMC services, and guaranteed original spare parts supply.\n"
+            "• Architectural & Operational Customization: Tailor-made designs engineered to integrate smoothly into non-standard structural openings, unique headroom spaces, and specialized warehouse management workflows.",
+            height=140
         )
         about_us_text_5 = st.text_area(
-            "5. Technical Excellence & Commitment",
-            "• In-House R&D: Continuous innovation in drive automation, low-noise shutter slats, and high-wind lock mechanisms.\n"
-            "• Comprehensive Testing: Every shutter and motor assembly undergoes rigorous multi-cycle factory testing prior to dispatch.\n"
-            "• Safety Compliance: Integrated safety brake systems, optical sensors, and emergency manual release mechanism standard across designs.",
-            height=110
+            "5. Technical R&D, Testing & Safety Protocols",
+            "• In-House Research & Innovation: Continuous R&D focused on ultra-quiet drive mechanisms, high-wind slat locking mechanisms, smart sensor technology, and long-life motor controls.\n"
+            "• Rigorous Multi-Cycle Factory Testing: Every motor drive, control unit, and shutter curtain undergoes strict pre-dispatch factory testing for smooth mechanical movement, limit accuracy, and electrical load capacity.\n"
+            "• Uncompromising Operational Safety: Integrated emergency manual hand-chain system, optical safety sensors, bottom-edge safety buffers, and external dynamic drop-brake protection standard across heavy-duty configurations.",
+            height=140
         )
 
     # --- SECTION C: TECHNICAL SPECIFICATIONS CUSTOMIZATION IN EXPANDER ---
@@ -857,37 +858,37 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story.append(Paragraph(sign_off_p1, style_cover_meta))
 
         # ==========================================
-        # 🏢 PAGE 2: SECTION A: ABOUT US & EXPERTISE
+        # 🏢 PAGE 2: SECTION A: ABOUT US & EXPERTISE (FULL A4 PAGE COVERAGE)
         # ==========================================
         story.append(PageBreak())
         story.append(get_header_element())
-        story.append(Spacer(1, 6))
+        story.append(Spacer(1, 4))
         story.append(
             HRFlowable(
                 width="100%",
                 thickness=1.5,
                 color=colors.HexColor("#000000"),
-                spaceAfter=8,
+                spaceAfter=6,
             )
         )
 
         story.append(Paragraph("Section A: About Us & Our Expertise (Company Profile)", style_sec_title))
-        story.append(Spacer(1, 6))
+        story.append(Spacer(1, 4))
 
         style_box_head = ParagraphStyle(
-            "BoxHead",
+            "BoxHeadFull",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=9,
-            leading=11,
+            fontSize=8.5,
+            leading=10.5,
             textColor=colors.HexColor("#000000"),
         )
         style_box_text = ParagraphStyle(
-            "BoxText",
+            "BoxTextFull",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=7.5,
-            leading=10,
+            fontSize=7.2,
+            leading=9.5,
             textColor=colors.HexColor("#1E293B"),
         )
 
@@ -897,31 +898,31 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 if line.strip():
                     formatted_line = line.replace("•", "&bull;")
                     elements.append(Paragraph(formatted_line, style_box_text))
-                    elements.append(Spacer(1, 1))
+                    elements.append(Spacer(1, 2))
             return elements
 
         about_box_content = [
-            Paragraph("<b>1. Core Company Highlights</b>", style_box_head),
+            Paragraph("<b>1. Core Company Highlights & Industrial Legacy</b>", style_box_head),
             Spacer(1, 2),
             *build_paragraph_block(about_us_text_1),
             Spacer(1, 3),
 
-            Paragraph("<b>2. Engineering & Quality Standards</b>", style_box_head),
+            Paragraph("<b>2. Engineering, Quality Standards & Certification</b>", style_box_head),
             Spacer(1, 2),
             *build_paragraph_block(about_us_text_2),
             Spacer(1, 3),
 
-            Paragraph("<b>3. Comprehensive Product Portfolio</b>", style_box_head),
+            Paragraph("<b>3. Comprehensive Product & Solutions Portfolio</b>", style_box_head),
             Spacer(1, 2),
             *build_paragraph_block(about_us_text_3),
             Spacer(1, 3),
 
-            Paragraph("<b>4. The Sidharth Advantage (Service & Support)</b>", style_box_head),
+            Paragraph("<b>4. The Sidharth Advantage: Turnkey Execution & Support</b>", style_box_head),
             Spacer(1, 2),
             *build_paragraph_block(about_us_text_4),
             Spacer(1, 3),
 
-            Paragraph("<b>5. Technical Excellence & Commitment</b>", style_box_head),
+            Paragraph("<b>5. Technical R&D, Testing & Safety Protocols</b>", style_box_head),
             Spacer(1, 2),
             *build_paragraph_block(about_us_text_5),
         ]
@@ -938,32 +939,32 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             ])
         )
         story.append(t_box)
-        story.append(Spacer(1, 8))
+        story.append(Spacer(1, 6))
 
         style_pf_header = ParagraphStyle(
-            "PfHead",
+            "PfHeadFull",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=8.5,
-            leading=10,
+            fontSize=8,
+            leading=9.5,
             alignment=1,
             textColor=colors.HexColor("#000000"),
         )
         style_pf_col = ParagraphStyle(
-            "PfCol",
+            "PfColFull",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=7.5,
-            leading=9,
+            fontSize=7.2,
+            leading=8.5,
             alignment=1,
             textColor=colors.HexColor("#1E293B"),
         )
         style_pf_body = ParagraphStyle(
-            "PfBody",
+            "PfBodyFull",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=6.8,
-            leading=8.5,
+            fontSize=6.5,
+            leading=8,
             alignment=1,
             textColor=colors.HexColor("#334155"),
         )
@@ -993,8 +994,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
                 ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                ("TOPPADDING", (0, 0), (-1, -1), 4),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ("TOPPADDING", (0, 0), (-1, -1), 3),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
             ])
         )
         story.append(t_portfolio)
