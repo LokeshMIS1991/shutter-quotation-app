@@ -127,9 +127,30 @@ DEFAULT_SPECS = {
         "Finish - PU Pain As Per RAL",
         "Finish - Enamel Paint As Per RAL"
     ],
-    "guide_list": ["TG Guide with rubber seal with grey epoxy"],
-    "bottom_list": ["Super bottom with rubber seal with grey epoxy"],
-    "hood_list": [".80mm thick Galvalume Hood & Motor cover in natural finish"],
+    "guide_list": [
+        "TG Guide with Rubber Seal with Grey Epoxy Finish",
+        "TG Guide With Grey Epoxy Finish",
+        "U Guide with Grey Epoxy Finish",
+        "U Guide"
+    ],
+    "bottom_list": [
+        "Super Bottom with Rubber Seal with Grey Epoxy Finish",
+        "Super Bottom with Rubber Seal",
+        "Aluminium Bottom with Rubber Seal with Grey Epoxy Finish",
+        "Aluminium Bottom with Rubber Seal"
+    ],
+    "hood_list": [
+        ".80mm Thick Galvalume Hood & Motor Cover in Natural Finish",
+        ".90mm Thick Galvalume Hood & Motor Cover in Natural Finish",
+        "1.2mm Thick Galvalume Hood & Motor Cover in Natural Finish",
+        "1mm Thick Galvalume Hood & Motor Cover in Natural Finish",
+        ".80mm Thick Galvanized Hood & Motor Cover",
+        ".90mm Thick Galvanized Hood & Motor Cover",
+        "1mm Thick Galvanized Hood & Motor Cover",
+        "1.2mm Thick Galvanized Hood & Motor Cover",
+        ".80mm Thick Galvalume Hood Cover in Natural Finish",
+        ".80mm Thick Galvanized Hood Cover"
+    ],
 }
 
 
@@ -170,6 +191,8 @@ SAFETY_LOCK_OPTIONS = [
     "External Safety Break",
     "Side Locks-2 Nos",
     "Standard Center Lock with 2 Keys",
+    "Gear Set - Both Side",
+    "Gear Set - Single Side (Outside)",
 ]
 
 OPERATOR_OPTIONS = [
