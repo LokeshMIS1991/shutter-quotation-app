@@ -449,6 +449,11 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "• Uncompromising Operational Safety: Integrated emergency manual hand-chain system, optical safety sensors, bottom-edge safety buffers, and external dynamic drop-brake protection standard across heavy-duty configurations.",
             height=140
         )
+        about_us_text_6 = st.text_area(
+            "6. Future-Ready Technology & Green Engineering",
+            "• Eco-Friendly Manufacturing & Smart Integration: SSAPL incorporates eco-conscious raw materials and energy-efficient drive mechanisms to significantly reduce industrial carbon footprints. Our automation systems seamlessly interface with modern IoT-enabled controls, remote diagnostic tools, and automated Building Management Systems (BMS). This fusion of sustainable engineering and smart automation guarantees optimal operational efficiency, reduced power consumption, and advanced perimeter intelligence for future-ready industrial infrastructure.",
+            height=130
+        )
 
     # --- SECTION C: TECHNICAL SPECIFICATIONS CUSTOMIZATION IN EXPANDER ---
     with st.expander("📄 Page 4: Section C - Technical Specifications Customization", expanded=False):
@@ -879,16 +884,16 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "BoxHeadFull",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=8.5,
-            leading=10.5,
+            fontSize=8.2,
+            leading=10,
             textColor=colors.HexColor("#000000"),
         )
         style_box_text = ParagraphStyle(
             "BoxTextFull",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=7.2,
-            leading=9.5,
+            fontSize=6.8,
+            leading=8.8,
             textColor=colors.HexColor("#1E293B"),
         )
 
@@ -898,33 +903,38 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 if line.strip():
                     formatted_line = line.replace("•", "&bull;")
                     elements.append(Paragraph(formatted_line, style_box_text))
-                    elements.append(Spacer(1, 2))
+                    elements.append(Spacer(1, 1.5))
             return elements
 
         about_box_content = [
             Paragraph("<b>1. Core Company Highlights & Industrial Legacy</b>", style_box_head),
-            Spacer(1, 2),
+            Spacer(1, 1.5),
             *build_paragraph_block(about_us_text_1),
-            Spacer(1, 3),
+            Spacer(1, 2.5),
 
             Paragraph("<b>2. Engineering, Quality Standards & Certification</b>", style_box_head),
-            Spacer(1, 2),
+            Spacer(1, 1.5),
             *build_paragraph_block(about_us_text_2),
-            Spacer(1, 3),
+            Spacer(1, 2.5),
 
             Paragraph("<b>3. Comprehensive Product & Solutions Portfolio</b>", style_box_head),
-            Spacer(1, 2),
+            Spacer(1, 1.5),
             *build_paragraph_block(about_us_text_3),
-            Spacer(1, 3),
+            Spacer(1, 2.5),
 
             Paragraph("<b>4. The Sidharth Advantage: Turnkey Execution & Support</b>", style_box_head),
-            Spacer(1, 2),
+            Spacer(1, 1.5),
             *build_paragraph_block(about_us_text_4),
-            Spacer(1, 3),
+            Spacer(1, 2.5),
 
             Paragraph("<b>5. Technical R&D, Testing & Safety Protocols</b>", style_box_head),
-            Spacer(1, 2),
+            Spacer(1, 1.5),
             *build_paragraph_block(about_us_text_5),
+            Spacer(1, 2.5),
+
+            Paragraph("<b>6. Future-Ready Technology & Green Engineering</b>", style_box_head),
+            Spacer(1, 1.5),
+            *build_paragraph_block(about_us_text_6),
         ]
 
         t_box = Table([[about_box_content]], colWidths=[545])
@@ -932,21 +942,21 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             TableStyle([
                 ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
                 ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
-                ("TOPPADDING", (0, 0), (-1, -1), 6),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                ("TOPPADDING", (0, 0), (-1, -1), 5),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
                 ("LEFTPADDING", (0, 0), (-1, -1), 8),
                 ("RIGHTPADDING", (0, 0), (-1, -1), 8),
             ])
         )
         story.append(t_box)
-        story.append(Spacer(1, 6))
+        story.append(Spacer(1, 5))
 
         style_pf_header = ParagraphStyle(
             "PfHeadFull",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=8,
-            leading=9.5,
+            fontSize=7.8,
+            leading=9,
             alignment=1,
             textColor=colors.HexColor("#000000"),
         )
@@ -954,8 +964,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "PfColFull",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=7.2,
-            leading=8.5,
+            fontSize=7,
+            leading=8,
             alignment=1,
             textColor=colors.HexColor("#1E293B"),
         )
@@ -963,8 +973,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "PfBodyFull",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=6.5,
-            leading=8,
+            fontSize=6.2,
+            leading=7.5,
             alignment=1,
             textColor=colors.HexColor("#334155"),
         )
@@ -994,8 +1004,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
                 ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                ("TOPPADDING", (0, 0), (-1, -1), 3),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+                ("TOPPADDING", (0, 0), (-1, -1), 2.5),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
             ])
         )
         story.append(t_portfolio)
