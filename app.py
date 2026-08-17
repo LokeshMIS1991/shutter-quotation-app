@@ -228,7 +228,7 @@ PRODUCT_HIERARCHY = {
     ]
 }
 
-# DEFAULT DATA FOR SECTION A (PAGE 2) - REMOVED 6TH POINT
+# DEFAULT DATA FOR SECTION A (PAGE 2)
 DEFAULT_ABOUT_US_LIST = [
     {
         "title": "1. Core Company Highlights & Industrial Legacy",
@@ -255,7 +255,7 @@ DEFAULT_ABOUT_US_LIST = [
 if "about_us_data" not in st.session_state:
     st.session_state["about_us_data"] = DEFAULT_ABOUT_US_LIST.copy()
 
-# EXTENDED TECH SPECS FOR SECTION C (PAGE 4) - UPDATED TO 36 DETAILS
+# EXTENDED TECH SPECS FOR SECTION C (PAGE 4) - UPDATED EXACTLY TO 30 DETAILS
 DEFAULT_TECH_SPECS = [
     {"param": "Shutter Type", "spec": "Motorized Heavy Duty Industrial Rolling Shutter"},
     {"param": "Slat Type", "spec": "Single Skin Curved Interlocking Galvanized / Galvalume Steel Slats"},
@@ -278,7 +278,6 @@ DEFAULT_TECH_SPECS = [
     {"param": "Locking Arrangement", "spec": "Electrical Self-Locking Gear Mechanism (Optional Mechanical Side Locks for dual security)"},
     {"param": "Fasteners & Hardware", "spec": "High Tensile Zinc-Plated / Hot-Dip Galvanized Fasteners & Anchor Expansion Bolts"},
     {"param": "Operating Temp & Cycle", "spec": "-10°C to +55°C Ambient Operating Range; Designed for Heavy Continuous Industrial Cycles"},
-    # Added 15 New Technical Details
     {"param": "Opening / Closing Speed", "spec": "0.15 m/sec to 0.25 m/sec (Standard Industrial Speed)"},
     {"param": "Power Supply Requirement", "spec": "415V AC, 3-Phase, 50 Hz / 230V Single Phase (As per motor model)"},
     {"param": "Duty Cycle Rating", "spec": "60% Duty Cycle (S3 Rated Heavy Duty Industrial Motor)"},
@@ -287,13 +286,7 @@ DEFAULT_TECH_SPECS = [
     {"param": "Safety Edge Sensor (Optional)", "spec": "Infrared Safety Photocells / Bottom Rubber Wireless Safety Edge Sensor"},
     {"param": "Manual Override Force", "spec": "Ergonomic Chain Handwheel requiring < 15 kg pull force during power loss"},
     {"param": "Guide Weather Sealing", "spec": "Dual-density EPDM / Nylon Brush seals inside side guides for dust & weather insulation"},
-    {"param": "Bottom Seal Type", "spec": "Heavy-duty EPDM tubular rubber bottom profile for floor gap sealing"},
-    {"param": "Surface Pre-treatment", "spec": "7-tank anti-corrosion chemical treatment before powder coating"},
-    {"param": "Coating Thickness", "spec": "60 to 80 Microns Pure Polyester Powder Coating (Salt spray tested)"},
-    {"param": "Cable & Wiring Specifications", "spec": "Flame Retardant Low Smoke (FRLS) copper wiring inside rigid PVC conduits"},
-    {"param": "Remote Control Compatibility", "spec": "Optional 4-Channel Wireless Remote Control (433.92 MHz)"},
-    {"param": "Integration Capability", "spec": "Potential integration with Access Control, BMS, Fire Alarm System & Motion Radar"},
-    {"param": "Quality & Compliance Standards", "spec": "Manufactured as per ISO 9001:2015 & CE Safety Directives"}
+    {"param": "Bottom Seal Type", "spec": "Heavy-duty EPDM tubular rubber bottom profile for floor gap sealing"}
 ]
 
 if "tech_specs_data" not in st.session_state:
@@ -654,21 +647,22 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             # Dynamic Form Fields based on Main Product Type
             if selected_main == "Rolling Shutters":
                 st.markdown("##### 📐 Technical Details")
-                col_sn, col_sp = st.columns(2)
-                with col_sn:
-                    item["slat_nat"] = st.multiselect(
-                        "Slats",
-                        st.session_state["slat_nat_list"],
-                        default=item.get("slat_nat", []),
-                        key=f"sn_{idx}",
-                    )
-
+                col_sp, col_sn = st.columns(2)
+                # Reordered Fields: 1st Paint Finish, 2nd Slats
                 with col_sp:
                     item["slat_pow"] = st.multiselect(
                         "Paint Finish",
                         st.session_state["slat_pow_list"],
                         default=item.get("slat_pow", []),
                         key=f"sp_{idx}",
+                    )
+
+                with col_sn:
+                    item["slat_nat"] = st.multiselect(
+                        "Slats",
+                        st.session_state["slat_nat_list"],
+                        default=item.get("slat_nat", []),
+                        key=f"sn_{idx}",
                     )
 
                 st.markdown("##### 🛠️ Guide, Bottom Sheet & Hood Cover")
@@ -758,7 +752,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
 
     st.button("➕ Add Another Product Item", on_click=add_shutter)
 
-    # --- FREIGHT CHARGES (AS PER ACTUAL) & EXTRA CHARGES TEXT DISPLAY (CHANGE 3 & 4) ---
+    # --- FREIGHT CHARGES & EXTRA CHARGES DISPLAY ---
     st.markdown("### 🚚 Extra Charges & Expenses")
     c1, c2, c3, c4, c5 = st.columns(5)
     packing_charges = c1.number_input("Packing & Loading (INR)", value=5000)
@@ -776,7 +770,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
     crane_charges = c4.number_input("Crane Charges (INR)", value=0)
     scaffolding_charges = c5.number_input("Scaffolding Charges (INR)", value=0)
 
-    # --- PDF GENERATOR WITH PERFECTLY ALIGNED BLUE HEADER & STANDARDIZED FONT SIZES ---
+    # --- PDF GENERATOR ---
     def generate_pdf():
         buffer = io.BytesIO()
 
@@ -1194,9 +1188,10 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             total_qty += itm.get("qty", 1)
 
             desc_lines = [f"<b>{itm.get('type', 'Motorized Rolling Shutter')}</b>"]
-            for s in itm.get("slat_nat", []):
-                desc_lines.append(f"- {s}")
+            # REORDERED OUTPUT: 1st Paint Finish, 2nd Slats
             for s in itm.get("slat_pow", []):
+                desc_lines.append(f"- {s}")
+            for s in itm.get("slat_nat", []):
                 desc_lines.append(f"- {s}")
             for g in itm.get("guide", []):
                 desc_lines.append(f"- {g}")
@@ -1269,7 +1264,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "",
             Paragraph("-", small_text_right),
         ])
-        # CHANGED: Freight Charges (As Per Actual)
         items_data.append([
             "",
             Paragraph("Freight Charges (As Per Actual)", small_text),
@@ -1732,9 +1726,10 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             total_qty += itm.get("qty", 1)
 
             desc_lines = [itm.get("type", "Motorized Rolling Shutter")]
-            for s in itm.get("slat_nat", []):
-                desc_lines.append(f"• {s}")
+            # REORDERED EXCEL OUTPUT: 1st Paint Finish, 2nd Slats
             for s in itm.get("slat_pow", []):
+                desc_lines.append(f"• {s}")
+            for s in itm.get("slat_nat", []):
                 desc_lines.append(f"• {s}")
             for g in itm.get("guide", []):
                 desc_lines.append(f"• {g}")
