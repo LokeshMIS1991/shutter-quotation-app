@@ -863,7 +863,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story.append(Paragraph(sign_off_p1, style_cover_meta))
 
         # ==========================================
-        # 🏢 PAGE 2: SECTION A: ABOUT US & EXPERTISE (FULL A4 PAGE COVERAGE)
+        # 🏢 PAGE 2: SECTION A: ABOUT US & EXPERTISE (UPDATED FONT SIZES)
         # ==========================================
         story.append(PageBreak())
         story.append(get_header_element())
@@ -884,16 +884,16 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "BoxHeadFull",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=8.2,
-            leading=10,
+            fontSize=9.5,  # Increased from 8.2
+            leading=12,    # Adjusted leading
             textColor=colors.HexColor("#000000"),
         )
         style_box_text = ParagraphStyle(
             "BoxTextFull",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=6.8,
-            leading=8.8,
+            fontSize=8.0,  # Increased from 6.8
+            leading=10.5,  # Adjusted leading
             textColor=colors.HexColor("#1E293B"),
         )
 
@@ -903,37 +903,37 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 if line.strip():
                     formatted_line = line.replace("•", "&bull;")
                     elements.append(Paragraph(formatted_line, style_box_text))
-                    elements.append(Spacer(1, 1.5))
+                    elements.append(Spacer(1, 2))
             return elements
 
         about_box_content = [
             Paragraph("<b>1. Core Company Highlights & Industrial Legacy</b>", style_box_head),
-            Spacer(1, 1.5),
+            Spacer(1, 2),
             *build_paragraph_block(about_us_text_1),
-            Spacer(1, 2.5),
+            Spacer(1, 3),
 
             Paragraph("<b>2. Engineering, Quality Standards & Certification</b>", style_box_head),
-            Spacer(1, 1.5),
+            Spacer(1, 2),
             *build_paragraph_block(about_us_text_2),
-            Spacer(1, 2.5),
+            Spacer(1, 3),
 
             Paragraph("<b>3. Comprehensive Product & Solutions Portfolio</b>", style_box_head),
-            Spacer(1, 1.5),
+            Spacer(1, 2),
             *build_paragraph_block(about_us_text_3),
-            Spacer(1, 2.5),
+            Spacer(1, 3),
 
             Paragraph("<b>4. The Sidharth Advantage: Turnkey Execution & Support</b>", style_box_head),
-            Spacer(1, 1.5),
+            Spacer(1, 2),
             *build_paragraph_block(about_us_text_4),
-            Spacer(1, 2.5),
+            Spacer(1, 3),
 
             Paragraph("<b>5. Technical R&D, Testing & Safety Protocols</b>", style_box_head),
-            Spacer(1, 1.5),
+            Spacer(1, 2),
             *build_paragraph_block(about_us_text_5),
-            Spacer(1, 2.5),
+            Spacer(1, 3),
 
             Paragraph("<b>6. Future-Ready Technology & Green Engineering</b>", style_box_head),
-            Spacer(1, 1.5),
+            Spacer(1, 2),
             *build_paragraph_block(about_us_text_6),
         ]
 
@@ -955,8 +955,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "PfHeadFull",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=7.8,
-            leading=9,
+            fontSize=8.5,  # Increased from 7.8
+            leading=10.5,
             alignment=1,
             textColor=colors.HexColor("#000000"),
         )
@@ -964,8 +964,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "PfColFull",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=7,
-            leading=8,
+            fontSize=7.8,  # Increased from 7.0
+            leading=9.5,
             alignment=1,
             textColor=colors.HexColor("#1E293B"),
         )
@@ -973,8 +973,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "PfBodyFull",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=6.2,
-            leading=7.5,
+            fontSize=7.0,  # Increased from 6.2
+            leading=8.5,
             alignment=1,
             textColor=colors.HexColor("#334155"),
         )
