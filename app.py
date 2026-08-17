@@ -168,18 +168,6 @@ def load_specifications():
     return DEFAULT_SPECS.copy()
 
 
-def save_specifications():
-    data = {
-        "slat_nat_list": st.session_state["slat_nat_list"],
-        "slat_pow_list": st.session_state["slat_pow_list"],
-        "guide_list": st.session_state["guide_list"],
-        "bottom_list": st.session_state["bottom_list"],
-        "hood_list": st.session_state["hood_list"],
-    }
-    with open(SPEC_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
-
-
 specs = load_specifications()
 for key, value in specs.items():
     if key not in st.session_state:
@@ -499,50 +487,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         
         st.session_state["terms_data"] = updated_terms
 
-    with st.expander("📥 Bulk Import Specifications", expanded=False):
-        st.markdown(
-            "Paste your complete list below. Add each option on a **new line**."
-        )
-        col_cat, col_txt = st.columns([1, 2])
-        category_mapping = {
-            "Slats": "slat_nat_list",
-            "Paint Finish Options": "slat_pow_list",
-            "Guide Specifications": "guide_list",
-            "Bottom Specifications": "bottom_list",
-            "Hood Cover Specifications": "hood_list",
-        }
-        target_category = col_cat.selectbox(
-            "Select Target List:", list(category_mapping.keys())
-        )
-        bulk_text = col_txt.text_area(
-            "Paste Options (Line by Line):",
-            height=120,
-            placeholder="Option 1\nOption 2\nOption 3...",
-        )
-
-        if st.button("🚀 Import Options in Bulk", type="primary"):
-            if bulk_text.strip():
-                lines = [
-                    line.strip() for line in bulk_text.split("\n") if line.strip()
-                ]
-                target_key = category_mapping[target_category]
-                added_count = 0
-                for item in lines:
-                    if item not in st.session_state[target_key]:
-                        st.session_state[target_key].append(item)
-                        added_count += 1
-                if added_count > 0:
-                    save_specifications()
-                    st.success(
-                        f"✅ Successfully added {added_count} new options to"
-                        f" {target_category}!"
-                    )
-                    st.rerun()
-                else:
-                    st.warning("⚠️ All pasted options already exist in the list.")
-            else:
-                st.error("Please enter some text to import.")
-
     # --- REVISED HEADINGS & DYNAMIC PRODUCT MAPPING ---
     st.markdown("### 📦 Product Specifications & Pricing")
 
@@ -655,18 +599,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                         default=item.get("slat_nat", []),
                         key=f"sn_{idx}",
                     )
-                    col_in_sn, col_btn_sn = st.columns([3, 1])
-                    new_sn = col_in_sn.text_input(
-                        "➕ New Slat Option",
-                        key=f"add_sn_{idx}",
-                        label_visibility="collapsed",
-                        placeholder="Add new slat...",
-                    )
-                    if col_btn_sn.button("Add Option", key=f"btn_add_sn_{idx}"):
-                        if new_sn and new_sn not in st.session_state["slat_nat_list"]:
-                            st.session_state["slat_nat_list"].append(new_sn)
-                            save_specifications()
-                            st.rerun()
 
                 with col_sp:
                     item["slat_pow"] = st.multiselect(
@@ -675,18 +607,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                         default=item.get("slat_pow", []),
                         key=f"sp_{idx}",
                     )
-                    col_in_sp, col_btn_sp = st.columns([3, 1])
-                    new_sp = col_in_sp.text_input(
-                        "➕ New Finish Option",
-                        key=f"add_sp_{idx}",
-                        label_visibility="collapsed",
-                        placeholder="Add new paint finish...",
-                    )
-                    if col_btn_sp.button("Add Option", key=f"btn_add_sp_{idx}"):
-                        if new_sp and new_sp not in st.session_state["slat_pow_list"]:
-                            st.session_state["slat_pow_list"].append(new_sp)
-                            save_specifications()
-                            st.rerun()
 
                 st.markdown("##### 🛠️ Guide, Bottom Sheet & Hood Cover")
                 cg, cb, ch_col = st.columns(3)
@@ -697,18 +617,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                         default=item.get("guide", []),
                         key=f"gd_{idx}",
                     )
-                    col_in_gd, col_btn_gd = st.columns([2, 1])
-                    new_gd = col_in_gd.text_input(
-                        "➕ New Guide",
-                        key=f"add_gd_{idx}",
-                        label_visibility="collapsed",
-                        placeholder="Add guide...",
-                    )
-                    if col_btn_gd.button("Add", key=f"btn_add_gd_{idx}"):
-                        if new_gd and new_gd not in st.session_state["guide_list"]:
-                            st.session_state["guide_list"].append(new_gd)
-                            save_specifications()
-                            st.rerun()
 
                 with cb:
                     item["bottom"] = st.multiselect(
@@ -717,18 +625,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                         default=item.get("bottom", []),
                         key=f"bt_{idx}",
                     )
-                    col_in_bt, col_btn_bt = st.columns([2, 1])
-                    new_bt = col_in_bt.text_input(
-                        "➕ New Bottom",
-                        key=f"add_bt_{idx}",
-                        label_visibility="collapsed",
-                        placeholder="Add bottom...",
-                    )
-                    if col_btn_bt.button("Add", key=f"btn_add_bt_{idx}"):
-                        if new_bt and new_bt not in st.session_state["bottom_list"]:
-                            st.session_state["bottom_list"].append(new_bt)
-                            save_specifications()
-                            st.rerun()
 
                 with ch_col:
                     item["hood"] = st.multiselect(
@@ -737,18 +633,6 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                         default=item.get("hood", []),
                         key=f"hd_{idx}",
                     )
-                    col_in_hd, col_btn_hd = st.columns([2, 1])
-                    new_hd = col_in_hd.text_input(
-                        "➕ New Hood",
-                        key=f"add_hd_{idx}",
-                        label_visibility="collapsed",
-                        placeholder="Add hood...",
-                    )
-                    if col_btn_hd.button("Add", key=f"btn_add_hd_{idx}"):
-                        if new_hd and new_hd not in st.session_state["hood_list"]:
-                            st.session_state["hood_list"].append(new_hd)
-                            save_specifications()
-                            st.rerun()
 
                 st.markdown("##### 🔒 Locks & Safety Features")
                 item["safety_locks"] = st.multiselect(
