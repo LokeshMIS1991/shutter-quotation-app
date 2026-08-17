@@ -418,6 +418,14 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         "Quotation Made By", "Lokesh MIS"
     )
 
+    # --- DYNAMIC PAGE SELECTION TOGGLES IN SIDEBAR ---
+    st.sidebar.markdown("---")
+    st.sidebar.header("📄 Page Selection Settings")
+    st.sidebar.markdown("Choose pages to include in the quotation PDF:")
+    include_page_2 = st.sidebar.checkbox("Include Page 2 (About Us)", value=True)
+    include_page_4 = st.sidebar.checkbox("Include Page 4 (Technical Specs)", value=True)
+    include_page_5 = st.sidebar.checkbox("Include Page 5 (Terms & Conditions)", value=True)
+
     # --- COVER LETTER INTRO BODY IN EXPANDER ---
     with st.expander("📄 Page 1: Cover Letter Text Customization", expanded=False):
         cover_body_text = st.text_area(
@@ -429,11 +437,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "At Sidharth Shutter & Automation Pvt. Ltd., we understand that a well-secured premise is the "
             "foundation of efficient operations. Our solutions are engineered not only to keep your unit secure "
             "but also to ensure smooth, reliable, and operationally efficient entry and exit for your facility, day in and day out.\n\n"
-            "This proposal package consists of the following detailed sections:\n\n"
-            "Section A: About Us & Experience\n"
-            "Section B: Commercial Quotation\n"
-            "Section C: Technical Specifications\n"
-            "Section D: Annexure – Terms & Conditions\n\n"
+            "This proposal package consists of the detailed specifications and commercial offer enclosed herewith.\n\n"
             "We are confident that our proposed solution will perfectly align with your requirements. "
             "For any further clarifications, please feel free to reach out to us.\n\n"
             "Assuring you of our best services at all times.\n\n"
@@ -749,7 +753,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
     crane_charges = c4.number_input("Crane Charges (INR)", value=0)
     scaffolding_charges = c5.number_input("Scaffolding Charges (INR)", value=0)
 
-    # --- PDF GENERATOR WITH PERFECTLY ALIGNED BLUE HEADER ---
+    # --- PDF GENERATOR WITH PERFECTLY ALIGNED BLUE HEADER & STANDARDIZED FONT SIZES ---
     def generate_pdf():
         buffer = io.BytesIO()
 
@@ -764,7 +768,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story = []
         styles = getSampleStyleSheet()
 
-        # --- UPDATED HEADER HELPER FUNCTION (PERFECT LEFT-ALIGNMENT & BLUE COLOR) ---
+        # --- UPDATED HEADER HELPER FUNCTION ---
         def get_header_element():
             logo_path = None
             for possible_path in ["Logo.jpeg", "logo.jpeg", "Logo.png", "logo.png", "Logo.jpg", "logo.jpg"]:
@@ -776,16 +780,16 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 try:
                     logo_element = RLImage(logo_path, width=180, height=60)
                 except Exception:
-                    logo_element = Paragraph("<b>SIDHARTH</b><br/><font size=7 color='#003366'>SHUTTER & AUTOMATION</font>", styles["Normal"])
+                    logo_element = Paragraph("<b>SIDHARTH</b><br/><font size=8 color='#003366'>SHUTTER & AUTOMATION</font>", styles["Normal"])
             else:
-                logo_element = Paragraph("<b>SIDHARTH</b><br/><font size=7 color='#003366'>SHUTTER & AUTOMATION</font>", styles["Normal"])
+                logo_element = Paragraph("<b>SIDHARTH</b><br/><font size=8 color='#003366'>SHUTTER & AUTOMATION</font>", styles["Normal"])
 
             right_bold = ParagraphStyle(
                 "HeadRightBold",
                 parent=styles["Normal"],
                 fontName="Helvetica-Bold",
-                fontSize=8.5,
-                leading=11,
+                fontSize=9.5,
+                leading=12,
                 alignment=0,
                 textColor=colors.HexColor("#0F172A"),
             )
@@ -794,8 +798,8 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 "HeadRightText",
                 parent=styles["Normal"],
                 fontName="Helvetica",
-                fontSize=7.5,
-                leading=10,
+                fontSize=8.5,
+                leading=11,
                 alignment=0,
                 textColor=colors.HexColor("#1D4ED8"),
             )
@@ -834,27 +838,29 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             )
             return t_head
 
-        # --- STYLES FOR PDF ---
+        # --- UNIFORM & ENHANCED STYLES FOR PDF PAGES ---
         style_cover_meta = ParagraphStyle(
             "CoverMeta",
             parent=styles["Normal"],
-            fontSize=9.5,
-            leading=14,
+            fontName="Helvetica",
+            fontSize=10,
+            leading=15,
             textColor=colors.HexColor("#1E293B"),
         )
         style_cover_body = ParagraphStyle(
             "CoverBody",
             parent=styles["Normal"],
-            fontSize=9.5,
-            leading=15,
+            fontName="Helvetica",
+            fontSize=10,
+            leading=15.5,
             textColor=colors.HexColor("#334155"),
         )
         style_sec_title = ParagraphStyle(
             "SecTitle",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=11,
-            leading=14,
+            fontSize=12,
+            leading=16,
             textColor=colors.HexColor("#000000"),
         )
 
@@ -903,131 +909,132 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story.append(Paragraph(sign_off_p1, style_cover_meta))
 
         # ==========================================
-        # 🏢 PAGE 2: SECTION A: ABOUT US & EXPERTISE (DYNAMIC SESSION STATE)
+        # 🏢 PAGE 2: SECTION A: ABOUT US (CONDITIONAL)
         # ==========================================
-        story.append(PageBreak())
-        story.append(get_header_element())
-        story.append(Spacer(1, 4))
-        story.append(
-            HRFlowable(
-                width="100%",
-                thickness=1.5,
-                color=colors.HexColor("#000000"),
-                spaceAfter=6,
+        if include_page_2:
+            story.append(PageBreak())
+            story.append(get_header_element())
+            story.append(Spacer(1, 4))
+            story.append(
+                HRFlowable(
+                    width="100%",
+                    thickness=1.5,
+                    color=colors.HexColor("#000000"),
+                    spaceAfter=6,
+                )
             )
-        )
 
-        story.append(Paragraph("Section A: About Us & Our Expertise (Company Profile)", style_sec_title))
-        story.append(Spacer(1, 4))
+            story.append(Paragraph("Section A: About Us & Our Expertise (Company Profile)", style_sec_title))
+            story.append(Spacer(1, 6))
 
-        style_box_head = ParagraphStyle(
-            "BoxHeadFull",
-            parent=styles["Normal"],
-            fontName="Helvetica-Bold",
-            fontSize=9.5,
-            leading=12,
-            textColor=colors.HexColor("#000000"),
-        )
-        style_box_text = ParagraphStyle(
-            "BoxTextFull",
-            parent=styles["Normal"],
-            fontName="Helvetica",
-            fontSize=8.0,
-            leading=10.5,
-            textColor=colors.HexColor("#1E293B"),
-        )
+            style_box_head = ParagraphStyle(
+                "BoxHeadFull",
+                parent=styles["Normal"],
+                fontName="Helvetica-Bold",
+                fontSize=10,
+                leading=13,
+                textColor=colors.HexColor("#000000"),
+            )
+            style_box_text = ParagraphStyle(
+                "BoxTextFull",
+                parent=styles["Normal"],
+                fontName="Helvetica",
+                fontSize=9.5,
+                leading=13,
+                textColor=colors.HexColor("#1E293B"),
+            )
 
-        def build_paragraph_block(text_data):
-            elements = []
-            for line in text_data.split("\n"):
-                if line.strip():
-                    formatted_line = line.replace("•", "&bull;")
-                    elements.append(Paragraph(formatted_line, style_box_text))
-                    elements.append(Spacer(1, 2))
-            return elements
+            def build_paragraph_block(text_data):
+                elements = []
+                for line in text_data.split("\n"):
+                    if line.strip():
+                        formatted_line = line.replace("•", "&bull;")
+                        elements.append(Paragraph(formatted_line, style_box_text))
+                        elements.append(Spacer(1, 2))
+                return elements
 
-        about_box_content = []
-        for ab_item in st.session_state["about_us_data"]:
-            about_box_content.append(Paragraph(f"<b>{ab_item['title']}</b>", style_box_head))
-            about_box_content.append(Spacer(1, 2))
-            about_box_content.extend(build_paragraph_block(ab_item['text']))
-            about_box_content.append(Spacer(1, 3))
+            about_box_content = []
+            for ab_item in st.session_state["about_us_data"]:
+                about_box_content.append(Paragraph(f"<b>{ab_item['title']}</b>", style_box_head))
+                about_box_content.append(Spacer(1, 2))
+                about_box_content.extend(build_paragraph_block(ab_item['text']))
+                about_box_content.append(Spacer(1, 4))
 
-        t_box = Table([[about_box_content]], colWidths=[545])
-        t_box.setStyle(
-            TableStyle([
-                ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
-                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
-                ("TOPPADDING", (0, 0), (-1, -1), 5),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
-                ("LEFTPADDING", (0, 0), (-1, -1), 8),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 8),
-            ])
-        )
-        story.append(t_box)
-        story.append(Spacer(1, 5))
+            t_box = Table([[about_box_content]], colWidths=[545])
+            t_box.setStyle(
+                TableStyle([
+                    ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
+                    ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
+                    ("TOPPADDING", (0, 0), (-1, -1), 6),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+                ])
+            )
+            story.append(t_box)
+            story.append(Spacer(1, 6))
 
-        style_pf_header = ParagraphStyle(
-            "PfHeadFull",
-            parent=styles["Normal"],
-            fontName="Helvetica-Bold",
-            fontSize=8.5,
-            leading=10.5,
-            alignment=1,
-            textColor=colors.HexColor("#000000"),
-        )
-        style_pf_col = ParagraphStyle(
-            "PfColFull",
-            parent=styles["Normal"],
-            fontName="Helvetica-Bold",
-            fontSize=7.8,
-            leading=9.5,
-            alignment=1,
-            textColor=colors.HexColor("#1E293B"),
-        )
-        style_pf_body = ParagraphStyle(
-            "PfBodyFull",
-            parent=styles["Normal"],
-            fontName="Helvetica",
-            fontSize=7.0,
-            leading=8.5,
-            alignment=1,
-            textColor=colors.HexColor("#334155"),
-        )
+            style_pf_header = ParagraphStyle(
+                "PfHeadFull",
+                parent=styles["Normal"],
+                fontName="Helvetica-Bold",
+                fontSize=10,
+                leading=12,
+                alignment=1,
+                textColor=colors.HexColor("#000000"),
+            )
+            style_pf_col = ParagraphStyle(
+                "PfColFull",
+                parent=styles["Normal"],
+                fontName="Helvetica-Bold",
+                fontSize=9,
+                leading=11.5,
+                alignment=1,
+                textColor=colors.HexColor("#1E293B"),
+            )
+            style_pf_body = ParagraphStyle(
+                "PfBodyFull",
+                parent=styles["Normal"],
+                fontName="Helvetica",
+                fontSize=8.5,
+                leading=11,
+                alignment=1,
+                textColor=colors.HexColor("#334155"),
+            )
 
-        portfolio_data = [
-            [Paragraph("<b>Our Key Enterprise Pillars & Service Footprint</b>", style_pf_header), "", "", ""],
-            [
-                Paragraph("<b>Rolling Shutters</b>", style_pf_col),
-                Paragraph("<b>Loading Equipment</b>", style_pf_col),
-                Paragraph("<b>Automation Systems</b>", style_pf_col),
-                Paragraph("<b>Pan-India AMC Support</b>", style_pf_col),
-            ],
-            [
-                Paragraph("Motorized & gear shutters for industrial, warehouse & commercial openings.", style_pf_body),
-                Paragraph("Dock levelers, shelters & bumpers for integrated logistics bays.", style_pf_body),
-                Paragraph("Boom barriers, sliding gates & high-speed doors for controlled access.", style_pf_body),
-                Paragraph("Dedicated regional engineer teams for fast maintenance & original spare support.", style_pf_body),
+            portfolio_data = [
+                [Paragraph("<b>Our Key Enterprise Pillars & Service Footprint</b>", style_pf_header), "", "", ""],
+                [
+                    Paragraph("<b>Rolling Shutters</b>", style_pf_col),
+                    Paragraph("<b>Loading Equipment</b>", style_pf_col),
+                    Paragraph("<b>Automation Systems</b>", style_pf_col),
+                    Paragraph("<b>Pan-India AMC Support</b>", style_pf_col),
+                ],
+                [
+                    Paragraph("Motorized & gear shutters for industrial, warehouse & commercial openings.", style_pf_body),
+                    Paragraph("Dock levelers, shelters & bumpers for integrated logistics bays.", style_pf_body),
+                    Paragraph("Boom barriers, sliding gates & high-speed doors for controlled access.", style_pf_body),
+                    Paragraph("Dedicated regional engineer teams for fast maintenance & original spare support.", style_pf_body),
+                ]
             ]
-        ]
 
-        t_portfolio = Table(portfolio_data, colWidths=[136, 136, 136, 137])
-        t_portfolio.setStyle(
-            TableStyle([
-                ("SPAN", (0, 0), (3, 0)),
-                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E2E8F0")),
-                ("BACKGROUND", (0, 1), (-1, 1), colors.HexColor("#F1F5F9")),
-                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
-                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),
-                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                ("TOPPADDING", (0, 0), (-1, -1), 2.5),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
-            ])
-        )
-        story.append(t_portfolio)
+            t_portfolio = Table(portfolio_data, colWidths=[136, 136, 136, 137])
+            t_portfolio.setStyle(
+                TableStyle([
+                    ("SPAN", (0, 0), (3, 0)),
+                    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E2E8F0")),
+                    ("BACKGROUND", (0, 1), (-1, 1), colors.HexColor("#F1F5F9")),
+                    ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
+                    ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                    ("TOPPADDING", (0, 0), (-1, -1), 4),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ])
+            )
+            story.append(t_portfolio)
 
         # ==========================================
-        # 🧱 PAGE 3: COMMERCIAL OFFER & PRICING TABLE
+        # 🧱 PAGE 3: COMMERCIAL OFFER & PRICING TABLE (ALWAYS INCLUDED)
         # ==========================================
         story.append(PageBreak())
         story.append(get_header_element())
@@ -1356,206 +1363,208 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story.append(t_items)
 
         # ==========================================
-        # ⚙️ PAGE 4: SECTION C: TECHNICAL SPECIFICATIONS (DYNAMIC SESSION STATE)
+        # ⚙️ PAGE 4: SECTION C: TECHNICAL SPECS (CONDITIONAL)
         # ==========================================
-        story.append(PageBreak())
-        story.append(get_header_element())
-        story.append(Spacer(1, 6))
-        story.append(
-            HRFlowable(
-                width="100%",
-                thickness=1.5,
-                color=colors.HexColor("#000000"),
-                spaceAfter=8,
+        if include_page_4:
+            story.append(PageBreak())
+            story.append(get_header_element())
+            story.append(Spacer(1, 6))
+            story.append(
+                HRFlowable(
+                    width="100%",
+                    thickness=1.5,
+                    color=colors.HexColor("#000000"),
+                    spaceAfter=8,
+                )
             )
-        )
 
-        story.append(Paragraph("Section C: Technical Specifications", style_sec_title))
-        story.append(Spacer(1, 4))
+            story.append(Paragraph("Section C: Technical Specifications", style_sec_title))
+            story.append(Spacer(1, 4))
 
-        style_intro_text = ParagraphStyle(
-            "IntroText",
-            parent=styles["Normal"],
-            fontName="Helvetica",
-            fontSize=7.8,
-            leading=10.5,
-            textColor=colors.HexColor("#1E293B"),
-        )
-        story.append(Paragraph(tech_intro_text, style_intro_text))
-        story.append(Spacer(1, 6))
-
-        style_th_param = ParagraphStyle(
-            "ThParam",
-            parent=styles["Normal"],
-            fontName="Helvetica-Bold",
-            fontSize=8,
-            leading=10,
-            alignment=0,
-            textColor=colors.HexColor("#000000"),
-        )
-        style_th_spec = ParagraphStyle(
-            "ThSpec",
-            parent=styles["Normal"],
-            fontName="Helvetica-Bold",
-            fontSize=8,
-            leading=10,
-            alignment=1,
-            textColor=colors.HexColor("#000000"),
-        )
-        style_td_param = ParagraphStyle(
-            "TdParam",
-            parent=styles["Normal"],
-            fontName="Helvetica-Bold",
-            fontSize=7.2,
-            leading=9,
-            alignment=0,
-            textColor=colors.HexColor("#0F172A"),
-        )
-        style_td_spec = ParagraphStyle(
-            "TdSpec",
-            parent=styles["Normal"],
-            fontName="Helvetica",
-            fontSize=7.2,
-            leading=9,
-            alignment=0,
-            textColor=colors.HexColor("#334155"),
-        )
-
-        tech_table_data = [[
-            Paragraph("Parameter", style_th_param),
-            Paragraph("Specification Details", style_th_spec)
-        ]]
-
-        for spec_item in st.session_state["tech_specs_data"]:
-            tech_table_data.append([
-                Paragraph(spec_item["param"], style_td_param),
-                Paragraph(spec_item["spec"], style_td_spec)
-            ])
-
-        t_tech = Table(tech_table_data, colWidths=[140, 405])
-        t_tech.setStyle(
-            TableStyle([
-                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E2E8F0")),
-                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
-                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),
-                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                ("TOPPADDING", (0, 0), (-1, -1), 2.5),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
-                ("LEFTPADDING", (0, 0), (-1, -1), 5),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 5),
-            ])
-        )
-        story.append(t_tech)
-        story.append(Spacer(1, 6))
-
-        style_note_text = ParagraphStyle(
-            "NoteText",
-            parent=styles["Normal"],
-            fontName="Helvetica-Oblique",
-            fontSize=7,
-            leading=9,
-            textColor=colors.HexColor("#475569"),
-        )
-        story.append(Paragraph(tech_note_text, style_note_text))
-
-        # ==========================================
-        # 📋 PAGE 5: SECTION D: TERMS & CONDITIONS (DYNAMIC SESSION STATE)
-        # ==========================================
-        story.append(PageBreak())
-        story.append(get_header_element())
-        story.append(Spacer(1, 6))
-        story.append(
-            HRFlowable(
-                width="100%",
-                thickness=1.5,
-                color=colors.HexColor("#000000"),
-                spaceAfter=8,
+            style_intro_text = ParagraphStyle(
+                "IntroText",
+                parent=styles["Normal"],
+                fontName="Helvetica",
+                fontSize=9.5,
+                leading=13,
+                textColor=colors.HexColor("#1E293B"),
             )
-        )
+            story.append(Paragraph(tech_intro_text, style_intro_text))
+            story.append(Spacer(1, 6))
 
-        story.append(Paragraph("Section D: Annexure – Terms & Condition", style_sec_title))
-        story.append(Spacer(1, 4))
+            style_th_param = ParagraphStyle(
+                "ThParam",
+                parent=styles["Normal"],
+                fontName="Helvetica-Bold",
+                fontSize=9.5,
+                leading=12,
+                alignment=0,
+                textColor=colors.HexColor("#000000"),
+            )
+            style_th_spec = ParagraphStyle(
+                "ThSpec",
+                parent=styles["Normal"],
+                fontName="Helvetica-Bold",
+                fontSize=9.5,
+                leading=12,
+                alignment=1,
+                textColor=colors.HexColor("#000000"),
+            )
+            style_td_param = ParagraphStyle(
+                "TdParam",
+                parent=styles["Normal"],
+                fontName="Helvetica-Bold",
+                fontSize=9,
+                leading=11.5,
+                alignment=0,
+                textColor=colors.HexColor("#0F172A"),
+            )
+            style_td_spec = ParagraphStyle(
+                "TdSpec",
+                parent=styles["Normal"],
+                fontName="Helvetica",
+                fontSize=9,
+                leading=11.5,
+                alignment=0,
+                textColor=colors.HexColor("#334155"),
+            )
 
-        style_subhead = ParagraphStyle(
-            "SubHeadEx",
-            parent=styles["Normal"],
-            fontName="Helvetica-Bold",
-            fontSize=8.5,
-            leading=11,
-            textColor=colors.HexColor("#000000"),
-        )
-        story.append(Paragraph(f"<b>{exclusions_subhead}</b>", style_subhead))
-        story.append(Spacer(1, 6))
+            tech_table_data = [[
+                Paragraph("Parameter", style_th_param),
+                Paragraph("Specification Details", style_th_spec)
+            ]]
 
-        style_tc_cat = ParagraphStyle(
-            "TcCat",
-            parent=styles["Normal"],
-            fontName="Helvetica-Bold",
-            fontSize=7.5,
-            leading=9.5,
-            alignment=0,
-            textColor=colors.HexColor("#000000"),
-        )
-        style_tc_det = ParagraphStyle(
-            "TcDet",
-            parent=styles["Normal"],
-            fontName="Helvetica",
-            fontSize=7,
-            leading=9,
-            alignment=0,
-            textColor=colors.HexColor("#1E293B"),
-        )
+            for spec_item in st.session_state["tech_specs_data"]:
+                tech_table_data.append([
+                    Paragraph(spec_item["param"], style_td_param),
+                    Paragraph(spec_item["spec"], style_td_spec)
+                ])
 
-        terms_table_data = []
+            t_tech = Table(tech_table_data, colWidths=[140, 405])
+            t_tech.setStyle(
+                TableStyle([
+                    ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E2E8F0")),
+                    ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
+                    ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                    ("TOPPADDING", (0, 0), (-1, -1), 3),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 6),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+                ])
+            )
+            story.append(t_tech)
+            story.append(Spacer(1, 6))
 
-        for term in st.session_state["terms_data"]:
-            details_formatted = term["details"].replace("\n", "<br/>").replace("•", "&bull;")
-            terms_table_data.append([
-                Paragraph(f"<b>{term['category']}</b>", style_tc_cat),
-                Paragraph(details_formatted, style_tc_det)
-            ])
+            style_note_text = ParagraphStyle(
+                "NoteText",
+                parent=styles["Normal"],
+                fontName="Helvetica-Oblique",
+                fontSize=8.5,
+                leading=11,
+                textColor=colors.HexColor("#475569"),
+            )
+            story.append(Paragraph(tech_note_text, style_note_text))
 
-        t_terms = Table(terms_table_data, colWidths=[135, 410])
-        t_terms.setStyle(
-            TableStyle([
-                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
-                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),
-                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                ("TOPPADDING", (0, 0), (-1, -1), 3.5),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 3.5),
-                ("LEFTPADDING", (0, 0), (-1, -1), 5),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 5),
-            ])
-        )
-        story.append(t_terms)
+        # ==========================================
+        # 📋 PAGE 5: SECTION D: TERMS & CONDITIONS (CONDITIONAL)
+        # ==========================================
+        if include_page_5:
+            story.append(PageBreak())
+            story.append(get_header_element())
+            story.append(Spacer(1, 6))
+            story.append(
+                HRFlowable(
+                    width="100%",
+                    thickness=1.5,
+                    color=colors.HexColor("#000000"),
+                    spaceAfter=8,
+                )
+            )
 
-        story.append(Spacer(1, 10))
-        style_sign_box = ParagraphStyle(
-            "SignBox",
-            parent=styles["Normal"],
-            fontName="Helvetica-Bold",
-            fontSize=7.5,
-            leading=10,
-            textColor=colors.HexColor("#000000"),
-        )
-        sign_box_content = [
-            Paragraph("<b>ACCEPTANCE OF OFFER & ORDER CONFIRMATION</b>", style_sign_box),
-            Paragraph("<font size=6.5>We hereby accept the commercial offer, technical specifications, and terms & conditions outlined above.</font>", style_tc_det),
-            Spacer(1, 15),
-            Paragraph("<b>Client Seal & Signature: _______________________ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date: _______________</b>", style_sign_box)
-        ]
-        t_sign = Table([[sign_box_content]], colWidths=[545])
-        t_sign.setStyle(
-            TableStyle([
-                ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
-                ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
-                ("TOPPADDING", (0, 0), (-1, -1), 6),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
-                ("LEFTPADDING", (0, 0), (-1, -1), 8),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 8),
-            ])
-        )
-        story.append(t_sign)
+            story.append(Paragraph("Section D: Annexure – Terms & Condition", style_sec_title))
+            story.append(Spacer(1, 4))
+
+            style_subhead = ParagraphStyle(
+                "SubHeadEx",
+                parent=styles["Normal"],
+                fontName="Helvetica-Bold",
+                fontSize=10,
+                leading=13,
+                textColor=colors.HexColor("#000000"),
+            )
+            story.append(Paragraph(f"<b>{exclusions_subhead}</b>", style_subhead))
+            story.append(Spacer(1, 6))
+
+            style_tc_cat = ParagraphStyle(
+                "TcCat",
+                parent=styles["Normal"],
+                fontName="Helvetica-Bold",
+                fontSize=9,
+                leading=11.5,
+                alignment=0,
+                textColor=colors.HexColor("#000000"),
+            )
+            style_tc_det = ParagraphStyle(
+                "TcDet",
+                parent=styles["Normal"],
+                fontName="Helvetica",
+                fontSize=8.5,
+                leading=11,
+                alignment=0,
+                textColor=colors.HexColor("#1E293B"),
+            )
+
+            terms_table_data = []
+
+            for term in st.session_state["terms_data"]:
+                details_formatted = term["details"].replace("\n", "<br/>").replace("•", "&bull;")
+                terms_table_data.append([
+                    Paragraph(f"<b>{term['category']}</b>", style_tc_cat),
+                    Paragraph(details_formatted, style_tc_det)
+                ])
+
+            t_terms = Table(terms_table_data, colWidths=[135, 410])
+            t_terms.setStyle(
+                TableStyle([
+                    ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
+                    ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#000000")),
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                    ("TOPPADDING", (0, 0), (-1, -1), 4),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 6),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+                ])
+            )
+            story.append(t_terms)
+
+            story.append(Spacer(1, 10))
+            style_sign_box = ParagraphStyle(
+                "SignBox",
+                parent=styles["Normal"],
+                fontName="Helvetica-Bold",
+                fontSize=9,
+                leading=12,
+                textColor=colors.HexColor("#000000"),
+            )
+            sign_box_content = [
+                Paragraph("<b>ACCEPTANCE OF OFFER & ORDER CONFIRMATION</b>", style_sign_box),
+                Paragraph("<font size=8>We hereby accept the commercial offer, technical specifications, and terms & conditions outlined above.</font>", style_tc_det),
+                Spacer(1, 15),
+                Paragraph("<b>Client Seal & Signature: _______________________ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date: _______________</b>", style_sign_box)
+            ]
+            t_sign = Table([[sign_box_content]], colWidths=[545])
+            t_sign.setStyle(
+                TableStyle([
+                    ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#000000")),
+                    ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
+                    ("TOPPADDING", (0, 0), (-1, -1), 6),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+                    ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                    ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+                ])
+            )
+            story.append(t_sign)
 
         doc.build(story)
         buffer.seek(0)
