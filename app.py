@@ -227,6 +227,37 @@ PRODUCT_HIERARCHY = {
     ]
 }
 
+# DEFAULT DATA FOR SECTION A (PAGE 2)
+DEFAULT_ABOUT_US_LIST = [
+    {
+        "title": "1. Core Company Highlights & Industrial Legacy",
+        "text": "• Over Two Decades of Engineering Excellence: Established in 1998, Sidharth Shutter & Automation Pvt. Ltd. (SSAPL) has evolved into a premier national leader in high-performance industrial entrance and access automation systems across India.\n• Extensive Nationwide Deployment: Successfully engineered, custom-manufactured, and commissioned over 10,000+ heavy-duty industrial shutters, dock systems, and automated security barriers for leading public and private enterprises.\n• Pan-India Operational Footprint: Serving top-tier logistics parks, manufacturing plants, warehouse hubs, defense facilities, commercial complexes, and infrastructure projects with robust regional project execution capability.\n• Advanced Manufacturing Facility: Powered by state-of-the-art infrastructure featuring CNC roll-forming machinery, high-precision laser cutters, robotic welding units, and fully automated powder-coating lines."
+    },
+    {
+        "title": "2. Engineering, Quality Standards & Certification",
+        "text": "• ISO & CE Certified Quality Benchmarks: Strict compliance with ISO 9001:2015 Quality Management Systems and European CE safety certification standards across all product development cycles.\n• High Wind-Load & Extreme Weather Resilience: Structural curtains and frames are specifically calculated and stress-tested to withstand high wind velocity, pressure differentials, severe rain, and harsh industrial environments.\n• Premium Heavy-Gauge Raw Materials: Exclusively using certified high-tensile Galvalume, Galvanized Steel (GI), and structural aluminum alloys for exceptional structural stability, long operational lifespan, and maximum corrosion protection."
+    },
+    {
+        "title": "3. Comprehensive Product & Solutions Portfolio",
+        "text": "• Industrial & Commercial Rolling Shutters: Heavy-duty motorized, gear-operated, and manual roll-up systems designed for maximum perimeter security, thermal insulation, and continuous high-frequency operations.\n• High-Speed & Specialized Doors: Rapid roll-up PVC doors, insulated sectional overhead doors, fire-rated HMPS doors, and acoustic/cleanroom barriers engineered for dynamic airflow control.\n• Advanced Entrance Automation: Automatic boom barriers, cantilever sliding gates, telescopic gates, heavy-duty swing gates, and motor-driven retractable security gates.\n• Integrated Loading Bay Equipment: Hydraulic and mechanical dock levelers, inflatable/retractable dock shelters, heavy-duty rubber bumpers, and integrated loading dock safety accessories."
+    },
+    {
+        "title": "4. The Sidharth Advantage: Turnkey Execution & Support",
+        "text": "• End-to-End Turnkey Project Management: Complete project lifecycle execution—from initial site survey, structural shop drawings, and custom fabrication to installation, electrical integration, and final handover.\n• 24x7 Rapid Service & Maintenance Network: Highly specialized field service engineering team delivering preventative maintenance, fast emergency troubleshooting, AMC services, and guaranteed original spare parts supply.\n• Architectural & Operational Customization: Tailor-made designs engineered to integrate smoothly into non-standard structural openings, unique headroom spaces, and specialized warehouse management workflows."
+    },
+    {
+        "title": "5. Technical R&D, Testing & Safety Protocols",
+        "text": "• In-House Research & Innovation: Continuous R&D focused on ultra-quiet drive mechanisms, high-wind slat locking mechanisms, smart sensor technology, and long-life motor controls.\n• Rigorous Multi-Cycle Factory Testing: Every motor drive, control unit, and shutter curtain undergoes strict pre-dispatch factory testing for smooth mechanical movement, limit accuracy, and electrical load capacity.\n• Uncompromising Operational Safety: Integrated emergency manual hand-chain system, optical safety sensors, bottom-edge safety buffers, and external dynamic drop-brake protection standard across heavy-duty configurations."
+    },
+    {
+        "title": "6. Future-Ready Technology & Green Engineering",
+        "text": "• Eco-Friendly Manufacturing & Smart Integration: SSAPL incorporates eco-conscious raw materials and energy-efficient drive mechanisms to significantly reduce industrial carbon footprints. Our automation systems seamlessly interface with modern IoT-enabled controls, remote diagnostic tools, and automated Building Management Systems (BMS). This fusion of sustainable engineering and smart automation guarantees optimal operational efficiency, reduced power consumption, and advanced perimeter intelligence for future-ready industrial infrastructure."
+    }
+]
+
+if "about_us_data" not in st.session_state:
+    st.session_state["about_us_data"] = DEFAULT_ABOUT_US_LIST.copy()
+
 # EXTENDED TECH SPECS FOR SECTION C (PAGE 4)
 DEFAULT_TECH_SPECS = [
     {"param": "Shutter Type", "spec": "Motorized Heavy Duty Industrial Rolling Shutter"},
@@ -410,54 +441,36 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             height=260
         )
 
-    # --- SECTION A: ABOUT US TEXT CUSTOMIZATION IN EXPANDER ---
+    # --- SECTION A: ABOUT US TEXT CUSTOMIZATION IN EXPANDER (WITH ADD/REMOVE) ---
     with st.expander("📄 Page 2: About Us (Company Profile) Text Customization", expanded=False):
-        about_us_text_1 = st.text_area(
-            "1. Core Company Highlights & Industrial Legacy",
-            "• Over Two Decades of Engineering Excellence: Established in 1998, Sidharth Shutter & Automation Pvt. Ltd. (SSAPL) has evolved into a premier national leader in high-performance industrial entrance and access automation systems across India.\n"
-            "• Extensive Nationwide Deployment: Successfully engineered, custom-manufactured, and commissioned over 10,000+ heavy-duty industrial shutters, dock systems, and automated security barriers for leading public and private enterprises.\n"
-            "• Pan-India Operational Footprint: Serving top-tier logistics parks, manufacturing plants, warehouse hubs, defense facilities, commercial complexes, and infrastructure projects with robust regional project execution capability.\n"
-            "• Advanced Manufacturing Facility: Powered by state-of-the-art infrastructure featuring CNC roll-forming machinery, high-precision laser cutters, robotic welding units, and fully automated powder-coating lines.",
-            height=150
-        )
-        about_us_text_2 = st.text_area(
-            "2. Engineering, Quality Standards & Certification",
-            "• ISO & CE Certified Quality Benchmarks: Strict compliance with ISO 9001:2015 Quality Management Systems and European CE safety certification standards across all product development cycles.\n"
-            "• High Wind-Load & Extreme Weather Resilience: Structural curtains and frames are specifically calculated and stress-tested to withstand high wind velocity, pressure differentials, severe rain, and harsh industrial environments.\n"
-            "• Premium Heavy-Gauge Raw Materials: Exclusively using certified high-tensile Galvalume, Galvanized Steel (GI), and structural aluminum alloys for exceptional structural stability, long operational lifespan, and maximum corrosion protection.",
-            height=140
-        )
-        about_us_text_3 = st.text_area(
-            "3. Comprehensive Product & Solutions Portfolio",
-            "• Industrial & Commercial Rolling Shutters: Heavy-duty motorized, gear-operated, and manual roll-up systems designed for maximum perimeter security, thermal insulation, and continuous high-frequency operations.\n"
-            "• High-Speed & Specialized Doors: Rapid roll-up PVC doors, insulated sectional overhead doors, fire-rated HMPS doors, and acoustic/cleanroom barriers engineered for dynamic airflow control.\n"
-            "• Advanced Entrance Automation: Automatic boom barriers, cantilever sliding gates, telescopic gates, heavy-duty swing gates, and motor-driven retractable security gates.\n"
-            "• Integrated Loading Bay Equipment: Hydraulic and mechanical dock levelers, inflatable/retractable dock shelters, heavy-duty rubber bumpers, and integrated loading dock safety accessories.",
-            height=150
-        )
-        about_us_text_4 = st.text_area(
-            "4. The Sidharth Advantage: Turnkey Execution & Support",
-            "• End-to-End Turnkey Project Management: Complete project lifecycle execution—from initial site survey, structural shop drawings, and custom fabrication to installation, electrical integration, and final handover.\n"
-            "• 24x7 Rapid Service & Maintenance Network: Highly specialized field service engineering team delivering preventative maintenance, fast emergency troubleshooting, AMC services, and guaranteed original spare parts supply.\n"
-            "• Architectural & Operational Customization: Tailor-made designs engineered to integrate smoothly into non-standard structural openings, unique headroom spaces, and specialized warehouse management workflows.",
-            height=140
-        )
-        about_us_text_5 = st.text_area(
-            "5. Technical R&D, Testing & Safety Protocols",
-            "• In-House Research & Innovation: Continuous R&D focused on ultra-quiet drive mechanisms, high-wind slat locking mechanisms, smart sensor technology, and long-life motor controls.\n"
-            "• Rigorous Multi-Cycle Factory Testing: Every motor drive, control unit, and shutter curtain undergoes strict pre-dispatch factory testing for smooth mechanical movement, limit accuracy, and electrical load capacity.\n"
-            "• Uncompromising Operational Safety: Integrated emergency manual hand-chain system, optical safety sensors, bottom-edge safety buffers, and external dynamic drop-brake protection standard across heavy-duty configurations.",
-            height=140
-        )
-        about_us_text_6 = st.text_area(
-            "6. Future-Ready Technology & Green Engineering",
-            "• Eco-Friendly Manufacturing & Smart Integration: SSAPL incorporates eco-conscious raw materials and energy-efficient drive mechanisms to significantly reduce industrial carbon footprints. Our automation systems seamlessly interface with modern IoT-enabled controls, remote diagnostic tools, and automated Building Management Systems (BMS). This fusion of sustainable engineering and smart automation guarantees optimal operational efficiency, reduced power consumption, and advanced perimeter intelligence for future-ready industrial infrastructure.",
-            height=130
-        )
+        st.markdown("Edit, Add or Remove items for Section A (About Us):")
+        
+        updated_about = []
+        for idx, item in enumerate(st.session_state["about_us_data"]):
+            col_t, col_d, col_rm = st.columns([2, 3, 1])
+            with col_t:
+                t_val = st.text_input(f"Section #{idx+1} Title", value=item["title"], key=f"ab_title_{idx}")
+            with col_d:
+                x_val = st.text_area(f"Section #{idx+1} Details", value=item["text"], height=100, key=f"ab_text_{idx}")
+            with col_rm:
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.button("❌ Remove", key=f"rm_ab_{idx}"):
+                    st.session_state["about_us_data"].pop(idx)
+                    st.rerun()
+            updated_about.append({"title": t_val, "text": x_val})
+        
+        st.session_state["about_us_data"] = updated_about
+        
+        if st.button("➕ Add Section A Block"):
+            st.session_state["about_us_data"].append({
+                "title": f"{len(st.session_state['about_us_data'])+1}. New Section Title",
+                "text": "• Add your detail point here..."
+            })
+            st.rerun()
 
-    # --- SECTION C: TECHNICAL SPECIFICATIONS CUSTOMIZATION IN EXPANDER ---
+    # --- SECTION C: TECHNICAL SPECIFICATIONS CUSTOMIZATION IN EXPANDER (WITH ADD/REMOVE) ---
     with st.expander("📄 Page 4: Section C - Technical Specifications Customization", expanded=False):
-        st.markdown("Edit the technical specifications parameter and description values below:")
+        st.markdown("Edit, Add or Remove parameters and specifications for Page 4:")
         tech_intro_text = st.text_area(
             "Header Introductory Text",
             "The following specifications define the precise engineering parameters for the High-Speed Door / Rolling Shutter system offered for your facility. Every component is designed for operational efficiency, durability, and safety compliance.",
@@ -466,32 +479,59 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         
         updated_specs = []
         for idx, item in enumerate(st.session_state["tech_specs_data"]):
-            col_p, col_s = st.columns([1, 2])
-            p_val = col_p.text_input(f"Parameter #{idx+1}", value=item["param"], key=f"tp_{idx}")
-            s_val = col_s.text_input(f"Specification #{idx+1}", value=item["spec"], key=f"ts_{idx}")
+            col_p, col_s, col_rm = st.columns([2, 3, 1])
+            with col_p:
+                p_val = st.text_input(f"Parameter #{idx+1}", value=item["param"], key=f"tp_{idx}")
+            with col_s:
+                s_val = st.text_input(f"Specification #{idx+1}", value=item["spec"], key=f"ts_{idx}")
+            with col_rm:
+                if st.button("❌ Remove", key=f"rm_ts_{idx}"):
+                    st.session_state["tech_specs_data"].pop(idx)
+                    st.rerun()
             updated_specs.append({"param": p_val, "spec": s_val})
         
         st.session_state["tech_specs_data"] = updated_specs
+
+        if st.button("➕ Add Technical Specification"):
+            st.session_state["tech_specs_data"].append({
+                "param": "New Parameter",
+                "spec": "Specification Description Details"
+            })
+            st.rerun()
         
+        st.markdown("---")
         tech_note_text = st.text_input(
             "Footer Note Text",
             "Note: Technical specifications are subject to final site measurements and drawing approval. Custom configurations can be engineered to suit the precise dimensions of your facility opening."
         )
 
-    # --- SECTION D: TERMS & CONDITIONS CUSTOMIZATION IN EXPANDER ---
+    # --- SECTION D: TERMS & CONDITIONS CUSTOMIZATION IN EXPANDER (WITH ADD/REMOVE) ---
     with st.expander("📄 Page 5: Section D - Terms & Conditions Customization", expanded=False):
-        st.markdown("Edit the Annexure - Terms & Conditions entries below:")
+        st.markdown("Edit, Add or Remove entries for Section D (Terms & Conditions):")
         exclusions_subhead = st.text_input("Sub-Header Title", "Exclusions - Client Scope & Operational Terms")
         
         updated_terms = []
         for idx, term in enumerate(st.session_state["terms_data"]):
-            st.markdown(f"**Term Block #{idx+1}**")
-            col_tc, col_td = st.columns([1, 2])
-            c_val = col_tc.text_input(f"Category #{idx+1}", value=term["category"], key=f"tc_cat_{idx}")
-            d_val = col_td.text_area(f"Details #{idx+1}", value=term["details"], height=70, key=f"tc_det_{idx}")
+            col_tc, col_td, col_rm = st.columns([2, 3, 1])
+            with col_tc:
+                c_val = st.text_input(f"Category #{idx+1}", value=term["category"], key=f"tc_cat_{idx}")
+            with col_td:
+                d_val = st.text_area(f"Details #{idx+1}", value=term["details"], height=70, key=f"tc_det_{idx}")
+            with col_rm:
+                st.markdown("<br>", unsafe_allow_html=True)
+                if st.button("❌ Remove", key=f"rm_tc_{idx}"):
+                    st.session_state["terms_data"].pop(idx)
+                    st.rerun()
             updated_terms.append({"category": c_val, "details": d_val})
         
         st.session_state["terms_data"] = updated_terms
+
+        if st.button("➕ Add Term / Exclusion"):
+            st.session_state["terms_data"].append({
+                "category": "New Scope / Category",
+                "details": "• Enter scope details here..."
+            })
+            st.rerun()
 
     # --- REVISED HEADINGS & DYNAMIC PRODUCT MAPPING ---
     st.markdown("### 📦 Product Specifications & Pricing")
@@ -863,7 +903,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story.append(Paragraph(sign_off_p1, style_cover_meta))
 
         # ==========================================
-        # 🏢 PAGE 2: SECTION A: ABOUT US & EXPERTISE (UPDATED FONT SIZES)
+        # 🏢 PAGE 2: SECTION A: ABOUT US & EXPERTISE (DYNAMIC SESSION STATE)
         # ==========================================
         story.append(PageBreak())
         story.append(get_header_element())
@@ -884,16 +924,16 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "BoxHeadFull",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=9.5,  # Increased from 8.2
-            leading=12,    # Adjusted leading
+            fontSize=9.5,
+            leading=12,
             textColor=colors.HexColor("#000000"),
         )
         style_box_text = ParagraphStyle(
             "BoxTextFull",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=8.0,  # Increased from 6.8
-            leading=10.5,  # Adjusted leading
+            fontSize=8.0,
+            leading=10.5,
             textColor=colors.HexColor("#1E293B"),
         )
 
@@ -906,36 +946,12 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                     elements.append(Spacer(1, 2))
             return elements
 
-        about_box_content = [
-            Paragraph("<b>1. Core Company Highlights & Industrial Legacy</b>", style_box_head),
-            Spacer(1, 2),
-            *build_paragraph_block(about_us_text_1),
-            Spacer(1, 3),
-
-            Paragraph("<b>2. Engineering, Quality Standards & Certification</b>", style_box_head),
-            Spacer(1, 2),
-            *build_paragraph_block(about_us_text_2),
-            Spacer(1, 3),
-
-            Paragraph("<b>3. Comprehensive Product & Solutions Portfolio</b>", style_box_head),
-            Spacer(1, 2),
-            *build_paragraph_block(about_us_text_3),
-            Spacer(1, 3),
-
-            Paragraph("<b>4. The Sidharth Advantage: Turnkey Execution & Support</b>", style_box_head),
-            Spacer(1, 2),
-            *build_paragraph_block(about_us_text_4),
-            Spacer(1, 3),
-
-            Paragraph("<b>5. Technical R&D, Testing & Safety Protocols</b>", style_box_head),
-            Spacer(1, 2),
-            *build_paragraph_block(about_us_text_5),
-            Spacer(1, 3),
-
-            Paragraph("<b>6. Future-Ready Technology & Green Engineering</b>", style_box_head),
-            Spacer(1, 2),
-            *build_paragraph_block(about_us_text_6),
-        ]
+        about_box_content = []
+        for ab_item in st.session_state["about_us_data"]:
+            about_box_content.append(Paragraph(f"<b>{ab_item['title']}</b>", style_box_head))
+            about_box_content.append(Spacer(1, 2))
+            about_box_content.extend(build_paragraph_block(ab_item['text']))
+            about_box_content.append(Spacer(1, 3))
 
         t_box = Table([[about_box_content]], colWidths=[545])
         t_box.setStyle(
@@ -955,7 +971,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "PfHeadFull",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=8.5,  # Increased from 7.8
+            fontSize=8.5,
             leading=10.5,
             alignment=1,
             textColor=colors.HexColor("#000000"),
@@ -964,7 +980,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "PfColFull",
             parent=styles["Normal"],
             fontName="Helvetica-Bold",
-            fontSize=7.8,  # Increased from 7.0
+            fontSize=7.8,
             leading=9.5,
             alignment=1,
             textColor=colors.HexColor("#1E293B"),
@@ -973,7 +989,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
             "PfBodyFull",
             parent=styles["Normal"],
             fontName="Helvetica",
-            fontSize=7.0,  # Increased from 6.2
+            fontSize=7.0,
             leading=8.5,
             alignment=1,
             textColor=colors.HexColor("#334155"),
@@ -1340,7 +1356,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story.append(t_items)
 
         # ==========================================
-        # ⚙️ PAGE 4: SECTION C: TECHNICAL SPECIFICATIONS
+        # ⚙️ PAGE 4: SECTION C: TECHNICAL SPECIFICATIONS (DYNAMIC SESSION STATE)
         # ==========================================
         story.append(PageBreak())
         story.append(get_header_element())
@@ -1443,7 +1459,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story.append(Paragraph(tech_note_text, style_note_text))
 
         # ==========================================
-        # 📋 PAGE 5: SECTION D: TERMS & CONDITIONS
+        # 📋 PAGE 5: SECTION D: TERMS & CONDITIONS (DYNAMIC SESSION STATE)
         # ==========================================
         story.append(PageBreak())
         story.append(get_header_element())
