@@ -764,8 +764,18 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
 
     # --- FREIGHT CHARGES & EXTRA CHARGES DISPLAY ---
     st.markdown("### 🚚 Extra Charges & Expenses")
-    c1, c2, c3, c4, c5 = st.columns(5)
-    packing_charges = c1.number_input("Packing & Loading (INR)", value=5000)
+    
+    # Calculate Total Material Amount from items to compute % for Packing & Loading
+    total_mat_sum = sum(itm.get("qty", 1) * itm.get("mat_rate", 0) for itm in st.session_state["shutter_items"])
+
+    col_pack_pct, col_pack_amt, c2, c3, c4, c5 = st.columns([1.2, 1.5, 2, 1.5, 1.5, 1.5])
+    
+    # Packing Percentage Box
+    packing_pct = col_pack_pct.number_input("Packing & Loading (%)", value=2.5, step=0.5, key="pack_pct")
+    
+    # Dynamic Calculation of Packing Amount based on Material Amount Total
+    packing_charges = int(round((total_mat_sum * packing_pct) / 100.0))
+    col_pack_amt.text_input("Packing Amount (INR)", value=f"₹ {packing_charges:,}", disabled=True, key="pack_amt_disp")
     
     # Toggle to show numeric value or custom text for Freight
     show_custom_freight = c2.checkbox("Hide Amount & Show Text", key="custom_freight_toggle")
@@ -1284,7 +1294,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         ])
         items_data.append([
             "",
-            Paragraph("Packing Charges", small_text),
+            Paragraph(f"Packing Charges ({packing_pct}%)", small_text),
             "",
             "",
             "",
@@ -1866,7 +1876,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         add_summary_row(
             "Item Total", mat_grand_total, inst_grand_total, is_bold=True
         )
-        add_summary_row("Packing Charges", packing_charges, "-")
+        add_summary_row(f"Packing Charges ({packing_pct}%)", packing_charges, "-")
         add_summary_row("Freight Charges (As Per Actual)", freight_text_display, "-")
         if unloading_charges > 0:
             add_summary_row("Unloading Charges", unloading_charges, "-")
