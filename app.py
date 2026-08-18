@@ -785,8 +785,9 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
         story = []
         styles = getSampleStyleSheet()
 
-        # --- UPDATED HEADER HELPER FUNCTION ---
+        # --- UPDATED HEADER HELPER FUNCTION WITH CENTER GOD LOGO (LOGO2) ---
         def get_header_element():
+            # 1. Main Company Logo (Left side)
             logo_path = None
             for possible_path in ["Logo.jpeg", "logo.jpeg", "Logo.png", "logo.png", "Logo.jpg", "logo.jpg"]:
                 if os.path.exists(possible_path):
@@ -795,11 +796,26 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                     
             if logo_path:
                 try:
-                    logo_element = RLImage(logo_path, width=180, height=60)
+                    logo_element = RLImage(logo_path, width=170, height=55)
                 except Exception:
                     logo_element = Paragraph("<b>SIDHARTH</b><br/><font size=8 color='#003366'>SHUTTER & AUTOMATION</font>", styles["Normal"])
             else:
                 logo_element = Paragraph("<b>SIDHARTH</b><br/><font size=8 color='#003366'>SHUTTER & AUTOMATION</font>", styles["Normal"])
+
+            # 2. God / Religious Small Center Logo (Top Middle)
+            god_logo_path = None
+            for possible_path in ["Logo2.jpeg", "logo2.jpeg", "Logo2.png", "logo2.png", "Logo2.jpg", "logo2.jpg"]:
+                if os.path.exists(possible_path):
+                    god_logo_path = possible_path
+                    break
+
+            if god_logo_path:
+                try:
+                    god_logo_element = RLImage(god_logo_path, width=22, height=30)
+                except Exception:
+                    god_logo_element = Paragraph("", styles["Normal"])
+            else:
+                god_logo_element = Paragraph("", styles["Normal"])
 
             right_bold = ParagraphStyle(
                 "HeadRightBold",
@@ -829,7 +845,7 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 [Paragraph("<b>Add:</b> <font color='#0284C7'>H-1-89, RIICO Ind. Area, Mansarovar, Jaipur, Rajasthan, 302020</font>", right_text)],
             ]
 
-            t_right_info = Table(right_table_data, colWidths=[240])
+            t_right_info = Table(right_table_data, colWidths=[230])
             t_right_info.setStyle(
                 TableStyle([
                     ("VALIGN", (0, 0), (-1, -1), "TOP"),
@@ -841,12 +857,16 @@ elif st.session_state["selected_product"] == "Rolling Shutters":
                 ])
             )
 
-            t_head = Table([[logo_element, t_right_info]], colWidths=[295, 250])
+            # Table Header Grid with Center God Logo at Top Middle Position
+            t_head = Table([[logo_element, god_logo_element, t_right_info]], colWidths=[185, 130, 230])
             t_head.setStyle(
                 TableStyle([
-                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                    ("VALIGN", (0, 0), (0, 0), "MIDDLE"),      # Left Logo
+                    ("VALIGN", (1, 0), (1, 0), "TOP"),         # Center God Logo
+                    ("VALIGN", (2, 0), (2, 0), "TOP"),         # Right Details
                     ("ALIGN", (0, 0), (0, 0), "LEFT"),
-                    ("ALIGN", (1, 0), (1, 0), "RIGHT"),
+                    ("ALIGN", (1, 0), (1, 0), "CENTER"),
+                    ("ALIGN", (2, 0), (2, 0), "RIGHT"),
                     ("LEFTPADDING", (0, 0), (-1, -1), 0),
                     ("RIGHTPADDING", (0, 0), (-1, -1), 0),
                     ("TOPPADDING", (0, 0), (-1, -1), 0),
