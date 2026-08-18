@@ -116,10 +116,18 @@ DEFAULT_SPECS = {
         "78mm (H) x 1mm Thick Galvanized in Curved Slat",
         "78mm (H) x .80mm Thick Galvanized in Curved Slat",
         "78mm (H) x .90mm Thick Galvanized in Curved Slat",
-        "90mm (H) x .80mm Thick Galvalume plain slats in Curved Slat",
+        "90mm (H) x .80mm Thick Galvalume plain slats",
         "90mm (H) x .90mm Thick Galvalume plain slats in Natural Finish",
         "90mm (H) x .80mm Thick Galvanized in plain slats",
-        "90mm (H) x .90mm Thick Galvanized in plain slats"
+        "90mm (H) x .90mm Thick Galvanized in plain slats",
+        "120mm (H) x .80mm Big Profile Galvanized in plain slats",
+        "120mm (H) x .90mm Big Profile Galvanized in plain slats",
+        "120mm (H) x .1mm Big Profile Galvanized in plain slats",
+        "120mm (H) x 1.2mm Big Profile Galvanized in plain slats",
+        "120mm (H) x .80mm Big Profile Galvalume in plain slats",
+        "120mm (H) x .90mm Big Profile Galvalume in plain slats",
+        "120mm (H) x .1mm Big Profile Galvalume in plain slats",
+        "120mm (H) x 1.2mm Big Profile Galvalume in plain slats"
     ],
     "slat_pow_list": [
         "Finish - Powder Coating As Per RAL",
@@ -132,7 +140,8 @@ DEFAULT_SPECS = {
         "TG Guide with Rubber Seal with Grey Epoxy Finish",
         "TG Guide With Grey Epoxy Finish",
         "U Guide with Grey Epoxy Finish",
-        "U Guide"
+        "U Guide",
+        "U Guide With Rubber"
     ],
     "bottom_list": [
         "Super Bottom with Rubber Seal with Grey Epoxy Finish",
@@ -150,7 +159,8 @@ DEFAULT_SPECS = {
         "1mm Thick Galvanized Hood & Motor Cover",
         "1.2mm Thick Galvanized Hood & Motor Cover",
         ".80mm Thick Galvalume Hood Cover in Natural Finish",
-        ".80mm Thick Galvanized Hood Cover"
+        ".80mm Thick Galvanized Hood Cover",
+        "N/A"
     ],
 }
 
