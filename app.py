@@ -173,7 +173,8 @@ DEFAULT_SPECS = {
     ],
     "dock_cylinder_list": [
         "Single Lift cylinder",
-        "Single Lip cylinder"
+        "Single Lip cylinder",
+        "Double Lift cylinder"
     ],
     "dock_height_adj_list": [
         "+640mm/-300mm",
@@ -234,9 +235,9 @@ PRODUCT_HIERARCHY = {
         "Manual Rolling Shutter",
     ],
     "Dock Leveler": [
-        "Hydraulic Doclevller",
-        "Hydraulic DockEdge",
-        "Manual DockEdge",
+        "Hydraulic Dock Leveller",
+        "Hydraulic Dock Edge",
+        "Manual Dock Edge",
     ],
     "Gates": [
         "Sliding Gate",
