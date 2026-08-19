@@ -162,7 +162,6 @@ DEFAULT_SPECS = {
         ".80mm Thick Galvanized Hood Cover",
         "N/A"
     ],
-    # UPDATED DOCK LEVELER MASTER SPECIFICATION OPTIONS ACCORDING TO LINE ORDER
     "dock_ce_cert_list": [
         "CE certified: European norm 1398",
         "N/A"
@@ -180,7 +179,7 @@ DEFAULT_SPECS = {
         "+640mm/-300mm",
         "N/A"
     ],
-     "dock_bumper_list": [
+    "dock_bumper_list": [
         "Super Bumpers 150 W X 80 (D) X 400 (H) with Heavy Steel Support",
         "Mega Bumpers 300 W X 225 (D) X 450 (H) without Steel Support"
     ]
@@ -337,6 +336,12 @@ DEFAULT_TERMS = [
 
 if "terms_data" not in st.session_state:
     st.session_state["terms_data"] = DEFAULT_TERMS.copy()
+
+# Helper function to filter valid default options for multiselect
+def sanitize_defaults(defaults, valid_options):
+    if not isinstance(defaults, list):
+        defaults = [defaults] if defaults else []
+    return [item for item in defaults if item in valid_options]
 
 # ==============================================================================
 # PAGE 1: HOME / LANDING PAGE
@@ -513,7 +518,7 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
             "dock_capacity": ["15T Uniform distributed load (UDL) and 6T point load"],
             "dock_cylinder": ["Single Lift cylinder"],
             "dock_height_adj": ["+640mm/-300mm"],
-            "dock_bumper": ["Super Bumper"],
+            "dock_bumper": ["Super Bumpers 150 W X 80 (D) X 400 (H) with Heavy Steel Support"],
             "dock_safety": [
                 "Yellow/Black Hazard Safety Toe Guards",
                 "Emergency Stop Hydraulic Velocity Fuse Safety Valve"
@@ -541,7 +546,7 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
             "dock_capacity": ["15T Uniform distributed load (UDL) and 6T point load"],
             "dock_cylinder": ["Single Lift cylinder"],
             "dock_height_adj": ["+640mm/-300mm"],
-            "dock_bumper": ["Super Bumper"],
+            "dock_bumper": ["Super Bumpers 150 W X 80 (D) X 400 (H) with Heavy Steel Support"],
             "dock_safety": [],
             "slat_nat": [],
             "slat_pow": [],
@@ -599,7 +604,7 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
 
             item["hsn"] = st.text_input("HSN Code", value=item.get("hsn", "84289090"), key=f"hsn_{idx}")
 
-            # --- DOCK LEVELER SPECIFIC UI FIELDS (UPDATED SEQUENCE 1 TO 5) ---
+            # --- DOCK LEVELER SPECIFIC UI FIELDS ---
             if selected_main == "Dock Leveler":
                 st.markdown("##### 🏗️ Dock Leveler Specifications (Line-by-Line Order)")
                 
@@ -607,7 +612,7 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
                 item["dock_ce_cert"] = st.multiselect(
                     "1st - CE Certification Details",
                     st.session_state["dock_ce_cert_list"],
-                    default=item.get("dock_ce_cert", []),
+                    default=sanitize_defaults(item.get("dock_ce_cert", []), st.session_state["dock_ce_cert_list"]),
                     key=f"dk_ce_{idx}"
                 )
                 
@@ -615,7 +620,7 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
                 item["dock_capacity"] = st.multiselect(
                     "2nd - Load Capacity",
                     st.session_state["dock_capacity_list"],
-                    default=item.get("dock_capacity", []),
+                    default=sanitize_defaults(item.get("dock_capacity", []), st.session_state["dock_capacity_list"]),
                     key=f"dk_cap_{idx}"
                 )
                 
@@ -623,7 +628,7 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
                 item["dock_cylinder"] = st.multiselect(
                     "3rd - Cylinder",
                     st.session_state["dock_cylinder_list"],
-                    default=item.get("dock_cylinder", []),
+                    default=sanitize_defaults(item.get("dock_cylinder", []), st.session_state["dock_cylinder_list"]),
                     key=f"dk_cyl_{idx}"
                 )
                 
@@ -631,15 +636,15 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
                 item["dock_height_adj"] = st.multiselect(
                     "4th - Height Adjustment of Dock Operation",
                     st.session_state["dock_height_adj_list"],
-                    default=item.get("dock_height_adj", []),
+                    default=sanitize_defaults(item.get("dock_height_adj", []), st.session_state["dock_height_adj_list"]),
                     key=f"dk_hgt_{idx}"
                 )
                 
-                # 5th - Bumper
+                # 5th - Bumper (FIXED MULTISELECT DEFAULT MATCH)
                 item["dock_bumper"] = st.multiselect(
                     "5th - Bumper",
                     st.session_state["dock_bumper_list"],
-                    default=item.get("dock_bumper", []),
+                    default=sanitize_defaults(item.get("dock_bumper", []), st.session_state["dock_bumper_list"]),
                     key=f"dk_bmp_{idx}"
                 )
 
@@ -648,21 +653,21 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
                 st.markdown("##### 📐 Shutter Technical Details")
                 col_sp, col_sn = st.columns(2)
                 with col_sp:
-                    item["slat_pow"] = st.multiselect("Paint Finish", st.session_state["slat_pow_list"], default=item.get("slat_pow", []), key=f"sp_{idx}")
+                    item["slat_pow"] = st.multiselect("Paint Finish", st.session_state["slat_pow_list"], default=sanitize_defaults(item.get("slat_pow", []), st.session_state["slat_pow_list"]), key=f"sp_{idx}")
                 with col_sn:
-                    item["slat_nat"] = st.multiselect("Slats", st.session_state["slat_nat_list"], default=item.get("slat_nat", []), key=f"sn_{idx}")
+                    item["slat_nat"] = st.multiselect("Slats", st.session_state["slat_nat_list"], default=sanitize_defaults(item.get("slat_nat", []), st.session_state["slat_nat_list"]), key=f"sn_{idx}")
 
                 cg, cb, ch_col = st.columns(3)
                 with cg:
-                    item["guide"] = st.multiselect("Guide Specification", st.session_state["guide_list"], default=item.get("guide", []), key=f"gd_{idx}")
+                    item["guide"] = st.multiselect("Guide Specification", st.session_state["guide_list"], default=sanitize_defaults(item.get("guide", []), st.session_state["guide_list"]), key=f"gd_{idx}")
                 with cb:
-                    item["bottom"] = st.multiselect("Bottom Specification", st.session_state["bottom_list"], default=item.get("bottom", []), key=f"bt_{idx}")
+                    item["bottom"] = st.multiselect("Bottom Specification", st.session_state["bottom_list"], default=sanitize_defaults(item.get("bottom", []), st.session_state["bottom_list"]), key=f"bt_{idx}")
                 with ch_col:
-                    item["hood"] = st.multiselect("Hood Cover Specification", st.session_state["hood_list"], default=item.get("hood", []), key=f"hd_{idx}")
+                    item["hood"] = st.multiselect("Hood Cover Specification", st.session_state["hood_list"], default=sanitize_defaults(item.get("hood", []), st.session_state["hood_list"]), key=f"hd_{idx}")
 
-                item["safety_locks"] = st.multiselect("Select Locks & Safety Features", SAFETY_LOCK_OPTIONS, default=item.get("safety_locks", []), key=f"lock_{idx}")
+                item["safety_locks"] = st.multiselect("Select Locks & Safety Features", SAFETY_LOCK_OPTIONS, default=sanitize_defaults(item.get("safety_locks", []), SAFETY_LOCK_OPTIONS), key=f"lock_{idx}")
                 if item["type"] == "Motorized Rolling Shutter":
-                    item["operator"] = st.multiselect("Operator Option", OPERATOR_OPTIONS, default=item.get("operator", []), key=f"op_{idx}")
+                    item["operator"] = st.multiselect("Operator Option", OPERATOR_OPTIONS, default=sanitize_defaults(item.get("operator", []), OPERATOR_OPTIONS), key=f"op_{idx}")
 
             st.markdown("---")
             st.markdown("**Dimensions & Rates:**")
@@ -891,7 +896,6 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
 
             desc_lines = [f"<b>{itm.get('type', 'Hydraulic Doclevller')}</b>"]
             
-            # UPDATED DOCK LEVELER LINE BY LINE DESCRIPTION IN PDF
             if itm.get("main_product") == "Dock Leveler":
                 for ce in itm.get("dock_ce_cert", []):
                     desc_lines.append(f"- Certification: {ce}")
