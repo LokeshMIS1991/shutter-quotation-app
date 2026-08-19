@@ -162,7 +162,11 @@ DEFAULT_SPECS = {
         ".80mm Thick Galvanized Hood Cover",
         "N/A"
     ],
-    # UPDATED DOCK LEVELER MASTER SPECIFICATION OPTIONS
+    # UPDATED DOCK LEVELER MASTER SPECIFICATION OPTIONS ACCORDING TO LINE ORDER
+    "dock_ce_cert_list": [
+        "CE certified: European norm 1398",
+        "N/A"
+    ],
     "dock_capacity_list": [
         "15T Uniform distributed load (UDL) and 6T point load",
         "22T Uniform distributed load (UDL) and 9T point load"
@@ -171,8 +175,8 @@ DEFAULT_SPECS = {
         "Single Lift cylinder",
         "Single Lip cylinder"
     ],
-    "dock_ce_cert_list": [
-        "CE certified: European norm 1398",
+    "dock_height_adj_list": [
+        "+640mm/-300mm",
         "N/A"
     ],
     "dock_bumper_list": [
@@ -223,7 +227,6 @@ DOCK_SAFETY_OPTIONS = [
     "Automatic Wheel Chock Interlock Integration"
 ]
 
-# CHANGE 1: DOCK LEVELER CATEGORIES UPDATED
 PRODUCT_HIERARCHY = {
     "Rolling Shutters": [
         "Motorized Rolling Shutter",
@@ -293,12 +296,12 @@ if "about_us_data" not in st.session_state:
 # DOCK LEVELER TECH SPECS FOR SECTION C (PAGE 4)
 DEFAULT_TECH_SPECS = [
     {"param": "Equipment Type", "spec": "Electro-Hydraulic Station Dock Leveler"},
-    {"param": "Load Capacity", "spec": "15T Uniform distributed load (UDL) and 6T point load"},
+    {"param": "1. CE Certification", "spec": "CE certified: European norm 1398"},
+    {"param": "2. Load Capacity", "spec": "15T Uniform distributed load (UDL) and 6T point load"},
+    {"param": "3. Cylinders Assembly", "spec": "Single Lift cylinder / Single Lip cylinder"},
+    {"param": "4. Height Adjustment", "spec": "+640mm/-300mm"},
+    {"param": "5. Bumper", "spec": "Super Bumper / Mega Bumper"},
     {"param": "Platform Dimensions", "spec": "Width: 2000 mm x Length: 2500 mm (Pit Depth: 600 mm)"},
-    {"param": "Cylinders Assembly", "spec": "Single Lift cylinder / Single Lip cylinder"},
-    {"param": "CE Certification", "spec": "CE certified: European norm 1398"},
-    {"param": "Bumper", "spec": "Super Bumper / Mega Bumper"},
-    {"param": "Operational Range", "spec": "Above Dock Level: +300 mm | Below Dock Level: -300 mm"},
     {"param": "Control Panel Box", "spec": "Wall-mounted IP65 Control Box with Dead-Man Push Buttons and Emergency Stop Switch"},
     {"param": "Safety Toe Guards", "spec": "Full-length yellow/black hazard striped steel toe guards on both lateral sides"},
     {"param": "Safety Drop Valve", "spec": "Automatic Hydraulic Emergency Velocity Fuse Safety Valve in case of sudden truck departure"},
@@ -505,9 +508,10 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
         st.session_state["shutter_items"] = [{
             "main_product": "Dock Leveler",
             "type": "Hydraulic Doclevller",
+            "dock_ce_cert": ["CE certified: European norm 1398"],
             "dock_capacity": ["15T Uniform distributed load (UDL) and 6T point load"],
             "dock_cylinder": ["Single Lift cylinder"],
-            "dock_ce_cert": ["CE certified: European norm 1398"],
+            "dock_height_adj": ["+640mm/-300mm"],
             "dock_bumper": ["Super Bumper"],
             "dock_safety": [
                 "Yellow/Black Hazard Safety Toe Guards",
@@ -532,9 +536,10 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
         st.session_state["shutter_items"].append({
             "main_product": "Dock Leveler",
             "type": "Hydraulic Doclevller",
+            "dock_ce_cert": ["CE certified: European norm 1398"],
             "dock_capacity": ["15T Uniform distributed load (UDL) and 6T point load"],
             "dock_cylinder": ["Single Lift cylinder"],
-            "dock_ce_cert": ["CE certified: European norm 1398"],
+            "dock_height_adj": ["+640mm/-300mm"],
             "dock_bumper": ["Super Bumper"],
             "dock_safety": [],
             "slat_nat": [],
@@ -593,40 +598,57 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
 
             item["hsn"] = st.text_input("HSN Code", value=item.get("hsn", "84289090"), key=f"hsn_{idx}")
 
-            # --- DOCK LEVELER SPECIFIC UI FIELDS (UPDATED) ---
+            # --- DOCK LEVELER SPECIFIC UI FIELDS (UPDATED SEQUENCE 1 TO 5) ---
             if selected_main == "Dock Leveler":
-                st.markdown("##### 🏗️ Dock Leveler Specifications")
-                c1, c2 = st.columns(2)
-                with c1:
-                    # Change 2: Load Capacity Options
-                    item["dock_capacity"] = st.multiselect(
-                        "Load Capacity",
-                        st.session_state["dock_capacity_list"],
-                        default=item.get("dock_capacity", []),
-                        key=f"dk_cap_{idx}"
-                    )
-                    # Change 6: Cylinder Dropdown
-                    item["dock_cylinder"] = st.multiselect(
-                        "Cylinder",
-                        st.session_state["dock_cylinder_list"],
-                        default=item.get("dock_cylinder", []),
-                        key=f"dk_cyl_{idx}"
-                    )
-                with c2:
-                    # Change 7: CE Certification
-                    item["dock_ce_cert"] = st.multiselect(
-                        "CE Certification",
-                        st.session_state["dock_ce_cert_list"],
-                        default=item.get("dock_ce_cert", []),
-                        key=f"dk_ce_{idx}"
-                    )
-                    # Change 8: Bumper
-                    item["dock_bumper"] = st.multiselect(
-                        "Bumper",
-                        st.session_state["dock_bumper_list"],
-                        default=item.get("dock_bumper", []),
-                        key=f"dk_bmp_{idx}"
-                    )
+                st.markdown("##### 🏗️ Dock Leveler Specifications (Line-by-Line Order)")
+                
+                # 1st - CE Certification Details
+                item["dock_ce_cert"] = st.multiselect(
+                    "1st - CE Certification Details",
+                    st.session_state["dock_ce_cert_list"],
+                    default=item.get("dock_ce_cert", []),
+                    key=f"dk_ce_{idx}"
+                )
+                
+                # 2nd - Load Capacity
+                item["dock_capacity"] = st.multiselect(
+                    "2nd - Load Capacity",
+                    st.session_state["dock_capacity_list"],
+                    default=item.get("dock_capacity", []),
+                    key=f"dk_cap_{idx}"
+                )
+                
+                # 3rd - Cylinder
+                item["dock_cylinder"] = st.multiselect(
+                    "3rd - Cylinder",
+                    st.session_state["dock_cylinder_list"],
+                    default=item.get("dock_cylinder", []),
+                    key=f"dk_cyl_{idx}"
+                )
+                
+                # 4th - Height Adjustment of Dock Operation
+                item["dock_height_adj"] = st.multiselect(
+                    "4th - Height Adjustment of Dock Operation",
+                    st.session_state["dock_height_adj_list"],
+                    default=item.get("dock_height_adj", []),
+                    key=f"dk_hgt_{idx}"
+                )
+                
+                # 5th - Bumper
+                item["dock_bumper"] = st.multiselect(
+                    "5th - Bumper",
+                    st.session_state["dock_bumper_list"],
+                    default=item.get("dock_bumper", []),
+                    key=f"dk_bmp_{idx}"
+                )
+
+                st.markdown("##### 🛡️ Safety & Accessories")
+                item["dock_safety"] = st.multiselect(
+                    "Safety Equipment & Accessories",
+                    DOCK_SAFETY_OPTIONS,
+                    default=item.get("dock_safety", []),
+                    key=f"dk_sft_{idx}"
+                )
 
             # --- ROLLING SHUTTER UI FIELDS ---
             elif selected_main == "Rolling Shutters":
@@ -876,14 +898,16 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
 
             desc_lines = [f"<b>{itm.get('type', 'Hydraulic Doclevller')}</b>"]
             
-            # UPDATED DOCK LEVELER DESCRIPTION IN PDF
+            # UPDATED DOCK LEVELER LINE BY LINE DESCRIPTION IN PDF
             if itm.get("main_product") == "Dock Leveler":
+                for ce in itm.get("dock_ce_cert", []):
+                    desc_lines.append(f"- Certification: {ce}")
                 for cap in itm.get("dock_capacity", []):
                     desc_lines.append(f"- Capacity: {cap}")
                 for cyl in itm.get("dock_cylinder", []):
                     desc_lines.append(f"- Cylinder: {cyl}")
-                for ce in itm.get("dock_ce_cert", []):
-                    desc_lines.append(f"- Certification: {ce}")
+                for hgt in itm.get("dock_height_adj", []):
+                    desc_lines.append(f"- Height Adj.: {hgt}")
                 for bmp in itm.get("dock_bumper", []):
                     desc_lines.append(f"- Bumper: {bmp}")
                 for sft in itm.get("dock_safety", []):
@@ -1033,9 +1057,10 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
 
             desc_lines = [itm.get("type", "Hydraulic Doclevller")]
             if itm.get("main_product") == "Dock Leveler":
+                for ce in itm.get("dock_ce_cert", []): desc_lines.append(f"• Certification: {ce}")
                 for cap in itm.get("dock_capacity", []): desc_lines.append(f"• Capacity: {cap}")
                 for cyl in itm.get("dock_cylinder", []): desc_lines.append(f"• Cylinder: {cyl}")
-                for ce in itm.get("dock_ce_cert", []): desc_lines.append(f"• Certification: {ce}")
+                for hgt in itm.get("dock_height_adj", []): desc_lines.append(f"• Height Adj.: {hgt}")
                 for bmp in itm.get("dock_bumper", []): desc_lines.append(f"• Bumper: {bmp}")
             else:
                 for s in itm.get("slat_pow", []): desc_lines.append(f"• {s}")
