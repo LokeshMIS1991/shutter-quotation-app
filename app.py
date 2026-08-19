@@ -25,7 +25,7 @@ products = [
     },
     {
         "productItem": "Dock Leveler",
-        "subCategory": "Hydraulic & Mechanical Dock Levelers",
+        "subCategory": "Hydraulic Doclevller, Hydraulic DockEdge, Manual DockEdge",
         "icon": "🏗️",
     },
     {
@@ -162,12 +162,23 @@ DEFAULT_SPECS = {
         ".80mm Thick Galvanized Hood Cover",
         "N/A"
     ],
-    # DOCK LEVELER MASTER SPECIFICATION OPTIONS
-    "dock_capacity_list": ["6 Ton (60 kN)", "9 Ton (90 kN)", "12 Ton (120 kN)", "15 Ton (150 kN)"],
-    "dock_platform_list": ["16/18 mm Tear Pattern Chequered Plate", "12/14 mm High-Tensile Chequered Plate"],
-    "dock_lip_list": ["16/18 mm Steel Lip Plate with Self-Cleaning Hinge", "Telescopic Lip Mechanism with High Tensile Steel"],
-    "dock_powerpack_list": ["Hydraulic Power Pack Unit 1.1 kW (3-Phase, 415V)", "Heavy Duty Hydraulic Unit 2.2 kW (3-Phase, 415V)"],
-    "dock_color_list": ["RAL 5010 Blue Primer & Finish Coating", "RAL 7016 Anthracite Grey Powder Coating", "RAL 3002 Signal Red Finish"]
+    # UPDATED DOCK LEVELER MASTER SPECIFICATION OPTIONS
+    "dock_capacity_list": [
+        "15T Uniform distributed load (UDL) and 6T point load",
+        "22T Uniform distributed load (UDL) and 9T point load"
+    ],
+    "dock_cylinder_list": [
+        "Single Lift cylinder",
+        "Single Lip cylinder"
+    ],
+    "dock_ce_cert_list": [
+        "CE certified: European norm 1398",
+        "N/A"
+    ],
+    "dock_bumper_list": [
+        "Super Bumper",
+        "Mega Bumper"
+    ]
 }
 
 
@@ -209,10 +220,10 @@ DOCK_SAFETY_OPTIONS = [
     "Yellow/Black Hazard Safety Toe Guards",
     "Emergency Stop Hydraulic Velocity Fuse Safety Valve",
     "Maintenance Safety Support Strut Bar",
-    "Dual Side Moulded Rubber Bumpers (400x150x100 mm)",
     "Automatic Wheel Chock Interlock Integration"
 ]
 
+# CHANGE 1: DOCK LEVELER CATEGORIES UPDATED
 PRODUCT_HIERARCHY = {
     "Rolling Shutters": [
         "Motorized Rolling Shutter",
@@ -220,8 +231,9 @@ PRODUCT_HIERARCHY = {
         "Manual Rolling Shutter",
     ],
     "Dock Leveler": [
-        "Hydraulic Dock Leveler",
-        "Mechanical Dock Leveler",
+        "Hydraulic Doclevller",
+        "Hydraulic DockEdge",
+        "Manual DockEdge",
     ],
     "Gates": [
         "Sliding Gate",
@@ -281,18 +293,15 @@ if "about_us_data" not in st.session_state:
 # DOCK LEVELER TECH SPECS FOR SECTION C (PAGE 4)
 DEFAULT_TECH_SPECS = [
     {"param": "Equipment Type", "spec": "Electro-Hydraulic Station Dock Leveler"},
-    {"param": "Load Capacity", "spec": "60 kN (6 Ton) Dynamic Load Capacity as per EN 1398 Standards"},
+    {"param": "Load Capacity", "spec": "15T Uniform distributed load (UDL) and 6T point load"},
     {"param": "Platform Dimensions", "spec": "Width: 2000 mm x Length: 2500 mm (Pit Depth: 600 mm)"},
-    {"param": "Lip Type & Length", "spec": "400 mm Long Swing Lip fabricated from high-tensile chequered steel plate"},
-    {"param": "Platform Deck Plate", "spec": "6/8 mm High-Tensile Anti-Slip Tear Pattern Chequered Steel Plate"},
-    {"param": "Hydraulic System", "spec": "Integrated Hydraulic Power Unit (1.1 kW, 415V 3-Phase, 50 Hz) with IP54 rating"},
-    {"param": "Cylinders Assembly", "spec": "Dual Hydraulic Lift Cylinders & Single Lip Operating Cylinder with hard chrome-plated piston rods"},
+    {"param": "Cylinders Assembly", "spec": "Single Lift cylinder / Single Lip cylinder"},
+    {"param": "CE Certification", "spec": "CE certified: European norm 1398"},
+    {"param": "Bumper", "spec": "Super Bumper / Mega Bumper"},
     {"param": "Operational Range", "spec": "Above Dock Level: +300 mm | Below Dock Level: -300 mm"},
     {"param": "Control Panel Box", "spec": "Wall-mounted IP65 Control Box with Dead-Man Push Buttons and Emergency Stop Switch"},
     {"param": "Safety Toe Guards", "spec": "Full-length yellow/black hazard striped steel toe guards on both lateral sides"},
     {"param": "Safety Drop Valve", "spec": "Automatic Hydraulic Emergency Velocity Fuse Safety Valve in case of sudden truck departure"},
-    {"param": "Surface Treatment", "spec": "Shot blasted surface coated with anti-corrosion primer and RAL 5010 Blue finish paint"},
-    {"param": "Dock Bumpers Included", "spec": "Pair of Heavy-Duty Moulded Rubber Bumpers (Size: 400 x 150 x 100 mm)"},
     {"param": "Operating Temperature", "spec": "-10°C to +55°C Industrial Operating Range"}
 ]
 
@@ -495,16 +504,14 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
     if "shutter_items" not in st.session_state:
         st.session_state["shutter_items"] = [{
             "main_product": "Dock Leveler",
-            "type": "Hydraulic Dock Leveler",
-            "dock_capacity": ["6 Ton (60 kN)"],
-            "dock_platform": ["16/18 mm Tear Pattern Chequered Plate"],
-            "dock_lip": ["16/18 mm Steel Lip Plate with Self-Cleaning Hinge"],
-            "dock_powerpack": ["Hydraulic Power Pack Unit 1.1 kW (3-Phase, 415V)"],
-            "dock_color": ["RAL 5010 Blue Primer & Finish Coating"],
+            "type": "Hydraulic Doclevller",
+            "dock_capacity": ["15T Uniform distributed load (UDL) and 6T point load"],
+            "dock_cylinder": ["Single Lift cylinder"],
+            "dock_ce_cert": ["CE certified: European norm 1398"],
+            "dock_bumper": ["Super Bumper"],
             "dock_safety": [
                 "Yellow/Black Hazard Safety Toe Guards",
-                "Emergency Stop Hydraulic Velocity Fuse Safety Valve",
-                "Dual Side Moulded Rubber Bumpers (400x150x100 mm)"
+                "Emergency Stop Hydraulic Velocity Fuse Safety Valve"
             ],
             "slat_nat": [],
             "slat_pow": [],
@@ -524,12 +531,11 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
     def add_product_item():
         st.session_state["shutter_items"].append({
             "main_product": "Dock Leveler",
-            "type": "Hydraulic Dock Leveler",
-            "dock_capacity": ["6 Ton (60 kN)"],
-            "dock_platform": ["16/18 mm Tear Pattern Chequered Plate"],
-            "dock_lip": ["16/18 mm Steel Lip Plate with Self-Cleaning Hinge"],
-            "dock_powerpack": ["Hydraulic Power Pack Unit 1.1 kW (3-Phase, 415V)"],
-            "dock_color": ["RAL 5010 Blue Primer & Finish Coating"],
+            "type": "Hydraulic Doclevller",
+            "dock_capacity": ["15T Uniform distributed load (UDL) and 6T point load"],
+            "dock_cylinder": ["Single Lift cylinder"],
+            "dock_ce_cert": ["CE certified: European norm 1398"],
+            "dock_bumper": ["Super Bumper"],
             "dock_safety": [],
             "slat_nat": [],
             "slat_pow": [],
@@ -551,7 +557,7 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
             st.session_state["shutter_items"].pop(index)
 
     for idx, item in enumerate(st.session_state["shutter_items"]):
-        selected_sub_cat = item.get("type", "Hydraulic Dock Leveler")
+        selected_sub_cat = item.get("type", "Hydraulic Doclevller")
         with st.expander(f"📌 Item #{idx + 1}: {selected_sub_cat}", expanded=True):
             col_p_main, col_p_cat, col_del = st.columns([2, 2, 1])
             
@@ -569,7 +575,7 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
                 item["main_product"] = selected_main
 
             with col_p_cat:
-                available_sub_cats = PRODUCT_HIERARCHY.get(selected_main, ["Hydraulic Dock Leveler"])
+                available_sub_cats = PRODUCT_HIERARCHY.get(selected_main, ["Hydraulic Doclevller"])
                 curr_sub = item.get("type", available_sub_cats[0])
                 sub_idx = available_sub_cats.index(curr_sub) if curr_sub in available_sub_cats else 0
                 
@@ -587,41 +593,39 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
 
             item["hsn"] = st.text_input("HSN Code", value=item.get("hsn", "84289090"), key=f"hsn_{idx}")
 
-            # --- DOCK LEVELER SPECIFIC UI FIELDS ---
+            # --- DOCK LEVELER SPECIFIC UI FIELDS (UPDATED) ---
             if selected_main == "Dock Leveler":
                 st.markdown("##### 🏗️ Dock Leveler Specifications")
                 c1, c2 = st.columns(2)
                 with c1:
+                    # Change 2: Load Capacity Options
                     item["dock_capacity"] = st.multiselect(
                         "Load Capacity",
                         st.session_state["dock_capacity_list"],
                         default=item.get("dock_capacity", []),
                         key=f"dk_cap_{idx}"
                     )
-                    item["dock_platform"] = st.multiselect(
-                        "Platform Deck Plate",
-                        st.session_state["dock_platform_list"],
-                        default=item.get("dock_platform", []),
-                        key=f"dk_plt_{idx}"
-                    )
-                    item["dock_lip"] = st.multiselect(
-                        "Lip Specification",
-                        st.session_state["dock_lip_list"],
-                        default=item.get("dock_lip", []),
-                        key=f"dk_lip_{idx}"
+                    # Change 6: Cylinder Dropdown
+                    item["dock_cylinder"] = st.multiselect(
+                        "Cylinder",
+                        st.session_state["dock_cylinder_list"],
+                        default=item.get("dock_cylinder", []),
+                        key=f"dk_cyl_{idx}"
                     )
                 with c2:
-                    item["dock_powerpack"] = st.multiselect(
-                        "Hydraulic Power Unit",
-                        st.session_state["dock_powerpack_list"],
-                        default=item.get("dock_powerpack", []),
-                        key=f"dk_pwr_{idx}"
+                    # Change 7: CE Certification
+                    item["dock_ce_cert"] = st.multiselect(
+                        "CE Certification",
+                        st.session_state["dock_ce_cert_list"],
+                        default=item.get("dock_ce_cert", []),
+                        key=f"dk_ce_{idx}"
                     )
-                    item["dock_color"] = st.multiselect(
-                        "Finish & Painting Shade",
-                        st.session_state["dock_color_list"],
-                        default=item.get("dock_color", []),
-                        key=f"dk_clr_{idx}"
+                    # Change 8: Bumper
+                    item["dock_bumper"] = st.multiselect(
+                        "Bumper",
+                        st.session_state["dock_bumper_list"],
+                        default=item.get("dock_bumper", []),
+                        key=f"dk_bmp_{idx}"
                     )
 
                 st.markdown("##### 🛡️ Safety & Accessories")
@@ -878,20 +882,18 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
             inst_grand_total += i_amt
             total_qty += itm.get("qty", 1)
 
-            desc_lines = [f"<b>{itm.get('type', 'Hydraulic Dock Leveler')}</b>"]
+            desc_lines = [f"<b>{itm.get('type', 'Hydraulic Doclevller')}</b>"]
             
-            # DOCK LEVELER DESCRIPTION GENERATION
+            # UPDATED DOCK LEVELER DESCRIPTION IN PDF
             if itm.get("main_product") == "Dock Leveler":
                 for cap in itm.get("dock_capacity", []):
                     desc_lines.append(f"- Capacity: {cap}")
-                for plt in itm.get("dock_platform", []):
-                    desc_lines.append(f"- Platform: {plt}")
-                for lip in itm.get("dock_lip", []):
-                    desc_lines.append(f"- Lip Spec: {lip}")
-                for pwr in itm.get("dock_powerpack", []):
-                    desc_lines.append(f"- Powerpack: {pwr}")
-                for clr in itm.get("dock_color", []):
-                    desc_lines.append(f"- Finish: {clr}")
+                for cyl in itm.get("dock_cylinder", []):
+                    desc_lines.append(f"- Cylinder: {cyl}")
+                for ce in itm.get("dock_ce_cert", []):
+                    desc_lines.append(f"- Certification: {ce}")
+                for bmp in itm.get("dock_bumper", []):
+                    desc_lines.append(f"- Bumper: {bmp}")
                 for sft in itm.get("dock_safety", []):
                     desc_lines.append(f"- {sft}")
             else:
@@ -1015,7 +1017,6 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
         font_company = Font(name="Calibri", size=14, bold=True)
         font_header_bold = Font(name="Calibri", size=10, bold=True)
         font_regular = Font(name="Calibri", size=9)
-        font_bold = Font(name="Calibri", size=9, bold=True)
 
         fill_table_header = PatternFill(start_color="E2E8F0", end_color="E2E8F0", fill_type="solid")
         thin_border = Border(left=Side(style="thin"), right=Side(style="thin"), top=Side(style="thin"), bottom=Side(style="thin"))
@@ -1038,12 +1039,12 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
             m_amt = itm.get("qty", 1) * itm.get("mat_rate", 0)
             i_amt = itm.get("qty", 1) * itm.get("inst_rate", 0)
 
-            desc_lines = [itm.get("type", "Hydraulic Dock Leveler")]
+            desc_lines = [itm.get("type", "Hydraulic Doclevller")]
             if itm.get("main_product") == "Dock Leveler":
                 for cap in itm.get("dock_capacity", []): desc_lines.append(f"• Capacity: {cap}")
-                for plt in itm.get("dock_platform", []): desc_lines.append(f"• Deck: {plt}")
-                for lip in itm.get("dock_lip", []): desc_lines.append(f"• Lip: {lip}")
-                for pwr in itm.get("dock_powerpack", []): desc_lines.append(f"• Motor: {pwr}")
+                for cyl in itm.get("dock_cylinder", []): desc_lines.append(f"• Cylinder: {cyl}")
+                for ce in itm.get("dock_ce_cert", []): desc_lines.append(f"• Certification: {ce}")
+                for bmp in itm.get("dock_bumper", []): desc_lines.append(f"• Bumper: {bmp}")
             else:
                 for s in itm.get("slat_pow", []): desc_lines.append(f"• {s}")
                 for s in itm.get("slat_nat", []): desc_lines.append(f"• {s}")
