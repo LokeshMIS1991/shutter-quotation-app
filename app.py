@@ -181,8 +181,8 @@ DEFAULT_SPECS = {
         "N/A"
     ],
     "dock_bumper_list": [
-        "Super Bumper",
-        "Mega Bumper"
+        "Super Bumpers 150 W X 80 (D) X 400 (H) with Heavy Steel Support",
+        "Mega Bumpers 300 W X 225 (D) X 450 (H) without Steel Support"
     ]
 }
 
