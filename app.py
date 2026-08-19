@@ -628,14 +628,6 @@ elif st.session_state["selected_product"] in ["Rolling Shutters", "Dock Leveler"
                         key=f"dk_bmp_{idx}"
                     )
 
-                st.markdown("##### 🛡️ Safety & Accessories")
-                item["dock_safety"] = st.multiselect(
-                    "Safety Equipment & Accessories",
-                    DOCK_SAFETY_OPTIONS,
-                    default=item.get("dock_safety", []),
-                    key=f"dk_sft_{idx}"
-                )
-
             # --- ROLLING SHUTTER UI FIELDS ---
             elif selected_main == "Rolling Shutters":
                 st.markdown("##### 📐 Shutter Technical Details")
